@@ -19,10 +19,10 @@ np.random.seed(seed=813)
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--gpu_ids', type=str, default="2", help='Use which GPU to train')
-    parser.add_argument('--folder_X_te', type=str, default="./trainsets/X/test/", help='input folder of T1MAP PET images')
-    parser.add_argument('--folder_Y_te', type=str, default="./trainsets/Y/test/", help='input folder of BRAVO images')
-    parser.add_argument('--weights_path', type=str, default='saved_models/model_best_008.pth')
+    parser.add_argument('--gpu_ids', type=str, default="3", help='Use which GPU to train')
+    parser.add_argument('--folder_X_te', type=str, default="./MR2CT_B/X/test/", help='input folder of T1MAP PET images')
+    parser.add_argument('--folder_Y_te', type=str, default="./MR2CT_B/Y/test/", help='input folder of BRAVO images')
+    parser.add_argument('--weights_path', type=str, default='./saved_models/MR2CT_B_model_best_085.pth.pth')
     args = parser.parse_args()
 
     gpu_list = ','.join(str(x) for x in args.gpu_ids)
@@ -75,15 +75,24 @@ def main():
             loss_mat[cnt_X, cnt_loss] = curr_loss
             print("===> Loss[{}]: {:6}".format(loss_fnc.__name__, curr_loss), end='')
         
-        file_idx = os.path.basename(X_path)[4:7]
-        nifty_name = "mets" if file_idx[0] == "0" else "tami"
-        nifty_name = nifty_name + "000" + file_idx[1:] + ".nii.gz"
-        nifty_name = "./t1map2bravo/BRAVO/" + nifty_name
+        # file_idx = os.path.basename(X_path)[4:7]
+        # nifty_name = "mets" if file_idx[0] == "0" else "tami"
+        # nifty_name = nifty_name + "000" + file_idx[1:] + ".nii.gz"
+        # nifty_name = "./t1map2bravo/BRAVO/" + nifty_name
+        # nifty_file = nib.load(nifty_name)
+        # print("Loaded from", nifty_name, end="")
+
+        # pred_file = nib.Nifti1Image(y_hat*7000, nifty_file.affine, nifty_file.header)
+        # pred_name = "./t1map2bravo/pred/"+"PRD_"+file_idx+".nii.gz"
+        # nib.save(pred_file, pred_name)
+        # print(" Saved to", pred_name)
+
+        nifty_name = "./MR2CT_B/MRB/" + os.path.basename(X_path)
         nifty_file = nib.load(nifty_name)
         print("Loaded from", nifty_name, end="")
 
-        pred_file = nib.Nifti1Image(y_hat*7000, nifty_file.affine, nifty_file.header)
-        pred_name = "./t1map2bravo/pred/"+"PRD_"+file_idx+".nii.gz"
+        pred_file = nib.Nifti1Image(y_hat*1500, nifty_file.affine, nifty_file.header)
+        pred_name = "./MR2CT_B/pred/"+"PRD_"+os.path.basename(X_path)[4:7]+".nii.gz"
         nib.save(pred_file, pred_name)
         print(" Saved to", pred_name)
 
