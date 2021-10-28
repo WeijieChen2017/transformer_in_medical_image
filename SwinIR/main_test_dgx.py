@@ -20,9 +20,9 @@ np.random.seed(seed=813)
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--gpu_ids', type=str, default="3", help='Use which GPU to train')
-    parser.add_argument('--folder_X_te', type=str, default="./MR2CT_B/X/test/", help='input folder of T1MAP PET images')
-    parser.add_argument('--folder_Y_te', type=str, default="./MR2CT_B/Y/test/", help='input folder of BRAVO images')
-    parser.add_argument('--weights_path', type=str, default='./saved_models/MR2CT_B_model_best_085.pth')
+    parser.add_argument('--folder_X_te', type=str, default="./MR2CT_S/X/test/", help='input folder of T1MAP PET images')
+    parser.add_argument('--folder_Y_te', type=str, default="./MR2CT_S/Y/test/", help='input folder of BRAVO images')
+    parser.add_argument('--weights_path', type=str, default='./saved_models/MR2CT_S_model_best_085.pth')
     args = parser.parse_args()
 
     gpu_list = ','.join(str(x) for x in args.gpu_ids)
@@ -87,12 +87,12 @@ def main():
         # nib.save(pred_file, pred_name)
         # print(" Saved to", pred_name)
 
-        nifty_name = "./MR2CT_B/MRB/" + os.path.basename(X_path)[:-4]+".nii.gz"
+        nifty_name = "./MR2CT_S/MRB/" + os.path.basename(X_path)[:-4]+".nii.gz"
         nifty_file = nib.load(nifty_name)
         print("Loaded from", nifty_name, end="")
 
         pred_file = nib.Nifti1Image(y_hat*1500, nifty_file.affine, nifty_file.header)
-        pred_name = "./MR2CT_B/pred/"+"PRD_"+os.path.basename(X_path)[4:7]+".nii.gz"
+        pred_name = "./MR2CT_S/pred/"+"PRD_"+os.path.basename(X_path)[4:7]+".nii.gz"
         nib.save(pred_file, pred_name)
         print(" Saved to", pred_name)
 
