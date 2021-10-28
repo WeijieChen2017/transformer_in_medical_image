@@ -87,7 +87,7 @@ def main():
         # nib.save(pred_file, pred_name)
         # print(" Saved to", pred_name)
 
-        nifty_name = "./MR2CT_B/MRB/" + os.path.basename(X_path)
+        nifty_name = "./MR2CT_B/MRB/" + os.path.basename(X_path)[:-4]+".nii.gz"
         nifty_file = nib.load(nifty_name)
         print("Loaded from", nifty_name, end="")
 
