@@ -119,7 +119,9 @@ def main():
                 # print(getsizeof(batch_x), getsizeof(batch_y))
 
                 optimizer.zero_grad()
-                loss = criterion(model(batch_x), batch_y)
+                yhat = model(batch_x)
+                print("output from model is shaped as", yhat.size(), "while y is shaped as", batch_y.size())
+                loss = criterion(y_hat, batch_y)
                 loss.backward()
                 optimizer.step()
 
