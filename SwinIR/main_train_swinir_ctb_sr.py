@@ -91,7 +91,7 @@ def main():
             cube_x_data = np.load(cube_x_path)
             cube_y_data = np.load(cube_y_path)
             # assert cube_x_data.shape == cube_y_data.shape
-            len_z = cube_x_data.shape[1]
+            len_z = cube_x_data.shape[2]
             case_loss = np.zeros((len_z//args.batch))
             input_list = list(range(len_z))
             random.shuffle(input_list)
@@ -99,8 +99,8 @@ def main():
             # 0:[32, 45, 23, 55], 1[76, 74, 54, 99], 3[65, 92, 28, 77], ...
             for idx_iter in range(len_z//args.batch):
 
-                batch_x = np.zeros((args.batch, 3, cube_x_data.shape[0], cube_x_data.shape[2]))
-                batch_y = np.zeros((args.batch, 3, cube_y_data.shape[0], cube_y_data.shape[2]))
+                batch_x = np.zeros((args.batch, 3, cube_x_data.shape[0], cube_x_data.shape[1]))
+                batch_y = np.zeros((args.batch, 3, cube_y_data.shape[0], cube_y_data.shape[1]))
 
                 for idx_batch in range(args.batch):
                     z_center = input_list[idx_iter*args.batch+idx_batch]
@@ -168,7 +168,7 @@ def main():
             cube_x_data = np.load(cube_x_path)
             cube_y_data = np.load(cube_y_path)
             assert cube_x_data.shape == cube_y_data.shape
-            len_z = cube_x_data.shape[1]
+            len_z = cube_x_data.shape[2]
             case_loss = np.zeros((len_z//args.batch))
             input_list = list(range(len_z))
             random.shuffle(input_list)
@@ -176,8 +176,8 @@ def main():
             # 0:[32, 45, 23, 55], 1[76, 74, 54, 99], 3[65, 92, 28, 77], ...
             for idx_iter in range(len_z//args.batch):
 
-                batch_x = np.zeros((args.batch, 3, cube_x_data.shape[0], cube_x_data.shape[2]))
-                batch_y = np.zeros((args.batch, 3, cube_y_data.shape[0], cube_y_data.shape[2]))
+                batch_x = np.zeros((args.batch, 3, cube_x_data.shape[0], cube_x_data.shape[1]))
+                batch_y = np.zeros((args.batch, 3, cube_y_data.shape[0], cube_y_data.shape[1]))
 
                 for idx_batch in range(args.batch):
                     z_center = input_list[idx_iter*args.batch+idx_batch]
