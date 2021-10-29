@@ -104,14 +104,14 @@ def main():
 
                 for idx_batch in range(args.batch):
                     z_center = input_list[idx_iter*args.batch+idx_batch]
-                    batch_x[idx_batch, 1, :, :] = cube_x_data[:, z_center, :]
-                    batch_y[idx_batch, 1, :, :] = cube_y_data[:, z_center, :]
+                    batch_x[idx_batch, 1, :, :] = cube_x_data[:, :, z_center]
+                    batch_y[idx_batch, 1, :, :] = cube_y_data[:, :, z_center]
                     z_before = z_center - 1 if z_center > 0 else 0
                     z_after = z_center + 1 if z_center < len_z-1 else len_z-1
-                    batch_x[idx_batch, 0, :, :] = cube_x_data[:, z_before, :]
-                    batch_y[idx_batch, 0, :, :] = cube_y_data[:, z_before, :]
-                    batch_x[idx_batch, 2, :, :] = cube_x_data[:, z_after, :]
-                    batch_y[idx_batch, 2, :, :] = cube_y_data[:, z_after, :]
+                    batch_x[idx_batch, 0, :, :] = cube_x_data[:, :, z_before]
+                    batch_y[idx_batch, 0, :, :] = cube_y_data[:, :, z_before]
+                    batch_x[idx_batch, 2, :, :] = cube_x_data[:, :, z_after]
+                    batch_y[idx_batch, 2, :, :] = cube_y_data[:, :, z_after]
 
                 batch_x = torch.from_numpy(batch_x).float().to(device)
                 batch_y = torch.from_numpy(batch_y).float().to(device)
@@ -119,9 +119,8 @@ def main():
                 # print(getsizeof(batch_x), getsizeof(batch_y))
 
                 optimizer.zero_grad()
-                yhat = model(batch_x)
-                print("output from model is shaped as", yhat.size(), "while y is shaped as", batch_y.size())
-                loss = criterion(y_hat, batch_y)
+                # print("output from model is shaped as", yhat.size(), "while y is shaped as", batch_y.size())
+                loss = criterion(model(batch_x), batch_y)
                 loss.backward()
                 optimizer.step()
 
@@ -182,14 +181,14 @@ def main():
 
                 for idx_batch in range(args.batch):
                     z_center = input_list[idx_iter*args.batch+idx_batch]
-                    batch_x[idx_batch, 1, :, :] = cube_x_data[:, z_center, :]
-                    batch_y[idx_batch, 1, :, :] = cube_y_data[:, z_center, :]
+                    batch_x[idx_batch, 1, :, :] = cube_x_data[:, :, z_center]
+                    batch_y[idx_batch, 1, :, :] = cube_y_data[:, :, z_center]
                     z_before = z_center - 1 if z_center > 0 else 0
                     z_after = z_center + 1 if z_center < len_z-1 else len_z-1
-                    batch_x[idx_batch, 0, :, :] = cube_x_data[:, z_before, :]
-                    batch_y[idx_batch, 0, :, :] = cube_y_data[:, z_before, :]
-                    batch_x[idx_batch, 2, :, :] = cube_x_data[:, z_after, :]
-                    batch_y[idx_batch, 2, :, :] = cube_y_data[:, z_after, :]
+                    batch_x[idx_batch, 0, :, :] = cube_x_data[:, :, z_before]
+                    batch_y[idx_batch, 0, :, :] = cube_y_data[:, :, z_before]
+                    batch_x[idx_batch, 2, :, :] = cube_x_data[:, :, z_after]
+                    batch_y[idx_batch, 2, :, :] = cube_y_data[:, :, z_after]
 
                 batch_x = torch.from_numpy(batch_x).float().to(device)
                 batch_y = torch.from_numpy(batch_y).float().to(device)
