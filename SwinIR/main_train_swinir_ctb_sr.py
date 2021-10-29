@@ -120,7 +120,8 @@ def main():
 
                 optimizer.zero_grad()
                 # print("output from model is shaped as", yhat.size(), "while y is shaped as", batch_y.size())
-                loss = criterion(model(batch_x), batch_y)
+                y_hat = model(batch_x)
+                loss = criterion(y_hat, batch_y)
                 loss.backward()
                 optimizer.step()
 
@@ -136,9 +137,9 @@ def main():
             
             case_name = os.path.basename(cube_x_path)[4:7]
             np.save(args.tag+"Epoch[{:03d}]_Case[{}]_t.npy".format(idx_epoch+1, case_name),
-                    (batch_x.cpu().detach().numpy(),
-                     batch_y.cpu().detach().numpy(),
-                     model(batch_x).cpu().detach().numpy()))
+                    (batch_x.cpu().numpy(),
+                     batch_y.cpu().numpy(),
+                     y_hat.cpu().detach().numpy()))
 
             # after training one case
             loss_mean = np.mean(case_loss)
@@ -193,15 +194,16 @@ def main():
                 batch_x = torch.from_numpy(batch_x).float().to(device)
                 batch_y = torch.from_numpy(batch_y).float().to(device)
                 
-                loss = criterion(model(batch_x), batch_y)
+                y_hat = model(batch_x)
+                loss = criterion(y_hat, batch_y)
                 case_loss[idx_iter] = loss.item()
             
             # save one progress shot
             case_name = os.path.basename(cube_x_path)[4:7]
             np.save(args.tag+"Epoch[{:03d}]_Case[{}]_v.npy".format(idx_epoch+1, case_name),
-                    (batch_x.cpu().detach().numpy(),
-                     batch_y.cpu().detach().numpy(),
-                     model(batch_x).cpu().detach().numpy()))
+                    (batch_x.cpu().numpy(),
+                     batch_y.cpu().numpy(),
+                     y_hat.cpu().detach().numpy()))
             
             # after training one case
             loss_mean = np.mean(case_loss)
