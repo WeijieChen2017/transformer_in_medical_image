@@ -49,7 +49,6 @@ def main():
         print("->",cube_x_path,"<-", end="")
         cube_x_data = np.load(cube_x_path)
         cube_y_data = np.load(cube_y_path)
-        assert cube_x_data.shape == cube_y_data.shape
         len_z = cube_x_data.shape[1]
         y_hat = np.zeros(cube_y_data.shape)
         
