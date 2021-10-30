@@ -101,7 +101,7 @@ def main():
         # print(" Saved to", pred_name)
 
         saved_name = "./CTB_SR/test_from_previous/"+os.path.basename(X_path)[:-4]+".npy"
-        np.save(y_hat, saved_name)
+        np.save(saved_name, y_hat)
         print(" Saved to", saved_name)
 
 if __name__ == '__main__':
