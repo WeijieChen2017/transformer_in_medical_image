@@ -53,21 +53,20 @@ def main():
         print("->",cube_x_path,"<-", end="")
         cube_x_data = np.load(cube_x_path)
         cube_y_data = np.load(cube_y_path)
-        assert cube_x_data.shape == cube_y_data.shape
-        len_z = cube_x_data.shape[1]
+        len_z = cube_x_data.shape[2]
         y_hat = np.zeros(cube_y_data.shape)
         
         for idx in range(len_z):
 
-            batch_x = np.zeros((1, 3, cube_x_data.shape[0], cube_x_data.shape[2]))
+            batch_x = np.zeros((1, 3, cube_x_data.shape[0], cube_x_data.shape[1]))
             batch_y = cube_y_data[:, idx, :]
 
             z_center = idx
-            batch_x[0, 1, :, :] = cube_x_data[:, z_center, :]
+            batch_x[0, 1, :, :] = cube_x_data[:, :, z_center]
             z_before = z_center - 1 if z_center > 0 else 0
             z_after = z_center + 1 if z_center < len_z-1 else len_z-1
-            batch_x[0, 0, :, :] = cube_x_data[:, z_before, :]
-            batch_x[0, 2, :, :] = cube_x_data[:, z_after, :]
+            batch_x[0, 0, :, :] = cube_x_data[:, :, z_before]
+            batch_x[0, 2, :, :] = cube_x_data[:, :, z_after]
 
             batch_x = torch.from_numpy(batch_x).float().to(device)
 
