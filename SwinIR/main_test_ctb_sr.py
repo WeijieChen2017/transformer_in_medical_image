@@ -50,9 +50,10 @@ def main():
 
         cube_x_path = X_path
         cube_y_path = args.folder_X_te+os.path.basename(X_path)
-        print("->",cube_x_path,"<-", end="")
+        print("->",cube_x_path, "<->", cube_y_path, "<-",end="")
         cube_x_data = np.load(cube_x_path)
         cube_y_data = np.load(cube_y_path)
+        print(cube_y_data.shape)
         len_z = cube_x_data.shape[2]
         y_hat = np.zeros(cube_y_data.shape)
         
