@@ -31,7 +31,7 @@ def main():
 
     device = torch.device('cuda' if  torch.cuda.is_available() else 'cpu')
 
-    for path in ["./CTB_SR/pred/"]:
+    for path in ["./CTB_SR/pred_from_previous/"]:
         if not os.path.exists(path):
             os.mkdir(path)
 
