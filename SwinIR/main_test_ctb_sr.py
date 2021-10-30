@@ -49,7 +49,7 @@ def main():
     for cnt_X, X_path in enumerate(X_list):
 
         cube_x_path = X_path
-        cube_y_path = X_path.replace("X", "Y")
+        cube_y_path = args.folder_X_te+os.path.basename(X_path)
         print("->",cube_x_path,"<-", end="")
         cube_x_data = np.load(cube_x_path)
         cube_y_data = np.load(cube_y_path)
