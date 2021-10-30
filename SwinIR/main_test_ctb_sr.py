@@ -20,7 +20,7 @@ np.random.seed(seed=813)
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--gpu_ids', type=str, default="7", help='Use which GPU to train')
-    parser.add_argument('--folder_X_te', type=str, default="./CTB_SR/X/test/", help='input folder of T1MAP PET images')
+    parser.add_argument('--folder_X_te', type=str, default="./CTB_SR/X/test_from_previous/", help='input folder of T1MAP PET images')
     parser.add_argument('--folder_Y_te', type=str, default="./CTB_SR/Y/test/", help='input folder of BRAVO images')
     parser.add_argument('--weights_path', type=str, default='./CTB_SR_best_model/CTB_SR_model_best_015.pth')
     args = parser.parse_args()
@@ -84,7 +84,7 @@ def main():
 
 
         pred_file = nib.Nifti1Image(y_hat, nifty_file.affine, nifty_file.header)
-        pred_name = "./CTB_SR/pred/"+"PRD_"+os.path.basename(X_path)[4:7]+".nii.gz"
+        pred_name = "./CTB_SR/pred_from_previous/"+"PRD_"+os.path.basename(X_path)[4:7]+".nii.gz"
         nib.save(pred_file, pred_name)
         print(" Saved to", pred_name)
 
