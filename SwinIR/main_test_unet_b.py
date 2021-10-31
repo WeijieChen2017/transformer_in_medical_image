@@ -26,7 +26,7 @@ def main():
     parser.add_argument('--gpu_ids', type=str, default="7", help='Use which GPU to train')
     parser.add_argument('--folder_X_te', type=str, default="./MR2CT_B_UNET/X/test/", help='input folder of T1MAP PET images')
     parser.add_argument('--folder_Y_te', type=str, default="./MR2CT_B_UNET/Y/test/", help='input folder of BRAVO images')
-    parser.add_argument('--weights_path', type=str, default='./MR2CT_B_UNET/model_best_100.pth')
+    parser.add_argument('--weights_path', type=str, default='./MR2CT_B_UNET/model_best_008.pth')
     args = parser.parse_args()
 
     gpu_list = ','.join(str(x) for x in args.gpu_ids)
@@ -54,7 +54,7 @@ def main():
 
         cube_x_path = X_path
         cube_y_path = args.folder_Y_te+os.path.basename(X_path)
-        print("->",cube_x_path, "<->", cube_y_path, "<-",end="")
+        print("->",cube_x_path, "<-",end="")
         cube_x_data = np.load(cube_x_path)
         cube_y_data = np.load(cube_y_path)
         len_z = cube_x_data.shape[2]
