@@ -83,15 +83,15 @@ for package in [packageVal, packageTrain, packageTest]: #
 
         print(pathX)
         pathY = search_folderY+os.path.basename(pathX).replace("MR", "CT")
-        filenameX = os.path.basename(pathX)[4:7]
-        filenameY = os.path.basename(pathY)[4:7]
+        filenameX = os.path.basename(pathX)[9:11]
+        filenameY = os.path.basename(pathY)[9:11]
         dataX = nib.load(pathX).get_fdata()
         dataY = nib.load(pathY).get_fdata()
         dataNormX = normX(dataX)
         dataNormY = normY(dataY)
         print(dataNormX.shape, dataNormY.shape)
 
-        np.save(folderX + "RSZ_" + filenameX + ".npy", dataNormX)
-        np.save(folderY + "RSZ_" + filenameY + ".npy", dataNormY)        
-        print(folderX + "RSZ_" + filenameX + ".npy")
+        np.save(folderX + "RSZ_0" + filenameX + ".npy", dataNormX)
+        np.save(folderY + "RSZ_0" + filenameY + ".npy", dataNormY)        
+        print(folderX + "RSZ_0" + filenameX + ".npy")
     print(len(fileList), " files are saved. ")
