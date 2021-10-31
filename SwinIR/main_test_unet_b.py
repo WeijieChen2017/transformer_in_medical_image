@@ -20,7 +20,7 @@ np.random.seed(seed=813)
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--gpu_ids', type=str, default="7", help='Use which GPU to train')
-    parser.add_argument('--folder_X_te', type=str, default="./MR2CT_B_UNET/test_from_previous/", help='input folder of T1MAP PET images')
+    parser.add_argument('--folder_X_te', type=str, default="./MR2CT_B_UNET/X/test/", help='input folder of T1MAP PET images')
     parser.add_argument('--folder_Y_te', type=str, default="./MR2CT_B_UNET/Y/test/", help='input folder of BRAVO images')
     parser.add_argument('--weights_path', type=str, default='./MR2CT_B_UNET/model_best_100.pth')
     args = parser.parse_args()
