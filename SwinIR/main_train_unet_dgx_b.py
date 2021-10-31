@@ -52,7 +52,7 @@ def main():
     best_val_loss = 1e6
     per_iter_loss = np.zeros((args.loss_display_per_iter))
     input_channel = args.input_channel
-    output_channel = arg.output_channel
+    output_channel = args.output_channel
     case_loss = None
 
     for idx_epoch in range(args.epoch):
