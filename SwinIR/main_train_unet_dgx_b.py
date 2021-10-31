@@ -11,7 +11,7 @@ import os
 import torch
 import requests
 
-from models.network_swinir import SwinIR as net
+# from models.network_swinir import SwinIR as net
 from utils import util_calculate_psnr_ssim as util
 from unet import UNet
 
@@ -19,31 +19,16 @@ np.random.seed(seed=813)
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--task', type=str, default='color_dn', help='classical_sr, lightweight_sr, real_sr, '
-                                                                     'gray_dn, color_dn, jpeg_car')
-    parser.add_argument('--scale', type=int, default=1, help='scale factor: 1, 2, 3, 4, 8') # 1 for dn and jpeg car
-    parser.add_argument('--noise', type=int, default=15, help='noise level: 15, 25, 50')
-    parser.add_argument('--jpeg', type=int, default=40, help='scale factor: 10, 20, 30, 40')
-    parser.add_argument('--training_patch_size', type=int, default=128, help='patch size used in training SwinIR. '
-                                       'Just used to differentiate two different settings in Table 2 of the paper. '
-                                       'Images are NOT tested patch by patch.')
-    parser.add_argument('--large_model', action='store_true', help='use large model, only provided for real image sr')
-    parser.add_argument('--model_path', type=str,
-                        default='model_zoo/swinir/005_colorDN_DFWB_s128w8_SwinIR-M_noise25.pth')
-    parser.add_argument('--folder_lq', type=str, default=None, help='input low-quality test image folder')
-    parser.add_argument('--folder_gt', type=str, default=None, help='input ground-truth test image folder')
-    parser.add_argument('--tile', type=int, default=None, help='Tile size, None for no tile during testing (testing as a whole)')
-    parser.add_argument('--tile_overlap', type=int, default=32, help='Overlapping of different tiles')
-    
-    parser.add_argument('--tag', type=str, default="MR2CT_B_", help='Save_prefix')
+ 
+    parser.add_argument('--tag', type=str, default="MR2CT_B_UNET_", help='Save_prefix')
     parser.add_argument('--gpu_ids', type=str, default="7", help='Use which GPU to train')
     parser.add_argument('--epoch', type=int, default=100, help='how many epochs to train')
-    parser.add_argument('--batch', type=int, default=1, help='how many batches in one run')
+    parser.add_argument('--batch', type=int, default=8, help='how many batches in one run')
     parser.add_argument('--loss_display_per_iter', type=int, default=600, help='display how many losses per iteration')
-    parser.add_argument('--folder_pet', type=str, default="./MR2CT_B/X/train/", help='input folder of T1MAP images')
-    parser.add_argument('--folder_sct', type=str, default="./MR2CT_B/Y/train/", help='input folder of BRAVO images')
-    parser.add_argument('--folder_pet_v', type=str, default="./MR2CT_B/X/val/", help='input folder of T1MAP PET images')
-    parser.add_argument('--folder_sct_v', type=str, default="./MR2CT_B/Y/val/", help='input folder of BRAVO images')
+    parser.add_argument('--folder_pet', type=str, default="./MR2CT_B_UNET/X/train/", help='input folder of T1MAP images')
+    parser.add_argument('--folder_sct', type=str, default="./MR2CT_B_UNET/Y/train/", help='input folder of BRAVO images')
+    parser.add_argument('--folder_pet_v', type=str, default="./MR2CT_B_UNET/X/val/", help='input folder of T1MAP PET images')
+    parser.add_argument('--folder_sct_v', type=str, default="./MR2CT_B_UNET/Y/val/", help='input folder of BRAVO images')
     
     args = parser.parse_args()
 
@@ -52,17 +37,8 @@ def main():
     print('export CUDA_VISIBLE_DEVICES=' + gpu_list)
 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    # set up model
-    if os.path.exists(args.model_path):
-        print(f'loading model from {args.model_path}')
-    else:
-        os.makedirs(os.path.dirname(args.model_path), exist_ok=True)
-        url = 'https://github.com/JingyunLiang/SwinIR/releases/download/v0.0/{}'.format(os.path.basename(args.model_path))
-        r = requests.get(url, allow_redirects=True)
-        print(f'downloading model {args.model_path}')
-        open(args.model_path, 'wb').write(r.content)
 
-    model = UNet(n_channels=3, n_classes=2, bilinear=True)
+    model = UNet(n_channels=3, n_classes=1, bilinear=True)
     model.train().float()
     model = model.to(device)
     criterion = nn.SmoothL1Loss()
@@ -91,8 +67,7 @@ def main():
             print("--->",cube_x_path,"<---", end="")
             cube_x_data = np.load(cube_x_path)
             cube_y_data = np.load(cube_y_path)
-            assert cube_x_data.shape == cube_y_data.shape
-            len_z = cube_x_data.shape[1]
+            len_z = cube_x_data.shape[2]
             case_loss = np.zeros((len_z//args.batch))
             input_list = list(range(len_z))
             random.shuffle(input_list)
@@ -100,24 +75,22 @@ def main():
             # 0:[32, 45, 23, 55], 1[76, 74, 54, 99], 3[65, 92, 28, 77], ...
             for idx_iter in range(len_z//args.batch):
 
-                batch_x = np.zeros((args.batch, 3, cube_x_data.shape[0], cube_x_data.shape[2]))
-                batch_y = np.zeros((args.batch, 3, cube_y_data.shape[0], cube_y_data.shape[2]))
+                batch_x = np.zeros((args.batch, 3, cube_x_data.shape[0], cube_x_data.shape[1]))
+                batch_y = np.zeros((args.batch, 3, cube_y_data.shape[0], cube_y_data.shape[1]))
 
                 for idx_batch in range(args.batch):
                     z_center = input_list[idx_iter*args.batch+idx_batch]
-                    batch_x[idx_batch, 1, :, :] = cube_x_data[:, z_center, :]
-                    batch_y[idx_batch, 1, :, :] = cube_y_data[:, z_center, :]
+                    batch_x[idx_batch, 1, :, :] = cube_x_data[:, :, z_center]
+                    batch_y[idx_batch, 1, :, :] = cube_y_data[:, :, z_center]
                     z_before = z_center - 1 if z_center > 0 else 0
                     z_after = z_center + 1 if z_center < len_z-1 else len_z-1
-                    batch_x[idx_batch, 0, :, :] = cube_x_data[:, z_before, :]
-                    batch_y[idx_batch, 0, :, :] = cube_y_data[:, z_before, :]
-                    batch_x[idx_batch, 2, :, :] = cube_x_data[:, z_after, :]
-                    batch_y[idx_batch, 2, :, :] = cube_y_data[:, z_after, :]
+                    batch_x[idx_batch, 0, :, :] = cube_x_data[:, :, z_before]
+                    batch_y[idx_batch, 0, :, :] = cube_y_data[:, :, z_before]
+                    batch_x[idx_batch, 2, :, :] = cube_x_data[:, :, z_after]
+                    batch_y[idx_batch, 2, :, :] = cube_y_data[:, :, z_after]
 
                 batch_x = torch.from_numpy(batch_x).float().to(device)
                 batch_y = torch.from_numpy(batch_y).float().to(device)
-                # print(batch_x.shape, batch_y.shape)
-                # print(getsizeof(batch_x), getsizeof(batch_y))
 
                 optimizer.zero_grad()
                 loss = criterion(model(batch_x), batch_y)
@@ -167,8 +140,7 @@ def main():
             print("--->",cube_x_path,"<---", end="")
             cube_x_data = np.load(cube_x_path)
             cube_y_data = np.load(cube_y_path)
-            assert cube_x_data.shape == cube_y_data.shape
-            len_z = cube_x_data.shape[1]
+            len_z = cube_x_data.shape[2]
             case_loss = np.zeros((len_z//args.batch))
             input_list = list(range(len_z))
             random.shuffle(input_list)
@@ -176,19 +148,19 @@ def main():
             # 0:[32, 45, 23, 55], 1[76, 74, 54, 99], 3[65, 92, 28, 77], ...
             for idx_iter in range(len_z//args.batch):
 
-                batch_x = np.zeros((args.batch, 3, cube_x_data.shape[0], cube_x_data.shape[2]))
-                batch_y = np.zeros((args.batch, 3, cube_y_data.shape[0], cube_y_data.shape[2]))
+                batch_x = np.zeros((args.batch, 3, cube_x_data.shape[0], cube_x_data.shape[1]))
+                batch_y = np.zeros((args.batch, 3, cube_y_data.shape[0], cube_y_data.shape[1]))
 
                 for idx_batch in range(args.batch):
                     z_center = input_list[idx_iter*args.batch+idx_batch]
-                    batch_x[idx_batch, 1, :, :] = cube_x_data[:, z_center, :]
-                    batch_y[idx_batch, 1, :, :] = cube_y_data[:, z_center, :]
+                    batch_x[idx_batch, 1, :, :] = cube_x_data[:, :, z_center]
+                    batch_y[idx_batch, 1, :, :] = cube_y_data[:, :, z_center]
                     z_before = z_center - 1 if z_center > 0 else 0
                     z_after = z_center + 1 if z_center < len_z-1 else len_z-1
-                    batch_x[idx_batch, 0, :, :] = cube_x_data[:, z_before, :]
-                    batch_y[idx_batch, 0, :, :] = cube_y_data[:, z_before, :]
-                    batch_x[idx_batch, 2, :, :] = cube_x_data[:, z_after, :]
-                    batch_y[idx_batch, 2, :, :] = cube_y_data[:, z_after, :]
+                    batch_x[idx_batch, 0, :, :] = cube_x_data[:, :, z_before]
+                    batch_y[idx_batch, 0, :, :] = cube_y_data[:, :, z_before]
+                    batch_x[idx_batch, 2, :, :] = cube_x_data[:, :, z_after]
+                    batch_y[idx_batch, 2, :, :] = cube_y_data[:, :, z_after]
 
                 batch_x = torch.from_numpy(batch_x).float().to(device)
                 batch_y = torch.from_numpy(batch_y).float().to(device)
