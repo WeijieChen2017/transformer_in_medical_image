@@ -19,8 +19,10 @@ np.random.seed(seed=813)
 
 def main():
     parser = argparse.ArgumentParser()
- 
-    parser.add_argument('--tag', type=str, default="MR2CT_B_UNET_", help='Save_prefix')
+
+    parser.add_argument('--input_channel', type=int, default=3, help='the number of input channel')
+    parser.add_argument('--output_channel', type=int, default=1, help='the number of output channel')
+    parser.add_argument('--tag', type=str, default="./MR2CT_B_UNET/", help='Save_prefix')
     parser.add_argument('--gpu_ids', type=str, default="7", help='Use which GPU to train')
     parser.add_argument('--epoch', type=int, default=100, help='how many epochs to train')
     parser.add_argument('--batch', type=int, default=8, help='how many batches in one run')
@@ -29,15 +31,13 @@ def main():
     parser.add_argument('--folder_sct', type=str, default="./MR2CT_B_UNET/Y/train/", help='input folder of BRAVO images')
     parser.add_argument('--folder_pet_v', type=str, default="./MR2CT_B_UNET/X/val/", help='input folder of T1MAP PET images')
     parser.add_argument('--folder_sct_v', type=str, default="./MR2CT_B_UNET/Y/val/", help='input folder of BRAVO images')
-    
     args = parser.parse_args()
 
     gpu_list = ','.join(str(x) for x in args.gpu_ids)
     os.environ['CUDA_VISIBLE_DEVICES'] = gpu_list
     print('export CUDA_VISIBLE_DEVICES=' + gpu_list)
-
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-
+    
     model = UNet(n_channels=3, n_classes=1, bilinear=True)
     model.train().float()
     model = model.to(device)
@@ -51,8 +51,8 @@ def main():
     epoch_loss_v = np.zeros((len(sct_list_v)))
     best_val_loss = 1e6
     per_iter_loss = np.zeros((args.loss_display_per_iter))
-    input_channel = 3
-    output_channel = 1
+    input_channel = args.input_channel
+    output_channel = arg.output_channel
     case_loss = None
 
     for idx_epoch in range(args.epoch):
@@ -121,16 +121,16 @@ def main():
             # after training one case
             loss_mean = np.mean(case_loss)
             loss_std = np.std(case_loss)
-            print("===>===> Epoch[{:03d}]-Case[{:03d}]: ".format(idx_epoch+1, cnt_sct+1), end='')
+            print("===> Epoch[{:03d}]-Case[{:03d}]: ".format(idx_epoch+1, cnt_sct+1), end='')
             print("Loss mean: {:.6} Loss std: {:.6}".format(loss_mean, loss_std))
             epoch_loss[cnt_sct] = loss_mean
 
         # after training all cases
         loss_mean = np.mean(epoch_loss)
         loss_std = np.std(epoch_loss)
-        print("===>===>===> Epoch[{}]: ".format(idx_epoch+1), end='')
+        print("===> Epoch[{}]: ".format(idx_epoch+1), end='')
         print("Loss mean: {:.6} Loss std: {:.6}".format(loss_mean, loss_std))
-        np.save(args.tag+"epoch_loss_{:03d}.npy".format(idx_epoch+1), epoch_loss)
+        np.save(args.tag+"epoch_loss_t_{:03d}.npy".format(idx_epoch+1), epoch_loss)
         train_loss[idx_epoch] = loss_mean
         # ====================================>train<====================================
 
@@ -186,13 +186,13 @@ def main():
             # after training one case
             loss_mean = np.mean(case_loss)
             loss_std = np.std(case_loss)
-            print("===>===> Epoch[{:03d}]-Val-Case[{:03d}]: ".format(idx_epoch+1, cnt_sct+1), end='')
+            print("===> Epoch[{:03d}]-Val-Case[{:03d}]: ".format(idx_epoch+1, cnt_sct+1), end='')
             print("Loss mean: {:.6} Loss std: {:.6}".format(loss_mean, loss_std))
             epoch_loss_v[cnt_sct] = loss_mean
 
         loss_mean = np.mean(epoch_loss_v)
         loss_std = np.std(epoch_loss_v)
-        print("===>===>===> Epoch[{:03d}]-Val: ".format(idx_epoch+1), end='')
+        print("===> Epoch[{:03d}]-Val: ".format(idx_epoch+1), end='')
         print("Loss mean: {:.6} Loss std: {:.6}".format(loss_mean, loss_std))
         np.save(args.tag+"epoch_loss_v_{:03d}.npy".format(idx_epoch+1), epoch_loss_v)
         if loss_mean < best_val_loss:
@@ -204,7 +204,7 @@ def main():
 
     loss_mean = np.mean(train_loss)
     loss_std = np.std(train_loss)
-    print("===>===>===>===>Training finished: ", end='')
+    print("===>Training finished: ", end='')
     print("Loss mean: {:.6} Loss std: {:.6}".format(loss_mean, loss_std))
 
 if __name__ == '__main__':
