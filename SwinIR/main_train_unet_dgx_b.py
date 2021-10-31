@@ -51,6 +51,8 @@ def main():
     epoch_loss_v = np.zeros((len(sct_list_v)))
     best_val_loss = 1e6
     per_iter_loss = np.zeros((args.loss_display_per_iter))
+    input_channel = 3
+    output_channel = 1
     case_loss = None
 
     for idx_epoch in range(args.epoch):
@@ -75,19 +77,22 @@ def main():
             # 0:[32, 45, 23, 55], 1[76, 74, 54, 99], 3[65, 92, 28, 77], ...
             for idx_iter in range(len_z//args.batch):
 
-                batch_x = np.zeros((args.batch, 3, cube_x_data.shape[0], cube_x_data.shape[1]))
-                batch_y = np.zeros((args.batch, 3, cube_y_data.shape[0], cube_y_data.shape[1]))
+                batch_x = np.zeros((args.batch, input_channel, cube_x_data.shape[0], cube_x_data.shape[1]))
+                batch_y = np.zeros((args.batch, output_channel, cube_y_data.shape[0], cube_y_data.shape[1]))
 
                 for idx_batch in range(args.batch):
                     z_center = input_list[idx_iter*args.batch+idx_batch]
-                    batch_x[idx_batch, 1, :, :] = cube_x_data[:, :, z_center]
-                    batch_y[idx_batch, 1, :, :] = cube_y_data[:, :, z_center]
                     z_before = z_center - 1 if z_center > 0 else 0
                     z_after = z_center + 1 if z_center < len_z-1 else len_z-1
+                    batch_x[idx_batch, 1, :, :] = cube_x_data[:, :, z_center]
                     batch_x[idx_batch, 0, :, :] = cube_x_data[:, :, z_before]
-                    batch_y[idx_batch, 0, :, :] = cube_y_data[:, :, z_before]
                     batch_x[idx_batch, 2, :, :] = cube_x_data[:, :, z_after]
-                    batch_y[idx_batch, 2, :, :] = cube_y_data[:, :, z_after]
+                    if output_channel == 3:
+                        batch_y[idx_batch, 0, :, :] = cube_y_data[:, :, z_before]
+                        batch_y[idx_batch, 1, :, :] = cube_y_data[:, :, z_center]
+                        batch_y[idx_batch, 2, :, :] = cube_y_data[:, :, z_after]
+                    if input_channel == 1:
+                        batch_y[idx_batch, 0, :, :] = cube_y_data[:, :, z_center]
 
                 batch_x = torch.from_numpy(batch_x).float().to(device)
                 batch_y = torch.from_numpy(batch_y).float().to(device)
@@ -149,19 +154,22 @@ def main():
             # 0:[32, 45, 23, 55], 1[76, 74, 54, 99], 3[65, 92, 28, 77], ...
             for idx_iter in range(len_z//args.batch):
 
-                batch_x = np.zeros((args.batch, 3, cube_x_data.shape[0], cube_x_data.shape[1]))
-                batch_y = np.zeros((args.batch, 3, cube_y_data.shape[0], cube_y_data.shape[1]))
+                batch_x = np.zeros((args.batch, input_channel, cube_x_data.shape[0], cube_x_data.shape[1]))
+                batch_y = np.zeros((args.batch, output_channel, cube_y_data.shape[0], cube_y_data.shape[1]))
 
                 for idx_batch in range(args.batch):
                     z_center = input_list[idx_iter*args.batch+idx_batch]
-                    batch_x[idx_batch, 1, :, :] = cube_x_data[:, :, z_center]
-                    batch_y[idx_batch, 1, :, :] = cube_y_data[:, :, z_center]
                     z_before = z_center - 1 if z_center > 0 else 0
                     z_after = z_center + 1 if z_center < len_z-1 else len_z-1
+                    batch_x[idx_batch, 1, :, :] = cube_x_data[:, :, z_center]
                     batch_x[idx_batch, 0, :, :] = cube_x_data[:, :, z_before]
-                    batch_y[idx_batch, 0, :, :] = cube_y_data[:, :, z_before]
                     batch_x[idx_batch, 2, :, :] = cube_x_data[:, :, z_after]
-                    batch_y[idx_batch, 2, :, :] = cube_y_data[:, :, z_after]
+                    if output_channel == 3:
+                        batch_y[idx_batch, 0, :, :] = cube_y_data[:, :, z_before]
+                        batch_y[idx_batch, 1, :, :] = cube_y_data[:, :, z_center]
+                        batch_y[idx_batch, 2, :, :] = cube_y_data[:, :, z_after]
+                    if input_channel == 1:
+                        batch_y[idx_batch, 0, :, :] = cube_y_data[:, :, z_center]
 
                 batch_x = torch.from_numpy(batch_x).float().to(device)
                 batch_y = torch.from_numpy(batch_y).float().to(device)
