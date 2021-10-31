@@ -93,7 +93,8 @@ def main():
                 batch_y = torch.from_numpy(batch_y).float().to(device)
 
                 optimizer.zero_grad()
-                loss = criterion(model(batch_x), batch_y)
+                y_hat = model(batch_x)
+                loss = criterion(y_hat, batch_y)
                 loss.backward()
                 optimizer.step()
 
@@ -111,7 +112,7 @@ def main():
             np.save(args.tag+"Epoch[{:03d}]_Case[{}]_t.npy".format(idx_epoch+1, case_name),
                     (batch_x.cpu().detach().numpy(),
                      batch_y.cpu().detach().numpy(),
-                     model(batch_x).cpu().detach().numpy()))
+                     y_hat.cpu().detach().numpy()))
 
             # after training one case
             loss_mean = np.mean(case_loss)
@@ -165,7 +166,8 @@ def main():
                 batch_x = torch.from_numpy(batch_x).float().to(device)
                 batch_y = torch.from_numpy(batch_y).float().to(device)
                 
-                loss = criterion(model(batch_x), batch_y)
+                y_hat = model(batch_x)
+                loss = criterion(y_hat, batch_y)
                 case_loss[idx_iter] = loss.item()
             
             # save one progress shot
@@ -173,7 +175,7 @@ def main():
             np.save(args.tag+"Epoch[{:03d}]_Case[{}]_v.npy".format(idx_epoch+1, case_name),
                     (batch_x.cpu().detach().numpy(),
                      batch_y.cpu().detach().numpy(),
-                     model(batch_x).cpu().detach().numpy()))
+                     y_hat.cpu().detach().numpy()))
             
             # after training one case
             loss_mean = np.mean(case_loss)
