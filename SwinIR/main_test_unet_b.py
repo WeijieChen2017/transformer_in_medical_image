@@ -17,6 +17,10 @@ from utils import util_calculate_psnr_ssim as util
 
 np.random.seed(seed=813)
 
+def denormY(data):
+    data = data * 3000
+    return data
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--gpu_ids', type=str, default="7", help='Use which GPU to train')
@@ -71,7 +75,7 @@ def main():
             batch_x = torch.from_numpy(batch_x).float().to(device)
 
             y_hat_output = model(batch_x).cpu().detach().numpy()
-            y_hat[:, :, idx] = np.squeeze(y_hat_output[:, 1, :, :])
+            y_hat[:, :, idx] = np.squeeze(y_hat_output)
         
         for cnt_loss, loss_fnc in enumerate(criterion_list):
             curr_loss = loss_fnc(cube_y_data, y_hat).item()
@@ -83,7 +87,7 @@ def main():
         print("Loaded from", nifty_name, end="")
 
 
-        pred_file = nib.Nifti1Image(y_hat, nifty_file.affine, nifty_file.header)
+        pred_file = nib.Nifti1Image(denormY(y_hat), nifty_file.affine, nifty_file.header)
         pred_name = "./MR2CT_B_UNET/pred/"+"PRD_"+os.path.basename(X_path)[4:7]+".nii.gz"
         nib.save(pred_file, pred_name)
         print(" Saved to", pred_name)
