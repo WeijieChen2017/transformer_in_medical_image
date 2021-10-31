@@ -82,7 +82,7 @@ def main():
             loss_mat[cnt_X, cnt_loss] = curr_loss
             print("===> Loss[{}]: {:6}".format(loss_fnc.__name__, curr_loss), end='')
         
-        nifty_name = "./MR2CT/ct_bravo/CT__MLAC_" + os.path.basename(X_path)[4:6]+"_MNI.nii.gz"
+        nifty_name = "./MR2CT/ct_bravo/CT__MLAC_" + os.path.basename(X_path)[5:7]+"_MNI.nii.gz"
         nifty_file = nib.load(nifty_name)
         print("Loaded from", nifty_name, end="")
 
