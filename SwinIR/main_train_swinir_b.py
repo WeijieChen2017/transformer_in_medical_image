@@ -41,7 +41,7 @@ def main():
 
     # model = UNet(n_channels=input_channel, n_classes=output_channel, bilinear=True)
     model = net(upscale=1, in_chans=3, img_size=256, window_size=16,
-                img_range=1., depths=[6, 6, 6, 6, 6, 6], embed_dim=60, num_heads=[6, 6, 6, 6, 6, 6],
+                img_range=1., depths=[4, 4, 4, 4, 4, 4], embed_dim=60, num_heads=[4, 4, 4, 4, 4, 4],
                 mlp_ratio=2, upsampler='pixelshuffle', resi_connection='1conv')
     model.train().float()
     model = model.to(device)
