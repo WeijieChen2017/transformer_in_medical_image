@@ -45,6 +45,7 @@ class DistilledVisionTransformer(VisionTransformer):
         for blk in self.blocks:
             x = blk(x)
 
+        print(x.size())
         x = self.norm(x)
         print(x.size())
         return x[:, 0], x[:, 1]
