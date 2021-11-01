@@ -8,6 +8,7 @@ import numpy as np
 import torch.nn as nn
 
 from models.network_swinir import SwinIR as net
+from models_deit import DistilledVisionTransformer
 from utils import util_calculate_psnr_ssim as util
 from unet import UNet
 
@@ -42,8 +43,15 @@ def main():
             os.mkdir(path)
 
     # model = UNet(n_channels=input_channel, n_classes=output_channel, bilinear=True)
-    # model = torch.load(args.weights_path)
-    model = torch.hub.load('facebookresearch/deit:main', 'deit_base_distilled_patch16_384', pretrained=True)
+    weights = torch.load(args.weights_path)
+    model = DistilledVisionTransformer(
+        img_size=384, patch_size=16, embed_dim=768, depth=12, num_heads=12, mlp_ratio=4, qkv_bias=True,
+        norm_layer=partial(nn.LayerNorm, eps=1e-6), **kwargs)
+    model.default_cfg = _cfg()
+    # model = torch.load('./pretrain_models/deit_base_distilled_patch16_384.pth')
+    # model = torch.hub.load('facebookresearch/deit:main', 'deit_base_distilled_patch16_384', pretrained=True)
+    model.load_state_dict(weights["model"])
+
     model.train().float()
     model = model.to(device)
     criterion = nn.SmoothL1Loss()
