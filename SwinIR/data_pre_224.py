@@ -40,7 +40,7 @@ for folderName in [trainFolderX, testFolderX, valFolderX,
         os.makedirs(folderName)
 
 # fileList = glob.glob(folderX+"/mets*.nii") + glob.glob(folderX+"/mets*.nii.gz")
-fileList = glob.glob(search_folderX+"/384*.nii") + glob.glob(search_folderX+"/384*.nii.gz")
+fileList = glob.glob(search_folderX+"/224*.nii") + glob.glob(search_folderX+"/224*.nii.gz")
 fileList.sort()
 for filePath in fileList:
     print(filePath)
@@ -94,12 +94,12 @@ for package in [packageVal, packageTrain, packageTest]: #
         print(dataNormX.shape, dataNormY.shape)
 
         fileNormX = nib.Nifti1Image(dataNormX, fileX.affine, fileX.header)
-        nameX = folderX + "384_0" + filenameX + ".nii.gz"
+        nameX = folderX + "224_0" + filenameX + ".nii.gz"
         nib.save(fileNormX, nameX)
         print("Saved to", nameX)
         
         fileNormY = nib.Nifti1Image(dataNormY, fileY.affine, fileY.header)
-        nameY = folderY + "384_0" + filenameY + ".nii.gz"
+        nameY = folderY + "224_0" + filenameY + ".nii.gz"
         nib.save(fileNormY, nameY)
         print("Saved to", nameY)
 
