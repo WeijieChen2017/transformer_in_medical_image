@@ -7,7 +7,7 @@ import argparse
 import numpy as np
 import torch.nn as nn
 
-# from models.network_swinir import SwinIR as net
+from models.network_swinir import SwinIR as net
 from utils import util_calculate_psnr_ssim as util
 from unet import UNet
 
@@ -16,7 +16,7 @@ np.random.seed(seed=813)
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--input_channel', type=int, default=3, help='the number of input channel')
-    parser.add_argument('--output_channel', type=int, default=1, help='the number of output channel')
+    parser.add_argument('--output_channel', type=int, default=3, help='the number of output channel')
     parser.add_argument('--save_folder', type=str, default="./MR2CT_B_UNET/", help='Save_prefix')
     parser.add_argument('--gpu_ids', type=str, default="7", help='Use which GPU to train')
     parser.add_argument('--epoch', type=int, default=50, help='how many epochs to train')
@@ -39,7 +39,10 @@ def main():
         if not os.path.exists(path):
             os.mkdir(path)
 
-    model = UNet(n_channels=input_channel, n_classes=output_channel, bilinear=True)
+    # model = UNet(n_channels=input_channel, n_classes=output_channel, bilinear=True)
+    model = net(upscale=1, in_chans=3, img_size=256, window_size=8,
+                img_range=1., depths=[6, 6, 6, 6, 6, 6], embed_dim=180, num_heads=[6, 6, 6, 6, 6, 6],
+                mlp_ratio=2, upsampler='pixelshuffle', resi_connection='1conv')
     model.train().float()
     model = model.to(device)
     criterion = nn.SmoothL1Loss()
