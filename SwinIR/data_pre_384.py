@@ -93,14 +93,14 @@ for package in [packageVal, packageTrain, packageTest]: #
         dataNormY = normY(dataY)
         print(dataNormX.shape, dataNormY.shape)
 
-        normX = nib.Nifti1Image(dataNormX, fileX.affine, fileX.header)
+        fileNormX = nib.Nifti1Image(dataNormX, fileX.affine, fileX.header)
         nameX = folderX + "384_0" + filenameX + ".nii.gz"
-        nib.save(normX, nameX)
+        nib.save(fileNormX, nameX)
         print("Saved to", nameX)
         
-        normY = nib.Nifti1Image(dataNormY, fileY.affine, fileY.header)
+        fileNormY = nib.Nifti1Image(dataNormY, fileY.affine, fileY.header)
         nameY = folderY + "384_0" + filenameY + ".nii.gz"
-        nib.save(normY, nameY)
+        nib.save(fileNormY, nameY)
         print("Saved to", nameY)
 
     print(len(fileList), " files are saved. ")
