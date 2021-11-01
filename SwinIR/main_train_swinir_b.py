@@ -47,7 +47,7 @@ def main():
     weights = torch.load(args.weights_path)
     model = DistilledVisionTransformer(
         img_size=384, patch_size=16, embed_dim=768, depth=12, num_heads=12, mlp_ratio=4, qkv_bias=True,
-        norm_layer=partial(nn.LayerNorm, eps=1e-6), **kwargs)
+        norm_layer=partial(nn.LayerNorm, eps=1e-6))
     model.default_cfg = _cfg()
     # model = torch.load('./pretrain_models/deit_base_distilled_patch16_384.pth')
     # model = torch.hub.load('facebookresearch/deit:main', 'deit_base_distilled_patch16_384', pretrained=True)
