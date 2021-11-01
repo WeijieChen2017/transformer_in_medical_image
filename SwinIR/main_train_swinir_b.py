@@ -17,15 +17,17 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--input_channel', type=int, default=3, help='the number of input channel')
     parser.add_argument('--output_channel', type=int, default=3, help='the number of output channel')
-    parser.add_argument('--save_folder', type=str, default="./MR2CT_B_UNET/", help='Save_prefix')
+    parser.add_argument('--save_folder', type=str, default="./MR2CT_B_VIT/", help='Save_prefix')
     parser.add_argument('--gpu_ids', type=str, default="7", help='Use which GPU to train')
     parser.add_argument('--epoch', type=int, default=50, help='how many epochs to train')
     parser.add_argument('--batch', type=int, default=1, help='how many batches in one run')
     parser.add_argument('--loss_display_per_iter', type=int, default=600, help='display how many losses per iteration')
-    parser.add_argument('--folder_train_x', type=str, default="./MR2CT_B_UNET/X/train/", help='input folder of trianing data X')
-    parser.add_argument('--folder_train_y', type=str, default="./MR2CT_B_UNET/Y/train/", help='input folder of training data Y')
-    parser.add_argument('--folder_val_x', type=str, default="./MR2CT_B_UNET/X/val/", help='input folder of validation data X')
-    parser.add_argument('--folder_val_y', type=str, default="./MR2CT_B_UNET/Y/val/", help='input folder of validation data Y')
+    parser.add_argument('--folder_train_x', type=str, default="./MR2CT_B_VIT/X/train/", help='input folder of trianing data X')
+    parser.add_argument('--folder_train_y', type=str, default="./MR2CT_B_VIT/Y/train/", help='input folder of training data Y')
+    parser.add_argument('--folder_val_x', type=str, default="./MR2CT_B_VIT/X/val/", help='input folder of validation data X')
+    parser.add_argument('--folder_val_y', type=str, default="./MR2CT_B_VIT/Y/val/", help='input folder of validation data Y')
+    parser.add_argument('--weights_path', type=str, default='./pretrain_models/deit_base_distilled_patch16_384.pth')
+    
     args = parser.parse_args()
     input_channel = args.input_channel
     output_channel = args.output_channel
@@ -40,16 +42,14 @@ def main():
             os.mkdir(path)
 
     # model = UNet(n_channels=input_channel, n_classes=output_channel, bilinear=True)
-    model = net(upscale=1, in_chans=3, img_size=256, window_size=8,
-                img_range=1., depths=[6, 6, 6, 6, 6, 6], embed_dim=20, num_heads=[6, 6, 6, 6, 6, 6],
-                mlp_ratio=2, upsampler='pixelshuffle', resi_connection='1conv')
+    model = torch.load(args.weights_path)
     model.train().float()
     model = model.to(device)
     criterion = nn.SmoothL1Loss()
-    optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=1e-4)
 
-    list_train_y = sorted(glob.glob(args.folder_train_y+"*.npy"))
-    list_val_y = sorted(glob.glob(args.folder_val_y+"*.npy"))
+    list_train_y = sorted(glob.glob(args.folder_train_y+"*.nii.gz"))
+    list_val_y = sorted(glob.glob(args.folder_val_y+"*.nii.gz"))
 
     train_loss = np.zeros((args.epoch)) # over the whole process
     epoch_loss_t = np.zeros((len(list_train_y))) # over the training part of each epoch
@@ -70,8 +70,8 @@ def main():
             case_x_path = path_y.replace("Y", "X")
             case_y_path = path_y
             print("->",case_x_path,"<-", end="")
-            case_x_data = np.load(case_x_path)
-            case_y_data = np.load(case_y_path)
+            case_x_data = nib.load(case_x_path).get_fdata()
+            case_y_data = nib.load(case_y_path).get_fdata()
             len_z = case_x_data.shape[2]
             case_loss = np.zeros((len_z//args.batch))
             input_list = list(range(len_z))
@@ -149,8 +149,8 @@ def main():
             case_x_path = path_y.replace("Y", "X")
             case_y_path = path_y
             print("->",case_x_path,"<-", end="")
-            case_x_data = np.load(case_x_path)
-            case_y_data = np.load(case_y_path)
+            case_x_data = nib.load(case_x_path).get_fdata()
+            case_y_data = nib.load(case_y_path).get_fdata()
             len_z = case_x_data.shape[2]
             case_loss = np.zeros((len_z//args.batch))
             input_list = list(range(len_z))
