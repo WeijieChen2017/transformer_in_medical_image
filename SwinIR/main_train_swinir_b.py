@@ -42,7 +42,8 @@ def main():
             os.mkdir(path)
 
     # model = UNet(n_channels=input_channel, n_classes=output_channel, bilinear=True)
-    model = torch.load(args.weights_path)
+    # model = torch.load(args.weights_path)
+    model = torch.hub.load('facebookresearch/deit:main', 'deit_base_distilled_patch16_384', pretrained=True)
     model.train().float()
     model = model.to(device)
     criterion = nn.SmoothL1Loss()
