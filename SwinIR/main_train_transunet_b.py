@@ -207,7 +207,7 @@ def main():
             # after training one case
             loss_mean = np.mean(case_loss)
             loss_std = np.std(case_loss)
-            print("===> Epoch[{:03d}]-Val-Case[{:03d}]: ".format(idx_epoch+1, case_name), end='')
+            print("===> Epoch[{:03d}]-Val-Case[{}]: ".format(idx_epoch+1, case_name), end='')
             print("Loss mean: {:.6} Loss std: {:.6}".format(loss_mean, loss_std))
             epoch_loss_v[cnt_y] = loss_mean
 
