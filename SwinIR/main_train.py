@@ -27,32 +27,33 @@ def main():
     parser.add_argument('--epoch', type=int, default=50, help='how many epochs to train')
     parser.add_argument('--batch', type=int, default=26, help='how many batches in one run')
     parser.add_argument('--loss_display_per_iter', type=int, default=600, help='display how many losses per iteration')
-    parser.add_argument('--folder_pet', type=str, default="./MR2CT_B_UNET/X/train/", help='input folder of T1MAP images')
-    parser.add_argument('--folder_sct', type=str, default="./MR2CT_B_UNET/Y/train/", help='input folder of BRAVO images')
-    parser.add_argument('--folder_pet_v', type=str, default="./MR2CT_B_UNET/X/val/", help='input folder of T1MAP PET images')
-    parser.add_argument('--folder_sct_v', type=str, default="./MR2CT_B_UNET/Y/val/", help='input folder of BRAVO images')
+    parser.add_argument('--folder_train_x', type=str, default="./MR2CT_B_UNET/X/train/", help='input folder of trianing data X')
+    parser.add_argument('--folder_train_y', type=str, default="./MR2CT_B_UNET/Y/train/", help='input folder of training data Y')
+    parser.add_argument('--folder_val_x', type=str, default="./MR2CT_B_UNET/X/val/", help='input folder of validation data X')
+    parser.add_argument('--folder_val_y', type=str, default="./MR2CT_B_UNET/Y/val/", help='input folder of validation data Y')
     args = parser.parse_args()
+    input_channel = args.input_channel
+    output_channel = args.output_channel
 
     gpu_list = ','.join(str(x) for x in args.gpu_ids)
     os.environ['CUDA_VISIBLE_DEVICES'] = gpu_list
     print('export CUDA_VISIBLE_DEVICES=' + gpu_list)
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-    model = UNet(n_channels=3, n_classes=1, bilinear=True)
+    model = UNet(n_channels=args.input_channel, n_classes=args.output_channel, bilinear=True)
     model.train().float()
     model = model.to(device)
     criterion = nn.SmoothL1Loss()
     optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3)
 
-    sct_list = sorted(glob.glob(args.folder_sct+"*.npy"))
-    sct_list_v = sorted(glob.glob(args.folder_sct_v+"*.npy"))
+    sct_list = sorted(glob.glob(args.folder_train_y+"*.npy"))
+    sct_list_v = sorted(glob.glob(args.folder_val_y+"*.npy"))
     train_loss = np.zeros((args.epoch))
     epoch_loss = np.zeros((len(sct_list)))
     epoch_loss_v = np.zeros((len(sct_list_v)))
     best_val_loss = 1e6
     per_iter_loss = np.zeros((args.loss_display_per_iter))
-    input_channel = args.input_channel
-    output_channel = args.output_channel
+    
     case_loss = None
 
     for idx_epoch in range(args.epoch):
