@@ -46,9 +46,11 @@ class DistilledVisionTransformer(VisionTransformer):
             x = blk(x)
 
         x = self.norm(x)
+        print(x.size())
         return x[:, 0], x[:, 1]
 
     def forward(self, x):
+        print(x.size())
         x, x_dist = self.forward_features(x)
         print(x.size(), x_dist.size)
         x = self.head(x)
