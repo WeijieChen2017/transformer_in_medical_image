@@ -15,8 +15,8 @@ np.random.seed(seed=813)
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--input_channel', type=int, default=3, help='the number of input channel')
-    parser.add_argument('--output_channel', type=int, default=3, help='the number of output channel')
+    parser.add_argument('--input_channel', type=int, default=1, help='the number of input channel')
+    parser.add_argument('--output_channel', type=int, default=1, help='the number of output channel')
     parser.add_argument('--save_folder', type=str, default="./MR2CT_B_UNET/", help='Save_prefix')
     parser.add_argument('--gpu_ids', type=str, default="7", help='Use which GPU to train')
     parser.add_argument('--epoch', type=int, default=50, help='how many epochs to train')
@@ -40,7 +40,7 @@ def main():
             os.mkdir(path)
 
     # model = UNet(n_channels=input_channel, n_classes=output_channel, bilinear=True)
-    model = net(upscale=1, in_chans=3, img_size=256, window_size=16,
+    model = net(upscale=1, in_chans=1, img_size=256, window_size=16,
                 img_range=1., depths=[4, 4, 4, 4, 4, 4], embed_dim=60, num_heads=[4, 4, 4, 4, 4, 4],
                 mlp_ratio=2, upsampler='pixelshuffle', resi_connection='1conv')
     model.train().float()
@@ -87,9 +87,12 @@ def main():
                     z_center = input_list[idx_iter*args.batch+idx_batch]
                     z_before = z_center - 1 if z_center > 0 else 0
                     z_after = z_center + 1 if z_center < len_z-1 else len_z-1
-                    batch_x[idx_batch, 1, :, :] = case_x_data[:, :, z_center]
-                    batch_x[idx_batch, 0, :, :] = case_x_data[:, :, z_before]
-                    batch_x[idx_batch, 2, :, :] = case_x_data[:, :, z_after]
+                    if input_channel == 3:
+                        batch_x[idx_batch, 1, :, :] = case_x_data[:, :, z_center]
+                        batch_x[idx_batch, 0, :, :] = case_x_data[:, :, z_before]
+                        batch_x[idx_batch, 2, :, :] = case_x_data[:, :, z_after]
+                    if input_channel == 1:
+                        batch_x[idx_batch, 0, :, :] = case_x_data[:, :, z_center]
                     if output_channel == 3:
                         batch_y[idx_batch, 0, :, :] = case_y_data[:, :, z_before]
                         batch_y[idx_batch, 1, :, :] = case_y_data[:, :, z_center]
@@ -163,9 +166,12 @@ def main():
                     z_center = input_list[idx_iter*args.batch+idx_batch]
                     z_before = z_center - 1 if z_center > 0 else 0
                     z_after = z_center + 1 if z_center < len_z-1 else len_z-1
-                    batch_x[idx_batch, 1, :, :] = case_x_data[:, :, z_center]
-                    batch_x[idx_batch, 0, :, :] = case_x_data[:, :, z_before]
-                    batch_x[idx_batch, 2, :, :] = case_x_data[:, :, z_after]
+                    if input_channel == 3:
+                        batch_x[idx_batch, 1, :, :] = case_x_data[:, :, z_center]
+                        batch_x[idx_batch, 0, :, :] = case_x_data[:, :, z_before]
+                        batch_x[idx_batch, 2, :, :] = case_x_data[:, :, z_after]
+                    if input_channel == 1:
+                        batch_x[idx_batch, 0, :, :] = case_x_data[:, :, z_center]
                     if output_channel == 3:
                         batch_y[idx_batch, 0, :, :] = case_y_data[:, :, z_before]
                         batch_y[idx_batch, 1, :, :] = case_y_data[:, :, z_center]
