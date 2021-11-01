@@ -40,7 +40,7 @@ def main():
     print('export CUDA_VISIBLE_DEVICES=' + gpu_list)
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-    for path in [args.save_folder+"npy/"]:
+    for path in [args.save_folder, args.save_folder+"npy/"]:
         if not os.path.exists(path):
             os.mkdir(path)
 
