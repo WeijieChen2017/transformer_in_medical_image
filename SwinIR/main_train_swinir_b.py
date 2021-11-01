@@ -9,6 +9,7 @@ import torch.nn as nn
 
 from models.network_swinir import SwinIR as net
 from models_deit import DistilledVisionTransformer
+from functools import partial
 from utils import util_calculate_psnr_ssim as util
 from unet import UNet
 
