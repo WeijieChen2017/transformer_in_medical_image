@@ -32,6 +32,8 @@ def main():
     parser.add_argument('--folder_pet_v', type=str, default="./MR2CT_B_UNET/X/val/", help='input folder of T1MAP PET images')
     parser.add_argument('--folder_sct_v', type=str, default="./MR2CT_B_UNET/Y/val/", help='input folder of BRAVO images')
     args = parser.parse_args()
+    input_channel = args.input_channel
+    output_channel = args.output_channel
 
     gpu_list = ','.join(str(x) for x in args.gpu_ids)
     os.environ['CUDA_VISIBLE_DEVICES'] = gpu_list
@@ -42,7 +44,7 @@ def main():
     model.train().float()
     model = model.to(device)
     criterion = nn.SmoothL1Loss()
-    optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=1e-4)
 
     sct_list = sorted(glob.glob(args.folder_sct+"*.npy"))
     sct_list_v = sorted(glob.glob(args.folder_sct_v+"*.npy"))
@@ -51,8 +53,7 @@ def main():
     epoch_loss_v = np.zeros((len(sct_list_v)))
     best_val_loss = 1e6
     per_iter_loss = np.zeros((args.loss_display_per_iter))
-    input_channel = args.input_channel
-    output_channel = args.output_channel
+    
     case_loss = None
 
     for idx_epoch in range(args.epoch):
