@@ -54,8 +54,8 @@ def main():
     criterion = nn.SmoothL1Loss()
     optimizer = torch.optim.AdamW(model.parameters(), lr=1e-4)
 
-    list_train_y = sorted(glob.glob(args.folder_train_y+"*.nii.gz"))
-    list_val_y = sorted(glob.glob(args.folder_val_y+"*.nii.gz"))
+    list_train_y = sorted(glob.glob(args.folder_train_y+"*.npy"))
+    list_val_y = sorted(glob.glob(args.folder_val_y+"*.npy"))
 
     train_loss = np.zeros((args.epoch)) # over the whole process
     epoch_loss_t = np.zeros((len(list_train_y))) # over the training part of each epoch
@@ -76,8 +76,10 @@ def main():
             case_x_path = path_y.replace("Y", "X")
             case_y_path = path_y
             print("->",case_x_path,"<-", end="")
-            case_x_data = nib.load(case_x_path).get_fdata()
-            case_y_data = nib.load(case_y_path).get_fdata()
+            # case_x_data = nib.load(case_x_path).get_fdata()
+            # case_y_data = nib.load(case_y_path).get_fdata()
+            case_x_data = np.load(case_x_path)
+            case_y_data = np.load(case_y_path)
             len_z = case_x_data.shape[2]
             case_loss = np.zeros((len_z//args.batch))
             input_list = list(range(len_z))
@@ -155,8 +157,10 @@ def main():
             case_x_path = path_y.replace("Y", "X")
             case_y_path = path_y
             print("->",case_x_path,"<-", end="")
-            case_x_data = nib.load(case_x_path).get_fdata()
-            case_y_data = nib.load(case_y_path).get_fdata()
+            # case_x_data = nib.load(case_x_path).get_fdata()
+            # case_y_data = nib.load(case_y_path).get_fdata()
+            case_x_data = np.load(case_x_path)
+            case_y_data = np.load(case_y_path)
             len_z = case_x_data.shape[2]
             case_loss = np.zeros((len_z//args.batch))
             input_list = list(range(len_z))
