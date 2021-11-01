@@ -40,7 +40,7 @@ def main():
             os.mkdir(path)
 
     # model = UNet(n_channels=input_channel, n_classes=output_channel, bilinear=True)
-    model = net(upscale=1, in_chans=1, img_size=256, window_size=16,
+    model = net(upscale=1, in_chans=1, img_size=256, window_size=8,
                 img_range=1., depths=[6, 6, 6, 6, 6, 6], embed_dim=20, num_heads=[6, 6, 6, 6, 6, 6],
                 mlp_ratio=2, upsampler='pixelshuffle', resi_connection='1conv')
     model.train().float()
