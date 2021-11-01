@@ -24,7 +24,7 @@ def main():
     parser.add_argument('--output_channel', type=int, default=1, help='the number of output channel')
     parser.add_argument('--tag', type=str, default="./MR2CT_B_UNET/", help='Save_prefix')
     parser.add_argument('--gpu_ids', type=str, default="7", help='Use which GPU to train')
-    parser.add_argument('--epoch', type=int, default=100, help='how many epochs to train')
+    parser.add_argument('--epoch', type=int, default=50, help='how many epochs to train')
     parser.add_argument('--batch', type=int, default=26, help='how many batches in one run')
     parser.add_argument('--loss_display_per_iter', type=int, default=600, help='display how many losses per iteration')
     parser.add_argument('--folder_pet', type=str, default="./MR2CT_B_UNET/X/train/", help='input folder of T1MAP images')
@@ -42,7 +42,7 @@ def main():
     model.train().float()
     model = model.to(device)
     criterion = nn.SmoothL1Loss()
-    optimizer = torch.optim.AdamW(model.parameters(), lr=1e-4)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3)
 
     sct_list = sorted(glob.glob(args.folder_sct+"*.npy"))
     sct_list_v = sorted(glob.glob(args.folder_sct_v+"*.npy"))

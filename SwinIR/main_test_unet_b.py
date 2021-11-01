@@ -66,10 +66,10 @@ def main():
             # batch_y = cube_y_data[:, idx, :]
 
             z_center = idx
-            batch_x[0, 1, :, :] = cube_x_data[:, :, z_center]
             z_before = z_center - 1 if z_center > 0 else 0
             z_after = z_center + 1 if z_center < len_z-1 else len_z-1
             batch_x[0, 0, :, :] = cube_x_data[:, :, z_before]
+            batch_x[0, 1, :, :] = cube_x_data[:, :, z_center]
             batch_x[0, 2, :, :] = cube_x_data[:, :, z_after]
 
             batch_x = torch.from_numpy(batch_x).float().to(device)
