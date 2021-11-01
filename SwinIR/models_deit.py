@@ -34,16 +34,21 @@ class DistilledVisionTransformer(VisionTransformer):
         # with slight modifications to add the dist_token
         B = x.shape[0]
         x = self.patch_embed(x)
+        print(x.size())
 
         cls_tokens = self.cls_token.expand(B, -1, -1)  # stole cls_tokens impl from Phil Wang, thanks
         dist_token = self.dist_token.expand(B, -1, -1)
         x = torch.cat((cls_tokens, dist_token, x), dim=1)
+        print(x.size())
 
         x = x + self.pos_embed
+        print(x.size())
         x = self.pos_drop(x)
+        print(x.size())
 
         for blk in self.blocks:
             x = blk(x)
+            print(x.size())
 
         print(x.size())
         x = self.norm(x)
