@@ -50,8 +50,11 @@ class DistilledVisionTransformer(VisionTransformer):
 
     def forward(self, x):
         x, x_dist = self.forward_features(x)
+        print(x.size(), x_dist.size)
         x = self.head(x)
+        print(x.size())
         x_dist = self.head_dist(x_dist)
+        print(x_dist.size())
         if self.training:
             return x, x_dist
         else:
