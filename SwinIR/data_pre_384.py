@@ -40,7 +40,7 @@ for folderName in [trainFolderX, testFolderX, valFolderX,
         os.makedirs(folderName)
 
 # fileList = glob.glob(folderX+"/mets*.nii") + glob.glob(folderX+"/mets*.nii.gz")
-fileList = glob.glob(search_folderX+"/*.nii") + glob.glob(search_folderX+"/*.nii.gz")
+fileList = glob.glob(search_folderX+"/384*.nii") + glob.glob(search_folderX+"/384*.nii.gz")
 fileList.sort()
 for filePath in fileList:
     print(filePath)
