@@ -23,7 +23,7 @@ def main():
     parser.add_argument('--save_folder', type=str, default="./MR2CT_B_VIT/", help='Save_prefix')
     parser.add_argument('--gpu_ids', type=str, default="7", help='Use which GPU to train')
     parser.add_argument('--epoch', type=int, default=50, help='how many epochs to train')
-    parser.add_argument('--batch', type=int, default=1, help='how many batches in one run')
+    parser.add_argument('--batch', type=int, default=7, help='how many batches in one run')
     parser.add_argument('--loss_display_per_iter', type=int, default=600, help='display how many losses per iteration')
     parser.add_argument('--folder_train_x', type=str, default="./MR2CT_B_UNET/X/train/", help='input folder of trianing data X')
     parser.add_argument('--folder_train_y', type=str, default="./MR2CT_B_UNET/Y/train/", help='input folder of training data Y')
@@ -76,6 +76,7 @@ def main():
             case_x_path = path_y.replace("Y", "X")
             case_y_path = path_y
             print("->",case_x_path,"<-", end="")
+            case_name = os.path.basename(case_x_path)[4:7]
             # case_x_data = nib.load(case_x_path).get_fdata()
             # case_y_data = nib.load(case_y_path).get_fdata()
             case_x_data = np.load(case_x_path)
@@ -122,12 +123,11 @@ def main():
                 if idx_iter % args.loss_display_per_iter == args.loss_display_per_iter - 1:
                     loss_mean = np.mean(per_iter_loss)
                     loss_std = np.std(per_iter_loss)
-                    print("===> Epoch[{:03d}]-Case[{:03d}]({:03d}/{:03d}): ".format(idx_epoch+1, cnt_y+1, idx_iter + 1, len_z//args.batch), end='')
+                    print("===> Epoch[{:03d}]-Case[{}]({:03d}/{:03d}): ".format(idx_epoch+1, case_name, idx_iter + 1, len_z//args.batch), end='')
                     print("Loss mean: {:.6} Loss std: {:.6}".format(loss_mean, loss_std))
 
                 case_loss[idx_iter] = loss.item()
             
-            case_name = os.path.basename(case_x_path)[4:7]
             np.save(args.save_folder+"npy/Epoch[{:03d}]_Case[{}]_t_x.npy".format(idx_epoch+1, case_name), batch_x.cpu().detach().numpy())
             np.save(args.save_folder+"npy/Epoch[{:03d}]_Case[{}]_t_y.npy".format(idx_epoch+1, case_name), batch_y.cpu().detach().numpy())
             np.save(args.save_folder+"npy/Epoch[{:03d}]_Case[{}]_t_z.npy".format(idx_epoch+1, case_name), y_hat.cpu().detach().numpy())
@@ -146,6 +146,7 @@ def main():
         print("Loss mean: {:.6} Loss std: {:.6}".format(loss_mean, loss_std))
         np.save(args.save_folder+"npy/epoch_loss_t_{:03d}.npy".format(idx_epoch+1), epoch_loss_t)
         train_loss[idx_epoch] = loss_mean
+        torch.cuda.empty_cache()
         # ====================================>train<====================================
 
         # ====================================>val<====================================
@@ -157,6 +158,7 @@ def main():
             case_x_path = path_y.replace("Y", "X")
             case_y_path = path_y
             print("->",case_x_path,"<-", end="")
+            case_name = os.path.basename(case_x_path)[4:7]
             # case_x_data = nib.load(case_x_path).get_fdata()
             # case_y_data = nib.load(case_y_path).get_fdata()
             case_x_data = np.load(case_x_path)
@@ -197,7 +199,7 @@ def main():
                 case_loss[idx_iter] = loss.item()
             
             # save one progress shot
-            case_name = os.path.basename(case_x_path)[4:7]
+            
             np.save(args.save_folder+"npy/Epoch[{:03d}]_Case[{}]_v_x.npy".format(idx_epoch+1, case_name), batch_x.cpu().detach().numpy())
             np.save(args.save_folder+"npy/Epoch[{:03d}]_Case[{}]_v_y.npy".format(idx_epoch+1, case_name), batch_y.cpu().detach().numpy())
             np.save(args.save_folder+"npy/Epoch[{:03d}]_Case[{}]_v_z.npy".format(idx_epoch+1, case_name), y_hat.cpu().detach().numpy())
@@ -205,7 +207,7 @@ def main():
             # after training one case
             loss_mean = np.mean(case_loss)
             loss_std = np.std(case_loss)
-            print("===> Epoch[{:03d}]-Val-Case[{:03d}]: ".format(idx_epoch+1, cnt_y+1), end='')
+            print("===> Epoch[{:03d}]-Val-Case[{:03d}]: ".format(idx_epoch+1, case_name), end='')
             print("Loss mean: {:.6} Loss std: {:.6}".format(loss_mean, loss_std))
             epoch_loss_v[cnt_y] = loss_mean
 
@@ -219,6 +221,7 @@ def main():
             torch.save(model, args.save_folder+"model_best_{:03d}.pth".format(idx_epoch+1))
             print("Checkpoint saved at Epoch {:03d}".format(idx_epoch+1))
             best_val_loss = loss_mean
+        torch.cuda.empty_cache()
         # ====================================>val<====================================
 
     loss_mean = np.mean(train_loss)
