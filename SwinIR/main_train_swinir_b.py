@@ -5,6 +5,7 @@ import torch
 import random
 import argparse
 import numpy as np
+import nibabel as nib
 import torch.nn as nn
 
 from models.network_swinir import SwinIR as net
