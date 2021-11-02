@@ -63,17 +63,14 @@ def main():
         case_fat_data = nib.load(case_nac_path.replace("NAC", "FAT")).get_fdata()
         case_wat_data = nib.load(case_nac_path.replace("NAC", "WAT")).get_fdata()
         len_z = case_nac_data.shape[2]
-        case_loss = np.zeros((len_z//args.batch))
-        input_list = list(range(len_z))
-        random.shuffle(input_list)
+        y_hat = np.zeros(cube_y_data.shape)
 
-        # 0:[32, 45, 23, 55], 1[76, 74, 54, 99], 3[65, 92, 28, 77], ...
-        for idx_iter in range(len_z//args.batch):
+        for idx in range(len_z):
 
             batch_x = np.zeros((1, input_channel, case_nac_data.shape[0], case_nac_data.shape[1]))
             
             for idx_batch in range(args.batch):
-                z_center = input_list[idx_iter*args.batch+idx_batch]
+                z_center = idx
                 batch_x[idx_batch, 0, :, :] = case_inp_data[:, :, z_center]
                 batch_x[idx_batch, 1, :, :] = case_oup_data[:, :, z_center]
                 batch_x[idx_batch, 2, :, :] = case_nac_data[:, :, z_center]
