@@ -87,6 +87,7 @@ def main():
             print("===> Loss[{}]: {:6}".format(loss_fnc.__name__, curr_loss), end='')
         
         nifty_name = nib.load(case_nac_path.replace("NAC", "SCT"))
+        print(nifty_name)
         nifty_file = nib.load(nifty_name)
         print("Loaded from", nifty_name, end="")
 
