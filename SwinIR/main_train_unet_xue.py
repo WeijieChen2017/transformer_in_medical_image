@@ -151,10 +151,10 @@ def main():
             case_y_path = path_y
             print("->",case_x_path,"<-", end="")
             case_name = os.path.basename(case_x_path)[5:8]
-            # case_x_data = nib.load(case_x_path).get_fdata()
-            # case_y_data = nib.load(case_y_path).get_fdata()
-            case_x_data = np.load(case_x_path)
-            case_y_data = np.load(case_y_path)
+            case_x_data = nib.load(case_x_path).get_fdata()
+            case_y_data = nib.load(case_y_path).get_fdata()
+            # case_x_data = np.load(case_x_path)
+            # case_y_data = np.load(case_y_path)
             len_z = case_x_data.shape[2]
             case_loss = np.zeros((len_z//args.batch))
             input_list = list(range(len_z))
