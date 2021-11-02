@@ -34,7 +34,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--gpu_ids', type=str, default="7", help='Use which GPU to train')
     parser.add_argument('--folder_X_te', type=str, default="./xue/test/", help='input folder of T1MAP PET images')
-    parser.add_argument('--weights_path', type=str, default='./xue_1to1/model_best_058.pth')
+    parser.add_argument('--weights_path', type=str, default='./xue_1to1/model_best_066.pth')
     parser.add_argument('--save_folder', type=str, default="./xue_1to1/", help='Save_prefix')
     
     args = parser.parse_args()
