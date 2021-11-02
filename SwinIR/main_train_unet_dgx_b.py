@@ -133,6 +133,7 @@ def main():
         print("Loss mean: {:.6} Loss std: {:.6}".format(loss_mean, loss_std))
         np.save(args.tag+"epoch_loss_t_{:03d}.npy".format(idx_epoch+1), epoch_loss)
         train_loss[idx_epoch] = loss_mean
+        torch.cuda.empty_cache()
         # ====================================>train<====================================
 
         # ====================================>val<====================================
@@ -201,6 +202,7 @@ def main():
             torch.save(model, args.tag+"model_best_{:03d}.pth".format(idx_epoch+1))
             print("Checkpoint saved at Epoch {:03d}".format(idx_epoch+1))
             best_val_loss = loss_mean
+        torch.cuda.empty_cache()
         # ====================================>val<====================================
 
     loss_mean = np.mean(train_loss)

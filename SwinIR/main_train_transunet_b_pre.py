@@ -21,7 +21,7 @@ def main():
     parser.add_argument('--input_channel', type=int, default=1, help='the number of input channel')
     parser.add_argument('--output_channel', type=int, default=1, help='the number of output channel')
     parser.add_argument('--save_folder', type=str, default="./MR2CT_B_VIT_PRE/", help='Save_prefix')
-    parser.add_argument('--gpu_ids', type=str, default="0", help='Use which GPU to train')
+    parser.add_argument('--gpu_ids', type=str, default="7", help='Use which GPU to train')
     parser.add_argument('--epoch', type=int, default=50, help='how many epochs to train')
     parser.add_argument('--batch', type=int, default=14, help='how many batches in one run')
     parser.add_argument('--loss_display_per_iter', type=int, default=600, help='display how many losses per iteration')
