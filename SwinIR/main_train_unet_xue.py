@@ -46,8 +46,8 @@ def main():
     criterion = nn.SmoothL1Loss()
     optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3)
 
-    list_train_y = sorted(glob.glob(args.folder_train_y+"*.npy"))
-    list_val_y = sorted(glob.glob(args.folder_val_y+"*.npy"))
+    list_train_y = sorted(glob.glob(args.folder_train_y+"*.nii.gz"))
+    list_val_y = sorted(glob.glob(args.folder_val_y+"*.nii.gz"))
 
     train_loss = np.zeros((args.epoch)) # over the whole process
     epoch_loss_t = np.zeros((len(list_train_y))) # over the training part of each epoch
