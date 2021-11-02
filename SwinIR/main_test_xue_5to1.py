@@ -69,13 +69,12 @@ def main():
 
             batch_x = np.zeros((1, 5, case_nac_data.shape[0], case_nac_data.shape[1]))
             
-            for idx_batch in range(args.batch):
-                z_center = idx
-                batch_x[idx_batch, 0, :, :] = case_inp_data[:, :, z_center]
-                batch_x[idx_batch, 1, :, :] = case_oup_data[:, :, z_center]
-                batch_x[idx_batch, 2, :, :] = case_nac_data[:, :, z_center]
-                batch_x[idx_batch, 3, :, :] = case_wat_data[:, :, z_center]
-                batch_x[idx_batch, 4, :, :] = case_fat_data[:, :, z_center]
+            z_center = idx
+            batch_x[idx_batch, 0, :, :] = case_inp_data[:, :, z_center]
+            batch_x[idx_batch, 1, :, :] = case_oup_data[:, :, z_center]
+            batch_x[idx_batch, 2, :, :] = case_nac_data[:, :, z_center]
+            batch_x[idx_batch, 3, :, :] = case_wat_data[:, :, z_center]
+            batch_x[idx_batch, 4, :, :] = case_fat_data[:, :, z_center]
 
             batch_x = torch.from_numpy(batch_x).float().to(device)
 
