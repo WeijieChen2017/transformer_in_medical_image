@@ -90,7 +90,7 @@ for package in [packageVal, packageTrain, packageTest]: #
         dataNormY = normY(dataY)
         print(dataNormX.shape, dataNormY.shape)
 
-        np.save(folderX + "RSZ_0" + filenameX + ".npy", dataNormX)
-        np.save(folderY + "RSZ_0" + filenameY + ".npy", dataNormY)        
-        print(folderX + "RSZ_0" + filenameX + ".npy")
+        np.save(folderX + "RSZ_" + filenameX + ".npy", dataNormX)
+        np.save(folderY + "RSZ_" + filenameY + ".npy", dataNormY)        
+        print(folderX + "RSZ_" + filenameX + ".npy")
     print(len(fileList), " files are saved. ")
