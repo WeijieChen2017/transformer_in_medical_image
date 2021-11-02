@@ -18,5 +18,5 @@ for modality in modality_hub:
         min_list[cnt] = np.amin(data)
         print(" Max:", max_list[cnt], "Min: ", min_list[cnt])
         cnt += 1
-    print("Max max:", np.amax(max_list), "Min min: ", np.amin(min_list))
+    print("[", modality,"]", "Max max:", np.amax(max_list), "Min min: ", np.amin(min_list))
 
