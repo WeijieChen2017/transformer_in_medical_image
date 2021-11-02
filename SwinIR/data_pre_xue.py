@@ -41,7 +41,7 @@ for folderName in [trainFolderX, testFolderX, valFolderX,
         os.makedirs(folderName)
 
 # fileList = glob.glob(folderX+"/mets*.nii") + glob.glob(folderX+"/mets*.nii.gz")
-fileList = glob.glob("./xue/*/*CTAC.nii.gz")
+fileList = glob.glob("./xue/*/*NAC.nii.gz")
 fileList.sort()
 for filePath in fileList:
     print(filePath)
@@ -83,16 +83,22 @@ for package in [packageVal, packageTrain, packageTest]: #
     for pathX in fileList:
 
         print(pathX)
-        # pathY = search_folderY+os.path.basename(pathX).replace("MR", "CT")
-        # filenameX = os.path.basename(pathX)[9:11]
-        # filenameY = os.path.basename(pathY)[9:11]
-        # dataX = nib.load(pathX).get_fdata()
-        # dataY = nib.load(pathY).get_fdata()
-        # dataNormX = normX(dataX)
-        # dataNormY = normY(dataY)
-        # print(dataNormX.shape, dataNormY.shape)
+        pathY = search_folderY+os.path.basename(pathX).replace("NAC", "CTAC")
+        filenameX = os.path.basename(pathX)[4:7]
+        filenameY = os.path.basename(pathY)[4:7]
+        dataX = nib.load(pathX).get_fdata()
+        dataY = nib.load(pathY).get_fdata()
+        dataNormX = normX(dataX)
+        dataNormY = normY(dataY)
+        print(dataNormX.shape, dataNormY.shape)
 
-        # np.save(folderX + "RSZ_0" + filenameX + ".npy", dataNormX)
-        # np.save(folderY + "RSZ_0" + filenameY + ".npy", dataNormY)        
-        # print(folderX + "RSZ_0" + filenameX + ".npy")
-    # print(len(fileList), " files are saved. ")
+        fileNormX = nib.Nifti1Image(dataNormX, fileX.affine, fileX.header)
+        nameX = folderX + "NORM_" + filenameX + ".nii.gz"
+        nib.save(fileNormX, nameX)
+        print("Saved to", nameX)
+        
+        fileNormY = nib.Nifti1Image(dataNormY, fileY.affine, fileY.header)
+        nameY = folderY + "NORM_" + filenameY + ".nii.gz"
+        nib.save(fileNormY, nameY)
+        print("Saved to", nameY)
+    print(len(fileList), " files are saved. ")
