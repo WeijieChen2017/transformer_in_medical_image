@@ -14,7 +14,7 @@ import os
 
 def normSCT(data):
     data[data<-1000] = -1000
-    data[data>1500] = 2000
+    data[data>1500] = 1500
     data = data + 1000
     data = data / 2500
     return data
@@ -29,7 +29,7 @@ def normFAT(data):
     return data/5000
 
 def normNAC(data):
-    return data/12000
+    return data/1500
 
 def normWAT(data):
     return data/3000
