@@ -12,7 +12,7 @@ for modality in modality_hub:
     min_list = np.zeros(len(file_list))
     cnt = 0
     for file_path in file_list:
-        print("--->",os.path.basename(filename),"<---")
+        print("--->",os.path.basename(filename),"<---",end="")
         data = nib.load(file_path).get_fdata()
         max_list[cnt] = np.amax(data)
         min_list[cnt] = np.amin(data)
