@@ -14,11 +14,11 @@ np.random.seed(seed=813)
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--input_channel', type=int, default=5, help='the number of input channel')
+    parser.add_argument('--input_channel', type=int, default=1, help='the number of input channel')
     parser.add_argument('--output_channel', type=int, default=1, help='the number of output channel')
-    parser.add_argument('--save_folder', type=str, default="./xue_5to1/", help='Save_prefix')
+    parser.add_argument('--save_folder', type=str, default="./xue_1to1/", help='Save_prefix')
     parser.add_argument('--gpu_ids', type=str, default="7", help='Use which GPU to train')
-    parser.add_argument('--epoch', type=int, default=240, help='how many epochs to train')
+    parser.add_argument('--epoch', type=int, default=900, help='how many epochs to train')
     parser.add_argument('--batch', type=int, default=5, help='how many batches in one run')
     parser.add_argument('--loss_display_per_iter', type=int, default=600, help='display how many losses per iteration')
     parser.add_argument('--folder_train', type=str, default="./xue/train/", help='input folder of trianing data X')
@@ -68,10 +68,10 @@ def main():
             case_name = os.path.basename(case_nac_path)[5:8]
             case_nac_data = nib.load(case_nac_path).get_fdata()
             case_sct_data = nib.load(case_nac_path.replace("NAC", "SCT")).get_fdata()
-            case_inp_data = nib.load(case_nac_path.replace("NAC", "INP")).get_fdata()
-            case_oup_data = nib.load(case_nac_path.replace("NAC", "OUP")).get_fdata()
-            case_fat_data = nib.load(case_nac_path.replace("NAC", "FAT")).get_fdata()
-            case_wat_data = nib.load(case_nac_path.replace("NAC", "WAT")).get_fdata()
+            # case_inp_data = nib.load(case_nac_path.replace("NAC", "INP")).get_fdata()
+            # case_oup_data = nib.load(case_nac_path.replace("NAC", "OUP")).get_fdata()
+            # case_fat_data = nib.load(case_nac_path.replace("NAC", "FAT")).get_fdata()
+            # case_wat_data = nib.load(case_nac_path.replace("NAC", "WAT")).get_fdata()
             len_z = case_nac_data.shape[2]
             case_loss = np.zeros((len_z//args.batch))
             input_list = list(range(len_z))
@@ -85,12 +85,13 @@ def main():
 
                 for idx_batch in range(args.batch):
                     z_center = input_list[idx_iter*args.batch+idx_batch]
-                    batch_x[idx_batch, 0, :, :] = case_inp_data[:, :, z_center]
-                    batch_x[idx_batch, 1, :, :] = case_oup_data[:, :, z_center]
-                    batch_x[idx_batch, 2, :, :] = case_nac_data[:, :, z_center]
-                    batch_x[idx_batch, 3, :, :] = case_wat_data[:, :, z_center]
-                    batch_x[idx_batch, 4, :, :] = case_fat_data[:, :, z_center]
+                    # batch_x[idx_batch, 0, :, :] = case_inp_data[:, :, z_center]
+                    # batch_x[idx_batch, 1, :, :] = case_oup_data[:, :, z_center]
+                    # batch_x[idx_batch, 2, :, :] = case_nac_data[:, :, z_center]
+                    # batch_x[idx_batch, 3, :, :] = case_wat_data[:, :, z_center]
+                    # batch_x[idx_batch, 4, :, :] = case_fat_data[:, :, z_center]
                     
+                    batch_x[idx_batch, 0, :, :] = case_nac_data[:, :, z_center]
                     batch_y[idx_batch, 0, :, :] = case_sct_data[:, :, z_center]
 
                 batch_x = torch.from_numpy(batch_x).float().to(device)
@@ -143,10 +144,10 @@ def main():
             case_name = os.path.basename(case_nac_path)[5:8]
             case_nac_data = nib.load(case_nac_path).get_fdata()
             case_sct_data = nib.load(case_nac_path.replace("NAC", "SCT")).get_fdata()
-            case_inp_data = nib.load(case_nac_path.replace("NAC", "INP")).get_fdata()
-            case_oup_data = nib.load(case_nac_path.replace("NAC", "OUP")).get_fdata()
-            case_fat_data = nib.load(case_nac_path.replace("NAC", "FAT")).get_fdata()
-            case_wat_data = nib.load(case_nac_path.replace("NAC", "WAT")).get_fdata()
+            # case_inp_data = nib.load(case_nac_path.replace("NAC", "INP")).get_fdata()
+            # case_oup_data = nib.load(case_nac_path.replace("NAC", "OUP")).get_fdata()
+            # case_fat_data = nib.load(case_nac_path.replace("NAC", "FAT")).get_fdata()
+            # case_wat_data = nib.load(case_nac_path.replace("NAC", "WAT")).get_fdata()
             len_z = case_nac_data.shape[2]
             case_loss = np.zeros((len_z//args.batch))
             input_list = list(range(len_z))
@@ -160,12 +161,13 @@ def main():
 
                 for idx_batch in range(args.batch):
                     z_center = input_list[idx_iter*args.batch+idx_batch]
-                    batch_x[idx_batch, 0, :, :] = case_inp_data[:, :, z_center]
-                    batch_x[idx_batch, 1, :, :] = case_oup_data[:, :, z_center]
-                    batch_x[idx_batch, 2, :, :] = case_nac_data[:, :, z_center]
-                    batch_x[idx_batch, 3, :, :] = case_wat_data[:, :, z_center]
-                    batch_x[idx_batch, 4, :, :] = case_fat_data[:, :, z_center]
+                    # batch_x[idx_batch, 0, :, :] = case_inp_data[:, :, z_center]
+                    # batch_x[idx_batch, 1, :, :] = case_oup_data[:, :, z_center]
+                    # batch_x[idx_batch, 2, :, :] = case_nac_data[:, :, z_center]
+                    # batch_x[idx_batch, 3, :, :] = case_wat_data[:, :, z_center]
+                    # batch_x[idx_batch, 4, :, :] = case_fat_data[:, :, z_center]
                     
+                    batch_x[idx_batch, 0, :, :] = case_nac_data[:, :, z_center]
                     batch_y[idx_batch, 0, :, :] = case_sct_data[:, :, z_center]
                 batch_x = torch.from_numpy(batch_x).float().to(device)
                 batch_y = torch.from_numpy(batch_y).float().to(device)
