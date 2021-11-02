@@ -83,7 +83,7 @@ for package in [packageVal, packageTrain, packageTest]: #
     for pathX in fileList:
 
         print(pathX)
-        pathY = search_folderY+os.path.basename(pathX).replace("NAC", "CTAC")
+        pathY = pathX.replace("NAC", "CTAC")
         filenameX = os.path.basename(pathX)[4:7]
         filenameY = os.path.basename(pathY)[4:7]
         dataX = nib.load(pathX).get_fdata()
