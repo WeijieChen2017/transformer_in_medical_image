@@ -34,8 +34,8 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--gpu_ids', type=str, default="7", help='Use which GPU to train')
     parser.add_argument('--folder_X_te', type=str, default="./xue/test/", help='input folder of T1MAP PET images')
-    parser.add_argument('--weights_path', type=str, default='./xue_5to1/model_best_067.pth')
-    parser.add_argument('--save_folder', type=str, default="./xue_5to1/", help='Save_prefix')
+    parser.add_argument('--weights_path', type=str, default='./xue_1to1/model_best_058.pth')
+    parser.add_argument('--save_folder', type=str, default="./xue_1to1/", help='Save_prefix')
     
     args = parser.parse_args()
 
@@ -67,23 +67,19 @@ def main():
         case_name = os.path.basename(case_nac_path)[5:8]
         case_nac_data = nib.load(case_nac_path).get_fdata()
         case_sct_data = nib.load(case_nac_path.replace("NAC", "SCT")).get_fdata()
-        case_inp_data = nib.load(case_nac_path.replace("NAC", "INP")).get_fdata()
-        case_oup_data = nib.load(case_nac_path.replace("NAC", "OUP")).get_fdata()
-        case_fat_data = nib.load(case_nac_path.replace("NAC", "FAT")).get_fdata()
-        case_wat_data = nib.load(case_nac_path.replace("NAC", "WAT")).get_fdata()
+        # case_inp_data = nib.load(case_nac_path.replace("NAC", "INP")).get_fdata()
+        # case_oup_data = nib.load(case_nac_path.replace("NAC", "OUP")).get_fdata()
+        # case_fat_data = nib.load(case_nac_path.replace("NAC", "FAT")).get_fdata()
+        # case_wat_data = nib.load(case_nac_path.replace("NAC", "WAT")).get_fdata()
         len_z = case_nac_data.shape[2]
         y_hat = np.zeros(case_sct_data.shape)
 
         for idx in range(len_z):
 
-            batch_x = np.zeros((1, 5, case_nac_data.shape[0], case_nac_data.shape[1]))
+            batch_x = np.zeros((1, 1, case_nac_data.shape[0], case_nac_data.shape[1]))
             
             z_center = idx
-            batch_x[0, 0, :, :] = case_inp_data[:, :, z_center]
-            batch_x[0, 1, :, :] = case_oup_data[:, :, z_center]
-            batch_x[0, 2, :, :] = case_nac_data[:, :, z_center]
-            batch_x[0, 3, :, :] = case_wat_data[:, :, z_center]
-            batch_x[0, 4, :, :] = case_fat_data[:, :, z_center]
+            batch_x[0, 0, :, :] = case_nac_data[:, :, z_center]
 
             batch_x = torch.from_numpy(batch_x).float().to(device)
 
