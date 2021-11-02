@@ -84,8 +84,8 @@ for package in [packageVal, packageTrain, packageTest]: #
 
         print(pathX)
         pathY = pathX.replace("NAC", "CTAC")
-        filenameX = os.path.basename(pathX)[9:11]
-        filenameY = os.path.basename(pathY)[9:11]
+        filenameX = os.path.basename(pathX)[4:7]
+        filenameY = os.path.basename(pathY)[4:7]
         fileX = nib.load(pathX)
         fileY = nib.load(pathY)
         dataX = fileX.get_fdata()
