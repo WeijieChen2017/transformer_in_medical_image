@@ -57,13 +57,13 @@ def main():
         print("->",case_nac_path,"<-", end="")
         case_name = os.path.basename(case_nac_path)[5:8]
         case_nac_data = nib.load(case_nac_path).get_fdata()
-        # case_sct_data = nib.load(case_nac_path.replace("NAC", "SCT")).get_fdata()
+        case_sct_data = nib.load(case_nac_path.replace("NAC", "SCT")).get_fdata()
         case_inp_data = nib.load(case_nac_path.replace("NAC", "INP")).get_fdata()
         case_oup_data = nib.load(case_nac_path.replace("NAC", "OUP")).get_fdata()
         case_fat_data = nib.load(case_nac_path.replace("NAC", "FAT")).get_fdata()
         case_wat_data = nib.load(case_nac_path.replace("NAC", "WAT")).get_fdata()
         len_z = case_nac_data.shape[2]
-        y_hat = np.zeros(cube_y_data.shape)
+        y_hat = np.zeros(case_sct_data.shape)
 
         for idx in range(len_z):
 
