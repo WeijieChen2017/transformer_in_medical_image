@@ -82,8 +82,8 @@ for package in [packageVal, packageTrain, packageTest]: #
 
         print(pathX)
         pathY = search_folderY+os.path.basename(pathX).replace("MR", "CT")
-        filenameX = os.path.basename(pathX)[9:11]
-        filenameY = os.path.basename(pathY)[9:11]
+        filenameX = os.path.basename(pathX)[4:7]
+        filenameY = os.path.basename(pathY)[4:7]
         dataX = nib.load(pathX).get_fdata()
         dataY = nib.load(pathY).get_fdata()
         dataNormX = normX(dataX)
