@@ -28,6 +28,6 @@ plt.xlabel("epoch")
 plt.ylabel("loss")
 plt.yscale("log")
 plt.legend(["training", "validation"])
-plt.title("Training curve of T1map to Bravo")
+plt.title("Training curve")
 
-plt.savefig("loss_5to1.jpg")
+plt.savefig(folder+"loss_5to1.jpg")
