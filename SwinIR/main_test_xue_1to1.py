@@ -19,7 +19,7 @@ np.random.seed(seed=813)
 
 def normSCT(data):
     data[data<-1000] = -1000
-    data[data>1500] = 2000
+    data[data>1500] = 1500
     data = data + 1000
     data = data / 2500
     return data
