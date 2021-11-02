@@ -4,19 +4,37 @@ import numpy as np
 import glob
 import os
 
-# 3000 for stealth and 1500 for bravo
-def normX(data):
-    # data[data<0] = 0
-    # data[data>1500] = 1500 
-    data = data / 1500
+# [ CTAC ] Max max: 1322.656982421875 Min min:  -1000.0
+# [ InPhase ] Max max: 4376.7490234375 Min min:  0.0
+# [ OutPhase ] Max max: 4193.5478515625 Min min:  0.0
+# [ FAT ] Max max: 4270.2763671875 Min min:  0.0
+# [ NAC ] Max max: 11732.232421875 Min min:  0.0
+# [ WATER ] Max max: 2838.23681640625 Min min:  0.0
+# SCT INP OUP FAT NAC WAT
+
+def normSCT(data):
+    data[data<-1000] = -1000
+    data[data>1500] = 2000
+    data = data + 1000
+    data = data / 2500
     return data
 
-def normY(data):
-    data[data<-1000] = -1000
-    data[data>2000] = 2000
-    data = data + 1000
-    data = data / 3000
-    return data
+def normINP(data):
+    return data/5000
+
+def normOUP(data):
+    return data/5000
+
+def normFAT(data):
+    return data/5000
+
+def normNAC(data):
+    return data/12000
+
+def normWAT(data):
+    return data/3000
+
+
 
 root_folder = "./xue/"
 save_folder = "./xue/"
@@ -28,15 +46,15 @@ channelX = 1
 channelY = 1
 
 # create directory and search nifty files
-trainFolderX = save_folder+"X/train/"
-trainFolderY = save_folder+"Y/train/"
-testFolderX = save_folder+"X/test/"
-testFolderY = save_folder+"Y/test/"
-valFolderX = save_folder+"X/val/"
-valFolderY = save_folder+"Y/val/"
+trainFolderX = save_folder+"train/"
+# trainFolderY = save_folder+"train/"
+testFolderX = save_folder+"test/"
+# testFolderY = save_folder+"test/"
+valFolderX = save_folder+"val/"
+# valFolderY = save_folder+"val/"
 
-for folderName in [trainFolderX, testFolderX, valFolderX,
-                   trainFolderY, testFolderY, valFolderY]:
+for folderName in [trainFolderX, testFolderX, valFolderX]:
+                   # trainFolderY, testFolderY, valFolderY]:
     if not os.path.exists(folderName):
         os.makedirs(folderName)
 
@@ -67,40 +85,42 @@ print('-'*50)
 print("Testing list: ", testList)
 print('-'*50)
 
-packageTrain = [trainList, trainFolderX, trainFolderY, "Train"]
-packageVal = [valList, valFolderX, valFolderY, "Validation"]
-packageTest = [testList, testFolderX, testFolderY, "Test"]
+packageTrain = [trainList, trainFolderX, "Train"]
+packageVal = [valList, valFolderX, "Validation"]
+packageTest = [testList, testFolderX, "Test"]
 np.save(root_folder+"dataset_division.npy", [packageTrain, packageVal, packageTest])
 
 for package in [packageVal, packageTrain, packageTest]: # 
 
     fileList = package[0]
-    folderX = package[1]
-    folderY = package[2]
-    print("-"*25, package[3], "-"*25)
+    folder = package[1]
+    # folderY = package[2]
+    print("-"*25, package[2], "-"*25)
 
-    # npy version
+    # SCT INP OUP FAT NAC WAT
     for pathX in fileList:
 
         print(pathX)
-        pathY = pathX.replace("NAC", "CTAC")
-        filenameX = os.path.basename(pathX)[4:7]
-        filenameY = os.path.basename(pathY)[4:7]
+        case_number = os.path.basename(pathX)[4:7]
         fileX = nib.load(pathX)
-        fileY = nib.load(pathY)
         dataX = fileX.get_fdata()
-        dataY = fileY.get_fdata()
-        dataNormX = normX(dataX)
-        dataNormY = normY(dataY)
-        print(dataNormX.shape, dataNormY.shape)
-
+        dataNormX = normNAC(dataX)
         fileNormX = nib.Nifti1Image(dataNormX, fileX.affine, fileX.header)
-        nameX = folderX + "NORM_" + filenameX + ".nii.gz"
+        nameX = folder + "NORM_" + case_number + "_NAC.nii.gz"
         nib.save(fileNormX, nameX)
         print("Saved to", nameX)
         
-        fileNormY = nib.Nifti1Image(dataNormY, fileY.affine, fileY.header)
-        nameY = folderY + "NORM_" + filenameY + ".nii.gz"
-        nib.save(fileNormY, nameY)
-        print("Saved to", nameY)
-    print(len(fileList), " files are saved. ")
+        replacements = ["CTAC", "InPhase", "OutPhase", "FAT", "WATER"]
+        norm = [normSCT, normINP, normOUP, normFAT, normWAT]
+        cnt = 0
+        for modality in ["SCT", "INP", "OUP", "FAT", "WAT"]:
+            path = pathX.replace("NAC", replacements[cnt])
+            file = nib.load(path)
+            data = file.get_fdata()
+            dataNorm = norm[cnt](data)
+            fileNorm = nib.Nifti1Image(dataNorm, file.affine, file.header)
+            name = folder + "NORM_" + case_number + "_{}.nii.gz".format(modality)
+            nib.save(fileNorm, name)
+            print("Saved to", name)
+            cnt += 1
+    print(len(fileList), " cases are saved. ")
