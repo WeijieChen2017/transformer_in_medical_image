@@ -18,7 +18,7 @@ def main():
     parser.add_argument('--output_channel', type=int, default=1, help='the number of output channel')
     parser.add_argument('--save_folder', type=str, default="./xue_5to1/", help='Save_prefix')
     parser.add_argument('--gpu_ids', type=str, default="7", help='Use which GPU to train')
-    parser.add_argument('--epoch', type=int, default=900, help='how many epochs to train')
+    parser.add_argument('--epoch', type=int, default=100, help='how many epochs to train')
     parser.add_argument('--batch', type=int, default=5, help='how many batches in one run')
     parser.add_argument('--loss_display_per_iter', type=int, default=600, help='display how many losses per iteration')
     parser.add_argument('--folder_train', type=str, default="./xue/train/", help='input folder of trianing data X')
