@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import glob
 
-folder = "./xue_5_to_1/npy/"
+folder = "./xue_5to1/npy/"
 
 npy_list = sorted(glob.glob(folder+"epoch_loss_*.npy"))
 for npy_path in npy_list:
