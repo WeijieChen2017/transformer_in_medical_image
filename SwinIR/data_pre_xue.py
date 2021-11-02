@@ -84,10 +84,12 @@ for package in [packageVal, packageTrain, packageTest]: #
 
         print(pathX)
         pathY = pathX.replace("NAC", "CTAC")
-        filenameX = os.path.basename(pathX)[4:7]
-        filenameY = os.path.basename(pathY)[4:7]
-        dataX = nib.load(pathX).get_fdata()
-        dataY = nib.load(pathY).get_fdata()
+        filenameX = os.path.basename(pathX)[9:11]
+        filenameY = os.path.basename(pathY)[9:11]
+        fileX = nib.load(pathX)
+        fileY = nib.load(pathY)
+        dataX = fileX.get_fdata()
+        dataY = fileY.get_fdata()
         dataNormX = normX(dataX)
         dataNormY = normY(dataY)
         print(dataNormX.shape, dataNormY.shape)
