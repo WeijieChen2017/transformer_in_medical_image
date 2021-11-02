@@ -67,7 +67,7 @@ def main():
 
         for idx in range(len_z):
 
-            batch_x = np.zeros((1, input_channel, case_nac_data.shape[0], case_nac_data.shape[1]))
+            batch_x = np.zeros((1, 5, case_nac_data.shape[0], case_nac_data.shape[1]))
             
             for idx_batch in range(args.batch):
                 z_center = idx
