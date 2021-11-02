@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import glob
 
-folder = "./xue_5to1/"
+folder = "./xue_1to1/"
 
 npy_list = sorted(glob.glob(folder+"npy/epoch_loss_*.npy"))
 for npy_path in npy_list:
@@ -30,4 +30,4 @@ plt.yscale("log")
 plt.legend(["training", "validation"])
 plt.title("Training curve")
 
-plt.savefig(folder+"loss_5to1.jpg")
+plt.savefig(folder+"loss_1to1.jpg")
