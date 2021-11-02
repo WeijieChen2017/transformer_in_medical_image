@@ -14,7 +14,7 @@ loss_v = np.zeros((n_epoch))
 
 for idx in range(n_epoch):
     num = "{:03d}".format(idx+1)
-    name_t = folder+"epoch_loss_{}.npy".format(num)
+    name_t = folder+"epoch_loss_t_{}.npy".format(num)
     name_v = folder+"epoch_loss_v_{}.npy".format(num)
     data_t = np.load(name_t)
     data_v = np.load(name_v)
