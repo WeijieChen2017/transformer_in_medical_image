@@ -14,17 +14,15 @@ np.random.seed(seed=813)
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--input_channel', type=int, default=3, help='the number of input channel')
+    parser.add_argument('--input_channel', type=int, default=5, help='the number of input channel')
     parser.add_argument('--output_channel', type=int, default=1, help='the number of output channel')
-    parser.add_argument('--save_folder', type=str, default="./xue/", help='Save_prefix')
+    parser.add_argument('--save_folder', type=str, default="./xue_5to1/", help='Save_prefix')
     parser.add_argument('--gpu_ids', type=str, default="7", help='Use which GPU to train')
     parser.add_argument('--epoch', type=int, default=240, help='how many epochs to train')
     parser.add_argument('--batch', type=int, default=5, help='how many batches in one run')
     parser.add_argument('--loss_display_per_iter', type=int, default=600, help='display how many losses per iteration')
-    parser.add_argument('--folder_train_x', type=str, default="./xue/X/train/", help='input folder of trianing data X')
-    parser.add_argument('--folder_train_y', type=str, default="./xue/Y/train/", help='input folder of training data Y')
-    parser.add_argument('--folder_val_x', type=str, default="./xue/X/val/", help='input folder of validation data X')
-    parser.add_argument('--folder_val_y', type=str, default="./xue/Y/val/", help='input folder of validation data Y')
+    parser.add_argument('--folder_train', type=str, default="./xue/train/", help='input folder of trianing data X')
+    parser.add_argument('--folder_val', type=str, default="./xue/val/", help='input folder of validation data X')
     parser.add_argument('--weights_path', type=str, default='./pretrain_models/005_colorDN_DFWB_s128w8_SwinIR-M_noise25.pth')
     
     args = parser.parse_args()
@@ -46,12 +44,12 @@ def main():
     criterion = nn.SmoothL1Loss()
     optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3)
 
-    list_train_y = sorted(glob.glob(args.folder_train_y+"*.nii.gz"))
-    list_val_y = sorted(glob.glob(args.folder_val_y+"*.nii.gz"))
+    list_train = sorted(glob.glob(args.folder_train+"*_NAC.nii.gz"))
+    list_val = sorted(glob.glob(args.folder_val+"*_NAC.nii.gz"))
 
     train_loss = np.zeros((args.epoch)) # over the whole process
-    epoch_loss_t = np.zeros((len(list_train_y))) # over the training part of each epoch
-    epoch_loss_v = np.zeros((len(list_val_y))) # over the validation part of each epoch
+    epoch_loss_t = np.zeros((len(list_train))) # over the training part of each epoch
+    epoch_loss_v = np.zeros((len(list_val))) # over the validation part of each epoch
     best_val_loss = 1e6 # save the best model if the validation loss is less than this
     per_iter_loss = np.zeros((args.loss_display_per_iter)) # to show loss every X batch inside one case
     case_loss = None # the loss over one case
@@ -62,18 +60,19 @@ def main():
         # ====================================>train<====================================
         model.train()
         # randonmize training dataset
-        random.shuffle(list_train_y)
-        for cnt_y, path_y in enumerate(list_train_y):
+        random.shuffle(list_train)
+        for cnt, path in enumerate(list_train):
 
-            case_x_path = path_y.replace("Y", "X")
-            case_y_path = path_y
-            print("->",case_x_path,"<-", end="")
-            case_name = os.path.basename(case_x_path)[5:8]
-            case_x_data = nib.load(case_x_path).get_fdata()
-            case_y_data = nib.load(case_y_path).get_fdata()
-            # case_x_data = np.load(case_x_path)
-            # case_y_data = np.load(case_y_path)
-            len_z = case_x_data.shape[2]
+            case_nac_path = path
+            print("->",case_nac_path,"<-", end="")
+            case_name = os.path.basename(case_nac_path)[5:8]
+            case_nac_data = nib.load(case_nac_path).get_fdata()
+            case_sct_data = nib.load(case_nac_path.replace("NAC", "SCT")).get_fdata()
+            case_inp_data = nib.load(case_nac_path.replace("NAC", "INP")).get_fdata()
+            case_oup_data = nib.load(case_nac_path.replace("NAC", "OUP")).get_fdata()
+            case_fat_data = nib.load(case_nac_path.replace("NAC", "FAT")).get_fdata()
+            case_wat_data = nib.load(case_nac_path.replace("NAC", "WAT")).get_fdata()
+            len_z = case_nac_data.shape[2]
             case_loss = np.zeros((len_z//args.batch))
             input_list = list(range(len_z))
             random.shuffle(input_list)
@@ -81,25 +80,18 @@ def main():
             # 0:[32, 45, 23, 55], 1[76, 74, 54, 99], 3[65, 92, 28, 77], ...
             for idx_iter in range(len_z//args.batch):
 
-                batch_x = np.zeros((args.batch, input_channel, case_x_data.shape[0], case_x_data.shape[1]))
-                batch_y = np.zeros((args.batch, output_channel, case_y_data.shape[0], case_y_data.shape[1]))
+                batch_x = np.zeros((args.batch, input_channel, case_nac_data.shape[0], case_nac_data.shape[1]))
+                batch_y = np.zeros((args.batch, output_channel, case_nac_data.shape[0], case_nac_data.shape[1]))
 
                 for idx_batch in range(args.batch):
                     z_center = input_list[idx_iter*args.batch+idx_batch]
-                    z_before = z_center - 1 if z_center > 0 else 0
-                    z_after = z_center + 1 if z_center < len_z-1 else len_z-1
-                    if input_channel == 3:
-                        batch_x[idx_batch, 1, :, :] = case_x_data[:, :, z_center]
-                        batch_x[idx_batch, 0, :, :] = case_x_data[:, :, z_before]
-                        batch_x[idx_batch, 2, :, :] = case_x_data[:, :, z_after]
-                    if input_channel == 1:
-                        batch_x[idx_batch, 0, :, :] = case_x_data[:, :, z_center]
-                    if output_channel == 3:
-                        batch_y[idx_batch, 0, :, :] = case_y_data[:, :, z_before]
-                        batch_y[idx_batch, 1, :, :] = case_y_data[:, :, z_center]
-                        batch_y[idx_batch, 2, :, :] = case_y_data[:, :, z_after]
-                    if output_channel == 1:
-                        batch_y[idx_batch, 0, :, :] = case_y_data[:, :, z_center]
+                    batch_x[idx_batch, 0, :, :] = case_inp_data[:, :, z_center]
+                    batch_x[idx_batch, 1, :, :] = case_oup_data[:, :, z_center]
+                    batch_x[idx_batch, 2, :, :] = case_nac_data[:, :, z_center]
+                    batch_x[idx_batch, 3, :, :] = case_wat_data[:, :, z_center]
+                    batch_x[idx_batch, 4, :, :] = case_fat_data[:, :, z_center]
+                    
+                    batch_y[idx_batch, 0, :, :] = case_sct_data[:, :, z_center]
 
                 batch_x = torch.from_numpy(batch_x).float().to(device)
                 batch_y = torch.from_numpy(batch_y).float().to(device)
@@ -120,16 +112,16 @@ def main():
 
                 case_loss[idx_iter] = loss.item()
             
-            np.save(args.save_folder+"npy/Epoch[{:03d}]_Case[{}]_t_x.npy".format(idx_epoch+1, case_name), batch_x.cpu().detach().numpy())
-            np.save(args.save_folder+"npy/Epoch[{:03d}]_Case[{}]_t_y.npy".format(idx_epoch+1, case_name), batch_y.cpu().detach().numpy())
-            np.save(args.save_folder+"npy/Epoch[{:03d}]_Case[{}]_t_z.npy".format(idx_epoch+1, case_name), y_hat.cpu().detach().numpy())
+            # np.save(args.save_folder+"npy/Epoch[{:03d}]_Case[{}]_t_x.npy".format(idx_epoch+1, case_name), batch_x.cpu().detach().numpy())
+            # np.save(args.save_folder+"npy/Epoch[{:03d}]_Case[{}]_t_y.npy".format(idx_epoch+1, case_name), batch_y.cpu().detach().numpy())
+            # np.save(args.save_folder+"npy/Epoch[{:03d}]_Case[{}]_t_z.npy".format(idx_epoch+1, case_name), y_hat.cpu().detach().numpy())
 
             # after training one case
             loss_mean = np.mean(case_loss)
             loss_std = np.std(case_loss)
-            print("===> Epoch[{:03d}]-Case[{:03d}]: ".format(idx_epoch+1, cnt_y+1), end='')
+            print("===> Epoch[{:03d}]-Case[{:03d}]: ".format(idx_epoch+1, cnt+1), end='')
             print("Loss mean: {:.6} Loss std: {:.6}".format(loss_mean, loss_std))
-            epoch_loss_t[cnt_y] = loss_mean
+            epoch_loss_t[cnt] = loss_mean
 
         # after training all cases
         loss_mean = np.mean(epoch_loss_t)
@@ -143,19 +135,19 @@ def main():
 
         # ====================================>val<====================================
         model.eval()
-        random.shuffle(list_val_y)
-        for cnt_y, path_y in enumerate(list_val_y):
+        random.shuffle(list_val)
+        for cnt, path in enumerate(list_val):
 
-            # train
-            case_x_path = path_y.replace("Y", "X")
-            case_y_path = path_y
-            print("->",case_x_path,"<-", end="")
-            case_name = os.path.basename(case_x_path)[5:8]
-            case_x_data = nib.load(case_x_path).get_fdata()
-            case_y_data = nib.load(case_y_path).get_fdata()
-            # case_x_data = np.load(case_x_path)
-            # case_y_data = np.load(case_y_path)
-            len_z = case_x_data.shape[2]
+            case_nac_path = path
+            print("->",case_nac_path,"<-", end="")
+            case_name = os.path.basename(case_nac_path)[5:8]
+            case_nac_data = nib.load(case_nac_path).get_fdata()
+            case_sct_data = nib.load(case_nac_path.replace("NAC", "SCT")).get_fdata()
+            case_inp_data = nib.load(case_nac_path.replace("NAC", "INP")).get_fdata()
+            case_oup_data = nib.load(case_nac_path.replace("NAC", "OUP")).get_fdata()
+            case_fat_data = nib.load(case_nac_path.replace("NAC", "FAT")).get_fdata()
+            case_wat_data = nib.load(case_nac_path.replace("NAC", "WAT")).get_fdata()
+            len_z = case_nac_data.shape[2]
             case_loss = np.zeros((len_z//args.batch))
             input_list = list(range(len_z))
             random.shuffle(input_list)
@@ -163,26 +155,18 @@ def main():
             # 0:[32, 45, 23, 55], 1[76, 74, 54, 99], 3[65, 92, 28, 77], ...
             for idx_iter in range(len_z//args.batch):
 
-                batch_x = np.zeros((args.batch, input_channel, case_x_data.shape[0], case_x_data.shape[1]))
-                batch_y = np.zeros((args.batch, output_channel, case_y_data.shape[0], case_y_data.shape[1]))
+                batch_x = np.zeros((args.batch, input_channel, case_nac_data.shape[0], case_nac_data.shape[1]))
+                batch_y = np.zeros((args.batch, output_channel, case_nac_data.shape[0], case_nac_data.shape[1]))
 
                 for idx_batch in range(args.batch):
                     z_center = input_list[idx_iter*args.batch+idx_batch]
-                    z_before = z_center - 1 if z_center > 0 else 0
-                    z_after = z_center + 1 if z_center < len_z-1 else len_z-1
-                    if input_channel == 3:
-                        batch_x[idx_batch, 1, :, :] = case_x_data[:, :, z_center]
-                        batch_x[idx_batch, 0, :, :] = case_x_data[:, :, z_before]
-                        batch_x[idx_batch, 2, :, :] = case_x_data[:, :, z_after]
-                    if input_channel == 1:
-                        batch_x[idx_batch, 0, :, :] = case_x_data[:, :, z_center]
-                    if output_channel == 3:
-                        batch_y[idx_batch, 0, :, :] = case_y_data[:, :, z_before]
-                        batch_y[idx_batch, 1, :, :] = case_y_data[:, :, z_center]
-                        batch_y[idx_batch, 2, :, :] = case_y_data[:, :, z_after]
-                    if output_channel == 1:
-                        batch_y[idx_batch, 0, :, :] = case_y_data[:, :, z_center]
-
+                    batch_x[idx_batch, 0, :, :] = case_inp_data[:, :, z_center]
+                    batch_x[idx_batch, 1, :, :] = case_oup_data[:, :, z_center]
+                    batch_x[idx_batch, 2, :, :] = case_nac_data[:, :, z_center]
+                    batch_x[idx_batch, 3, :, :] = case_wat_data[:, :, z_center]
+                    batch_x[idx_batch, 4, :, :] = case_fat_data[:, :, z_center]
+                    
+                    batch_y[idx_batch, 0, :, :] = case_sct_data[:, :, z_center]
                 batch_x = torch.from_numpy(batch_x).float().to(device)
                 batch_y = torch.from_numpy(batch_y).float().to(device)
                 
@@ -201,7 +185,7 @@ def main():
             loss_std = np.std(case_loss)
             print("===> Epoch[{:03d}]-Val-Case[{}]: ".format(idx_epoch+1, case_name), end='')
             print("Loss mean: {:.6} Loss std: {:.6}".format(loss_mean, loss_std))
-            epoch_loss_v[cnt_y] = loss_mean
+            epoch_loss_v[cnt] = loss_mean
 
         loss_mean = np.mean(epoch_loss_v)
         loss_std = np.std(epoch_loss_v)
@@ -213,6 +197,7 @@ def main():
             torch.save(model, args.save_folder+"model_best_{:03d}.pth".format(idx_epoch+1))
             print("Checkpoint saved at Epoch {:03d}".format(idx_epoch+1))
             best_val_loss = loss_mean
+        torch.save(model, args.save_folder+"model_latest.pth")
         torch.cuda.empty_cache()
         # ====================================>val<====================================
 
