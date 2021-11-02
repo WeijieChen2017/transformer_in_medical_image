@@ -1,0 +1,33 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import glob
+
+folder = "./xue_5_to_1/npy/"
+
+npy_list = sorted(glob.glob(folder+"epoch_loss_*.npy"))
+for npy_path in npy_list:
+    print(npy_path)
+
+n_epoch = 900
+loss_t = np.zeros((n_epoch))
+loss_v = np.zeros((n_epoch))
+
+for idx in range(n_epoch):
+    num = "{:03d}".format(idx+1)
+    name_t = folder+"epoch_loss_{}.npy".format(num)
+    name_v = folder+"epoch_loss_v_{}.npy".format(num)
+    data_t = np.load(name_t)
+    data_v = np.load(name_v)
+    loss_t[idx] = np.mean(data_t)
+    loss_v[idx] = np.mean(data_v)
+
+plt.figure(figsize=(9,6), dpi=300)
+plt.plot(range(n_epoch), loss_t)
+plt.plot(range(n_epoch), loss_v)
+plt.xlabel("epoch")
+plt.ylabel("loss")
+plt.yscale("log")
+plt.legend(["training", "validation"])
+plt.title("Training curve of T1map to Bravo")
+
+plt.savefig("loss_5to1.jpg")
