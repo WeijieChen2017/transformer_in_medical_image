@@ -17,7 +17,7 @@ def normY(data):
     return data
 
 root_folder = "./MR2CT/"
-save_folder = "./MR2CT_B_SWIN/"
+save_folder = "./MR2CT_B_SWINIR/"
 search_folderX = root_folder+"t1_bravo/"
 search_folderY = root_folder+"ct_bravo/"
 valRatio = 0.2
