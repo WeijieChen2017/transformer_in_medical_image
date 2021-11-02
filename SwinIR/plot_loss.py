@@ -2,13 +2,13 @@ import numpy as np
 import matplotlib.pyplot as plt
 import glob
 
+n_epoch = 250
 folder = "./xue_1to1/"
 
 npy_list = sorted(glob.glob(folder+"npy/epoch_loss_*.npy"))
 for npy_path in npy_list:
     print(npy_path)
 
-n_epoch = 900
 loss_t = np.zeros((n_epoch))
 loss_v = np.zeros((n_epoch))
 
