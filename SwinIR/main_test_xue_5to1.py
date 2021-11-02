@@ -45,7 +45,7 @@ def main():
     model.eval().float()
     model = model.to(device)
     
-    X_list = sorted(glob.glob(args.folder_X_te+"*.nii.gz"))
+    X_list = sorted(glob.glob(args.folder_X_te+"*NAC.nii.gz"))
     # criterion_list = [nn.L1Loss, nn.MSELoss, nn.SmoothL1Loss]
     criterion_list = []
     # (nii_file, loss)
