@@ -40,7 +40,7 @@ def main():
     model.eval().float()
     model = model.to(device)
     
-    X_list = sorted(glob.glob(args.folder_X_te+"*.npy"))
+    X_list = sorted(glob.glob(args.folder_X_te+"*.nii.gz"))
     # criterion_list = [nn.L1Loss, nn.MSELoss, nn.SmoothL1Loss]
     criterion_list = []
     # (nii_file, loss)
@@ -51,8 +51,9 @@ def main():
         cube_x_path = X_path
         cube_y_path = args.folder_Y_te+os.path.basename(X_path)
         print("->",cube_x_path, "<->", cube_y_path, "<-",end="")
-        cube_x_data = np.load(cube_x_path)
-        cube_y_data = np.load(cube_y_path)
+        # cube_x_data = np.load(cube_x_path)
+        # cube_y_data = np.load(cube_y_path)
+        cube_x_data = nib.load(cube_x_path).get_fdata()
         len_z = cube_x_data.shape[2]
         y_hat = np.zeros(cube_y_data.shape)
         
