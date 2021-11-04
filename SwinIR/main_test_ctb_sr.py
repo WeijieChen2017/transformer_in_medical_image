@@ -49,12 +49,12 @@ def main():
     for cnt_X, X_path in enumerate(X_list):
 
         cube_x_path = X_path
-        cube_y_path = args.folder_Y_te+"RSZ_"+os.path.basename(X_path)[4:7]+".npy"
+        cube_y_path = "./MR2CT/ct_bravo/CT__MLAC_" + os.path.basename(X_path)[5:7]+"_MNI.nii.gz"
         print("->",cube_x_path, "<->", cube_y_path, "<-",end="")
         # cube_x_data = np.load(cube_x_path)
-        cube_y_data = np.load(cube_y_path)
+        # cube_y_data = np.load(cube_y_path)
         cube_x_data = nib.load(cube_x_path).get_fdata()
-        # cube_y_data = nib.load(cube_y_path).get_fdata()
+        cube_y_data = nib.load(cube_y_path).get_fdata()
         len_z = cube_x_data.shape[2]
         y_hat = np.zeros(cube_y_data.shape)
         
