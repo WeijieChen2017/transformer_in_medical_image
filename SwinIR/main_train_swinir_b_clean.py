@@ -24,8 +24,8 @@ def main():
     parser.add_argument('--folder_train_y', type=str, default="./MR2CT_B_SWINIR/Y/train/", help='input folder of training data Y')
     parser.add_argument('--folder_val_x', type=str, default="./MR2CT_B_SWINIR/X/val/", help='input folder of validation data X')
     parser.add_argument('--folder_val_y', type=str, default="./MR2CT_B_SWINIR/Y/val/", help='input folder of validation data Y')
-    parser.add_argument('--weights_path', type=str, default='./pretrain_models/005_colorDN_DFWB_s128w8_SwinIR-M_noise25.pth')
-    
+    # parser.add_argument('--weights_path', type=str, default='./pretrain_models/005_colorDN_DFWB_s128w8_SwinIR-M_noise25.pth')
+    parser.add_argument('--weights_path', type=str, default='./pretrain_models/MR2CT_B_model_best_085.pth')
     args = parser.parse_args()
     input_channel = args.input_channel
     output_channel = args.output_channel
