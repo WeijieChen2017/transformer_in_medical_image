@@ -20,7 +20,7 @@ np.random.seed(seed=813)
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--gpu_ids', type=str, default="7", help='Use which GPU to train')
-    parser.add_argument('--folder_X_te', type=str, default="./CTB_SR/test_from_previous/", help='input folder of T1MAP PET images')
+    parser.add_argument('--folder_X_te', type=str, default="./MR2CT_B_SWINIR/pred/", help='input folder of T1MAP PET images')
     parser.add_argument('--folder_Y_te', type=str, default="./CTB_SR/Y/test/", help='input folder of BRAVO images')
     parser.add_argument('--weights_path', type=str, default='./CTB_SR_best_model/CTB_SR_model_best_015.pth')
     args = parser.parse_args()
@@ -31,7 +31,7 @@ def main():
 
     device = torch.device('cuda' if  torch.cuda.is_available() else 'cpu')
 
-    for path in ["./CTB_SR/pred_from_previous/"]:
+    for path in ["./MR2CT_B_SWINIR/pred_SR/"]:
         if not os.path.exists(path):
             os.mkdir(path)
 
@@ -78,13 +78,13 @@ def main():
             loss_mat[cnt_X, cnt_loss] = curr_loss
             print("===> Loss[{}]: {:6}".format(loss_fnc.__name__, curr_loss), end='')
         
-        nifty_name = "./CTB_SR/CT_256/" + os.path.basename(X_path)[:-4]+".nii.gz"
+        nifty_name = "./MR2CT/ct_bravo/CT__MLAC_" + os.path.basename(X_path)[5:7]+"_MNI.nii.gz"
         nifty_file = nib.load(nifty_name)
         print("Loaded from", nifty_name, end="")
 
 
         pred_file = nib.Nifti1Image(y_hat, nifty_file.affine, nifty_file.header)
-        pred_name = "./CTB_SR/pred_from_previous/"+"PRD_"+os.path.basename(X_path)[4:7]+".nii.gz"
+        pred_name = "./MR2CT_B_SWINIR/pred_SR/"+"PRD_"+os.path.basename(X_path)[4:7]+".nii.gz"
         nib.save(pred_file, pred_name)
         print(" Saved to", pred_name)
 
