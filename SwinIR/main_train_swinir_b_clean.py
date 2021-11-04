@@ -39,13 +39,14 @@ def main():
         if not os.path.exists(path):
             os.mkdir(path)
 
-    model = net(upscale=1, in_chans=3, img_size=128, window_size=8,
-                img_range=1., depths=[6, 6, 6, 6, 6, 6], embed_dim=180, num_heads=[6, 6, 6, 6, 6, 6],
-                mlp_ratio=2, upsampler='', resi_connection='1conv')
-    pretrained_model = torch.load(args.weights_path)
-    model.load_state_dict(pretrained_model['params'], strict=True)
+    # model = net(upscale=1, in_chans=3, img_size=128, window_size=8,
+    #             img_range=1., depths=[6, 6, 6, 6, 6, 6], embed_dim=180, num_heads=[6, 6, 6, 6, 6, 6],
+    #             mlp_ratio=2, upsampler='', resi_connection='1conv')
+    # pretrained_model = torch.load(args.weights_path)
+    # model.load_state_dict(pretrained_model['params'], strict=True)
+    model = torch.load(args.weights_path)
 
-    model.train()
+    model.float().train()
     model = model.to(device)
     criterion = nn.SmoothL1Loss()
     optimizer = torch.optim.AdamW(model.parameters(), lr=1e-4)
