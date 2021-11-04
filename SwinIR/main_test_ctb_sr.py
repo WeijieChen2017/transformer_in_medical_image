@@ -21,7 +21,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--gpu_ids', type=str, default="7", help='Use which GPU to train')
     parser.add_argument('--folder_X_te', type=str, default="./MR2CT_B_SWINIR/pred/", help='input folder of T1MAP PET images')
-    parser.add_argument('--folder_Y_te', type=str, default="./CTB_SR/Y/test/", help='input folder of BRAVO images')
+    parser.add_argument('--folder_Y_te', type=str, default="./MR2CT_B_SWINIR/Y/test/", help='input folder of BRAVO images')
     parser.add_argument('--weights_path', type=str, default='./CTB_SR_best_model/CTB_SR_model_best_015.pth')
     args = parser.parse_args()
 
@@ -49,11 +49,12 @@ def main():
     for cnt_X, X_path in enumerate(X_list):
 
         cube_x_path = X_path
-        cube_y_path = args.folder_Y_te+os.path.basename(X_path)
+        cube_y_path = args.folder_Y_te+"RSZ_"+os.path.basename(X_path)[4:7]+".npy"
         print("->",cube_x_path, "<->", cube_y_path, "<-",end="")
         # cube_x_data = np.load(cube_x_path)
-        # cube_y_data = np.load(cube_y_path)
+        cube_y_data = np.load(cube_y_path)
         cube_x_data = nib.load(cube_x_path).get_fdata()
+        # cube_y_data = nib.load(cube_y_path).get_fdata()
         len_z = cube_x_data.shape[2]
         y_hat = np.zeros(cube_y_data.shape)
         
