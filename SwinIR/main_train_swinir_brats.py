@@ -75,7 +75,7 @@ def main():
             case_x_path = path_y.replace("Y", "X")
             case_y_path = path_y
             print("->",case_x_path,"<-", end="")
-            case_name = os.path.basename(case_x_path)[4:7]
+            case_name = os.path.basename(case_x_path)[5:9]
             # case_x_data = nib.load(case_x_path).get_fdata()
             # case_y_data = nib.load(case_y_path).get_fdata()
             case_x_data = np.load(case_x_path)
@@ -157,7 +157,7 @@ def main():
             case_x_path = path_y.replace("Y", "X")
             case_y_path = path_y
             print("->",case_x_path,"<-", end="")
-            case_name = os.path.basename(case_x_path)[4:7]
+            case_name = os.path.basename(case_x_path)[5:9]
             # case_x_data = nib.load(case_x_path).get_fdata()
             # case_y_data = nib.load(case_y_path).get_fdata()
             case_x_data = np.load(case_x_path)
