@@ -49,7 +49,7 @@ def main():
     model.float().train()
     model = model.to(device)
     criterion = nn.SmoothL1Loss()
-    optimizer = torch.optim.AdamW(model.parameters(), lr=1e-4)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=3e-4)
 
     list_train_y = sorted(glob.glob(args.folder_train_y+"*.npy"))
     list_val_y = sorted(glob.glob(args.folder_val_y+"*.npy"))
