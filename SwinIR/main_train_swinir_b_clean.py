@@ -9,13 +9,15 @@ import nibabel as nib
 import torch.nn as nn
 
 from models.network_swinir import SwinIR as net
-np.random.seed(seed=813)
+# np.random.seed(seed=813) # 11-4
+np.random.seed(seed=426)
+
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--input_channel', type=int, default=3, help='the number of input channel')
     parser.add_argument('--output_channel', type=int, default=3, help='the number of output channel')
-    parser.add_argument('--save_folder', type=str, default="./MR2CT_B_SWINIR_11-4/", help='Save_prefix')
+    parser.add_argument('--save_folder', type=str, default="./MR2CT_B_SWINIR_11-5/", help='Save_prefix')
     parser.add_argument('--gpu_ids', type=str, default="4", help='Use which GPU to train')
     parser.add_argument('--epoch', type=int, default=50, help='how many epochs to train')
     parser.add_argument('--batch', type=int, default=1, help='how many batches in one run')
