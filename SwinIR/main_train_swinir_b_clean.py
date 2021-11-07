@@ -59,7 +59,7 @@ def main():
     train_loss = np.zeros((args.epoch)) # over the whole process
     epoch_loss_t = np.zeros((len(list_train_y))) # over the training part of each epoch
     epoch_loss_v = np.zeros((len(list_val_y))) # over the validation part of each epoch
-    best_val_loss = 1e6 # save the best model if the validation loss is less than this
+    best_val_loss = 0.00138313 # save the best model if the validation loss is less than this
     per_iter_loss = np.zeros((args.loss_display_per_iter)) # to show loss every X batch inside one case
     case_loss = None # the loss over one case
 
