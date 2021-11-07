@@ -17,7 +17,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--input_channel', type=int, default=3, help='the number of input channel')
     parser.add_argument('--output_channel', type=int, default=3, help='the number of output channel')
-    parser.add_argument('--save_folder', type=str, default="./MR2CT_B_SWINIR_11-5/", help='Save_prefix')
+    parser.add_argument('--save_folder', type=str, default="./MR2CT_B_SWINIR_11-6/", help='Save_prefix')
     parser.add_argument('--gpu_ids', type=str, default="4", help='Use which GPU to train')
     parser.add_argument('--epoch', type=int, default=50, help='how many epochs to train')
     parser.add_argument('--batch', type=int, default=1, help='how many batches in one run')
@@ -27,7 +27,7 @@ def main():
     parser.add_argument('--folder_val_x', type=str, default="./MR2CT_B_SWINIR/X/val/", help='input folder of validation data X')
     parser.add_argument('--folder_val_y', type=str, default="./MR2CT_B_SWINIR/Y/val/", help='input folder of validation data Y')
     # parser.add_argument('--weights_path', type=str, default='./pretrain_models/005_colorDN_DFWB_s128w8_SwinIR-M_noise25.pth')
-    parser.add_argument('--weights_path', type=str, default='./MR2CT_B_SWINIR_11-4/model_best_008.pth')
+    parser.add_argument('--weights_path', type=str, default='./MR2CT_B_SWINIR_11-5/model_best_040.pth')
     args = parser.parse_args()
     input_channel = args.input_channel
     output_channel = args.output_channel
