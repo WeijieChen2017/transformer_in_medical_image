@@ -2,8 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 import glob
 
-n_epoch = 26
-folder = "./MR2CT_B_SWINIR/"
+n_epoch = 50
+folder = "./MR2CT_B_SWINIR_11-5/"
 
 npy_list = sorted(glob.glob(folder+"npy/epoch_loss_*.npy"))
 for npy_path in npy_list:
