@@ -23,10 +23,10 @@ def denormY(data):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--gpu_ids', type=str, default="7", help='Use which GPU to train')
+    parser.add_argument('--gpu_ids', type=str, default="4", help='Use which GPU to train')
     parser.add_argument('--folder_X_te', type=str, default="./MR2CT_B_SWINIR/X/test/", help='input folder of T1MAP PET images')
     parser.add_argument('--folder_Y_te', type=str, default="./MR2CT_B_SWINIR/Y/test/", help='input folder of BRAVO images')
-    parser.add_argument('--weights_path', type=str, default='./MR2CT_B_SWINIR/model_best_013.pth')
+    parser.add_argument('--weights_path', type=str, default='./MR2CT_B_SWINIR_11-5/model_best_040.pth')
     args = parser.parse_args()
 
     gpu_list = ','.join(str(x) for x in args.gpu_ids)
@@ -88,7 +88,7 @@ def main():
 
 
         pred_file = nib.Nifti1Image(y_hat, nifty_file.affine, nifty_file.header)
-        pred_name = "./MR2CT_B_SWINIR/pred/"+"PRD_"+os.path.basename(X_path)[4:7]+".nii.gz"
+        pred_name = "./MR2CT_B_SWINIR_11-5/pred/"+"PRD_"+os.path.basename(X_path)[4:7]+".nii.gz"
         nib.save(pred_file, pred_name)
         print(" Saved to", pred_name)
 
