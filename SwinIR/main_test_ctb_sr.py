@@ -31,7 +31,7 @@ def main():
 
     device = torch.device('cuda' if  torch.cuda.is_available() else 'cpu')
 
-    for path in ["./MR2CT_B_SWINIR_11-5/pred_SR/"]:
+    for path in ["./MR2CT_B_SWINIR_MNI_128/pred_SR/"]:
         if not os.path.exists(path):
             os.mkdir(path)
 
@@ -49,7 +49,7 @@ def main():
     for cnt_X, X_path in enumerate(X_list):
 
         cube_x_path = X_path
-        cube_y_path = "./MR2CT/ct_bravo/CT__MLAC_" + os.path.basename(X_path)[5:7]+"_MNI.nii.gz"
+        cube_y_path = "./MR2CT/completed/CT__MLAC_" + os.path.basename(X_path)[5:7]+"_MNI.nii.gz"
         print("->",cube_x_path, "<->", cube_y_path, "<-",end="")
         # cube_x_data = np.load(cube_x_path)
         # cube_y_data = np.load(cube_y_path)
@@ -80,13 +80,13 @@ def main():
             loss_mat[cnt_X, cnt_loss] = curr_loss
             print("===> Loss[{}]: {:6}".format(loss_fnc.__name__, curr_loss), end='')
         
-        nifty_name = "./MR2CT/ct_bravo/CT__MLAC_" + os.path.basename(X_path)[5:7]+"_MNI.nii.gz"
+        nifty_name = "./MR2CT/completed/CT__MLAC_" + os.path.basename(X_path)[5:7]+"_MNI.nii.gz"
         nifty_file = nib.load(nifty_name)
         print("Loaded from", nifty_name, end="")
 
 
         pred_file = nib.Nifti1Image(y_hat, nifty_file.affine, nifty_file.header)
-        pred_name = "./MR2CT_B_SWINIR_11-5/pred_SR/"+"PRD_"+os.path.basename(X_path)[4:7]+".nii.gz"
+        pred_name = "./MR2CT_B_SWINIR_MNI_128/pred_SR/"+"PRD_"+os.path.basename(X_path)[4:7]+".nii.gz"
         nib.save(pred_file, pred_name)
         print(" Saved to", pred_name)
 
