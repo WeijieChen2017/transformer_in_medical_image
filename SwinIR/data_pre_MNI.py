@@ -26,9 +26,9 @@ def normY_offset1000(data):
     return data
 
 root_folder = "./MR2CT/"
-save_folder = "./MR2CT_B_SWINIR_MNI_128/"
-search_folderX = root_folder+"MNI/MR_128/"
-search_folderY = root_folder+"MNI/CT_128/"
+save_folder = "./MR2CT_B_SWINIR_MNI_256/"
+search_folderX = root_folder+"MNI/"
+search_folderY = root_folder+"MNI/"
 valRatio = 0.2
 testRatio = 0.1
 channelX = 1
@@ -48,7 +48,7 @@ for folderName in [trainFolderX, testFolderX, valFolderX,
         os.makedirs(folderName)
 
 # fileList = glob.glob(folderX+"/mets*.nii") + glob.glob(folderX+"/mets*.nii.gz")
-fileList = glob.glob(search_folderX+"/128*.nii") + glob.glob(search_folderX+"/128*.nii.gz")
+fileList = glob.glob(search_folderX+"/MR*.nii") + glob.glob(search_folderX+"/MR*.nii.gz")
 fileList.sort()
 for filePath in fileList:
     print(filePath)
@@ -95,8 +95,8 @@ for package in [packageVal, packageTrain, packageTest]: #
 
         print(pathX)
         pathY = search_folderY+os.path.basename(pathX).replace("MR", "CT")
-        filenameX = os.path.basename(pathX)[4:7]
-        filenameY = os.path.basename(pathY)[4:7]
+        filenameX = os.path.basename(pathX)[9:11]
+        filenameY = os.path.basename(pathY)[9:11]
         dataX = nib.load(pathX).get_fdata()
         dataY = nib.load(pathY).get_fdata()
         print("X:", np.amax(dataX), np.amin(dataX), "<--> Y:", np.amax(dataY), np.amin(dataY))
@@ -108,7 +108,7 @@ for package in [packageVal, packageTrain, packageTest]: #
             dataNormY = normY(dataY)
         print(dataNormX.shape, dataNormY.shape)
 
-        np.save(folderX + "RSZ_" + filenameX + ".npy", dataNormX)
-        np.save(folderY + "RSZ_" + filenameY + ".npy", dataNormY)        
-        print(folderX + "RSZ_" + filenameX + ".npy")
+        np.save(folderX + "RSZ_0" + filenameX + ".npy", dataNormX)
+        np.save(folderY + "RSZ_0" + filenameY + ".npy", dataNormY)        
+        print(folderX + "RSZ_0" + filenameX + ".npy")
     print(len(fileList), " files are saved. ")
