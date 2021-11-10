@@ -4,6 +4,9 @@ import glob
 import os
 
 # 3000 for stealth and 1500 for bravo
+X / 2000
+Y [-1000, 3000] / 4000
+
 def normX(data):
     data[data<0] = 0
     data[data>2000] = 2000 
@@ -11,9 +14,9 @@ def normX(data):
     return data
 
 def normY(data):
-    data[data<0] = 0
+    data[data<-1000] = -1000
     data[data>3000] = 3000
-    data = data / 3000
+    data = data / 4000
     return data
 
 root_folder = "./MR2CT/"
