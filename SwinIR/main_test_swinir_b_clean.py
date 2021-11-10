@@ -23,9 +23,9 @@ def denormY(data):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--gpu_ids', type=str, default="4", help='Use which GPU to train')
-    parser.add_argument('--folder_X_te', type=str, default="./MR2CT_B_SWINIR/X/test/", help='input folder of T1MAP PET images')
-    parser.add_argument('--folder_Y_te', type=str, default="./MR2CT_B_SWINIR/Y/test/", help='input folder of BRAVO images')
+    parser.add_argument('--gpu_ids', type=str, default="5", help='Use which GPU to train')
+    parser.add_argument('--folder_X_te', type=str, default="./MR2CT_B_SWINIR_MNI_128/X/test/", help='input folder of T1MAP PET images')
+    parser.add_argument('--folder_Y_te', type=str, default="./MR2CT_B_SWINIR_MNI_128/Y/test/", help='input folder of BRAVO images')
     parser.add_argument('--weights_path', type=str, default='./MR2CT_B_SWINIR_11-5/model_best_040.pth')
     args = parser.parse_args()
 
@@ -35,7 +35,7 @@ def main():
 
     device = torch.device('cuda' if  torch.cuda.is_available() else 'cpu')
 
-    for path in ["./MR2CT_B_SWINIR_11-5/pred/"]:
+    for path in ["./MR2CT_B_SWINIR_MNI_128/pred/"]:
         if not os.path.exists(path):
             os.mkdir(path)
 
@@ -82,7 +82,7 @@ def main():
             loss_mat[cnt_X, cnt_loss] = curr_loss
             print("===> Loss[{}]: {:6}".format(loss_fnc.__name__, curr_loss), end='')
         
-        nifty_name = "./MR2CT/ct_bravo/CT__MLAC_" + os.path.basename(X_path)[5:7]+"_MNI.nii.gz"
+        nifty_name = "./MR2CT/completed/CT__MLAC_" + os.path.basename(X_path)[5:7]+"_MNI.nii.gz"
         nifty_file = nib.load(nifty_name)
         print("Loaded from", nifty_name, end="")
 
