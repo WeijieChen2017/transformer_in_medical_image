@@ -51,6 +51,8 @@ np.random.shuffle(fileList)
 fileList = list(fileList)
 
 testList = sorted(fileList)
+valList = []
+trainList = []
 
 # valList = fileList[:int(len(fileList)*valRatio)]
 # valList.sort()
