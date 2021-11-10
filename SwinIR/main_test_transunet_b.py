@@ -12,16 +12,16 @@ import torch
 np.random.seed(seed=813)
 
 def denormY(data):
-    data = data * 3000
+    data = data * 3000 - 1000
     return data
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--gpu_ids', type=str, default="7", help='Use which GPU to train')
-    parser.add_argument('--folder_X_te', type=str, default="./MR2CT_B_UNET/X/test/", help='input folder of test X images')
-    parser.add_argument('--folder_Y_te', type=str, default="./MR2CT_B_UNET/Y/test/", help='input folder of test Y images')
+    parser.add_argument('--gpu_ids', type=str, default="5", help='Use which GPU to train')
+    parser.add_argument('--folder_X_te', type=str, default="./MR2CT_B_SWINIR_MNI_256/X/test/", help='input folder of test X images')
+    parser.add_argument('--folder_Y_te', type=str, default="./MR2CT_B_SWINIR_MNI_256/Y/test/", help='input folder of test Y images')
     parser.add_argument('--weights_path', type=str, default='./MR2CT_B_VIT_PRE/model_best_013.pth')
-    parser.add_argument('--save_folder', type=str, default="./MR2CT_B_VIT_PRE/", help='Save_prefix')
+    parser.add_argument('--save_folder', type=str, default="./MR2CT_B_SWINIR_MNI_256/", help='Save_prefix')
     args = parser.parse_args()
 
     gpu_list = ','.join(str(x) for x in args.gpu_ids)
@@ -30,7 +30,7 @@ def main():
 
     device = torch.device('cuda' if  torch.cuda.is_available() else 'cpu')
 
-    for path in [args.save_folder+"pred/"]:
+    for path in [args.save_folder+"pred_transunet/"]:
         if not os.path.exists(path):
             os.mkdir(path)
 
@@ -79,12 +79,12 @@ def main():
             print("===> Loss[{}]: {:6}".format(loss_fnc.__name__, curr_loss), end='')
         
         # to get the right affine and header
-        nifty_name = "./MR2CT/ct_bravo/CT__MLAC_" + os.path.basename(X_path)[5:7]+"_MNI.nii.gz"
+        nifty_name = "./MR2CT/completed/CT__MLAC_" + os.path.basename(X_path)[5:7]+"_MNI.nii.gz"
         nifty_file = nib.load(nifty_name)
         print("Loaded from", nifty_name, end="")
 
         pred_file = nib.Nifti1Image(denormY(y_hat), nifty_file.affine, nifty_file.header)
-        pred_name = args.save_folder+"pred/"+"PRD_"+os.path.basename(X_path)[4:7]+".nii.gz"
+        pred_name = args.save_folder+"pred_transunet/"+"PRD_"+os.path.basename(X_path)[4:7]+".nii.gz"
         nib.save(pred_file, pred_name)
         print(" Saved to", pred_name)
 
