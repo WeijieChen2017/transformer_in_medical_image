@@ -101,7 +101,7 @@ for package in [packageVal, packageTrain, packageTest]: #
         dataY = nib.load(pathY).get_fdata()
         print("X:", np.amax(dataX), np.amin(dataX), "<--> Y:", np.amax(dataY), np.amin(dataY))
         dataNormX = normX(dataX)
-        if filenameX in ["004", "023", "049", "059"]:
+        if filenameX in ["04", "23", "49", "59"]:
             print("Special norm!")
             dataNormY = normY_offset1000(dataY)
         else:
