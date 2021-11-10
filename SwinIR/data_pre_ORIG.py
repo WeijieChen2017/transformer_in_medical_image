@@ -20,9 +20,9 @@ def normY(data):
     return data
 
 root_folder = "./MR2CT/"
-save_folder = "./MR2CT_B_SWINIR_ORIG_256/"
-search_folderX = root_folder+"ORIG/MR_256/"
-search_folderY = root_folder+"ORIG/CT_256/"
+save_folder = "./MR2CT_B_SWINIR_MNI_128/"
+search_folderX = root_folder+"MNI/MR_128/"
+search_folderY = root_folder+"MNI/CT_128/"
 valRatio = 0.2
 testRatio = 0.1
 channelX = 1
@@ -42,7 +42,7 @@ for folderName in [trainFolderX, testFolderX, valFolderX,
         os.makedirs(folderName)
 
 # fileList = glob.glob(folderX+"/mets*.nii") + glob.glob(folderX+"/mets*.nii.gz")
-fileList = glob.glob(search_folderX+"/256*.nii") + glob.glob(search_folderX+"/256*.nii.gz")
+fileList = glob.glob(search_folderX+"/128*.nii") + glob.glob(search_folderX+"/128*.nii.gz")
 fileList.sort()
 for filePath in fileList:
     print(filePath)
@@ -98,7 +98,7 @@ for package in [packageVal, packageTrain, packageTest]: #
         dataNormY = normY(dataY)
         print(dataNormX.shape, dataNormY.shape)
 
-        np.save(folderX + "RSZ_0" + filenameX + ".npy", dataNormX)
-        np.save(folderY + "RSZ_0" + filenameY + ".npy", dataNormY)        
+        np.save(folderX + "RSZ_" + filenameX + ".npy", dataNormX)
+        np.save(folderY + "RSZ_" + filenameY + ".npy", dataNormY)        
         print(folderX + "RSZ_" + filenameX + ".npy")
     print(len(fileList), " files are saved. ")
