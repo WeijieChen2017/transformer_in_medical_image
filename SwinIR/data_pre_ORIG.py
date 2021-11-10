@@ -5,7 +5,7 @@ import os
 
 # 3000 for stealth and 1500 for bravo
 # X / 2000
-# Y [-1000, 3000] / 4000
+# Y [-1000, 2000] / 3000
 
 def normX(data):
     data[data<0] = 0
@@ -15,8 +15,14 @@ def normX(data):
 
 def normY(data):
     data[data<-1000] = -1000
+    data[data>2000] = 2000
+    data = data / 3000
+    return data
+
+def normY_offset1000(data):
+    data[data<0] = 0
     data[data>3000] = 3000
-    data = data / 4000
+    data = data / 3000
     return data
 
 root_folder = "./MR2CT/"
@@ -95,7 +101,11 @@ for package in [packageVal, packageTrain, packageTest]: #
         dataY = nib.load(pathY).get_fdata()
         print("X:", np.amax(dataX), np.amin(dataX), "<--> Y:", np.amax(dataY), np.amin(dataY))
         dataNormX = normX(dataX)
-        dataNormY = normY(dataY)
+        if filenameX in ["004", "023", "049", "059"]:
+            print("Special norm!")
+            dataNormY = normY_offset1000(dataY)
+        else:
+            dataNormY = normY(dataY)
         print(dataNormX.shape, dataNormY.shape)
 
         np.save(folderX + "RSZ_" + filenameX + ".npy", dataNormX)
