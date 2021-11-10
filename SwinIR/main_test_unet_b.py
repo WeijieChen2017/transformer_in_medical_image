@@ -18,14 +18,14 @@ from utils import util_calculate_psnr_ssim as util
 np.random.seed(seed=813)
 
 def denormY(data):
-    data = data * 3000
+    data = data * 3000 - 1000
     return data
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--gpu_ids', type=str, default="7", help='Use which GPU to train')
-    parser.add_argument('--folder_X_te', type=str, default="./MR2CT_B_UNET/X/test/", help='input folder of T1MAP PET images')
-    parser.add_argument('--folder_Y_te', type=str, default="./MR2CT_B_UNET/Y/test/", help='input folder of BRAVO images')
+    parser.add_argument('--gpu_ids', type=str, default="5", help='Use which GPU to train')
+    parser.add_argument('--folder_X_te', type=str, default="./MR2CT_B_SWINIR_MNI_256/X/test/", help='input folder of T1MAP PET images')
+    parser.add_argument('--folder_Y_te', type=str, default="./MR2CT_B_SWINIR_MNI_256/Y/test/", help='input folder of BRAVO images')
     parser.add_argument('--weights_path', type=str, default='./MR2CT_B_UNET/model_best_041.pth')
     args = parser.parse_args()
 
@@ -35,7 +35,7 @@ def main():
 
     device = torch.device('cuda' if  torch.cuda.is_available() else 'cpu')
 
-    for path in ["./MR2CT_B_UNET/pred/"]:
+    for path in ["./MR2CT_B_SWINIR_MNI_256/pred_unet/"]:
         if not os.path.exists(path):
             os.mkdir(path)
 
@@ -82,13 +82,13 @@ def main():
             loss_mat[cnt_X, cnt_loss] = curr_loss
             print("===> Loss[{}]: {:6}".format(loss_fnc.__name__, curr_loss), end='')
         
-        nifty_name = "./MR2CT/ct_bravo/CT__MLAC_" + os.path.basename(X_path)[5:7]+"_MNI.nii.gz"
+        nifty_name = "./MR2CT/completed/CT__MLAC_" + os.path.basename(X_path)[5:7]+"_MNI.nii.gz"
         nifty_file = nib.load(nifty_name)
         print("Loaded from", nifty_name, end="")
 
 
         pred_file = nib.Nifti1Image(denormY(y_hat), nifty_file.affine, nifty_file.header)
-        pred_name = "./MR2CT_B_UNET/pred/"+"PRD_"+os.path.basename(X_path)[4:7]+".nii.gz"
+        pred_name = "./MR2CT_B_SWINIR_MNI_256/pred_unet/"+"PRD_"+os.path.basename(X_path)[4:7]+".nii.gz"
         nib.save(pred_file, pred_name)
         print(" Saved to", pred_name)
 
