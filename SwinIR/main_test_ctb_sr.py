@@ -53,7 +53,7 @@ def main():
         print("->",cube_x_path, "<->", cube_y_path, "<-",end="")
         # cube_x_data = np.load(cube_x_path)
         # cube_y_data = np.load(cube_y_path)
-        cube_x_data = nib.load(cube_x_path).get_fdata()
+        cube_x_data = nib.load(cube_x_path).get_fdata() / 4000
         cube_y_data = nib.load(cube_y_path).get_fdata()
         len_z = cube_x_data.shape[2]
         y_hat = np.zeros(cube_y_data.shape)
@@ -81,11 +81,12 @@ def main():
             print("===> Loss[{}]: {:6}".format(loss_fnc.__name__, curr_loss), end='')
         
         # nifty_name = "./MR2CT/completed/CT__MLAC_" + os.path.basename(X_path)[5:7]+"_MNI.nii.gz"
+        nifty_name = cube_y_path
         nifty_file = nib.load(cube_y_path)
         print("Loaded from", nifty_name, end="")
 
 
-        pred_file = nib.Nifti1Image(y_hat, nifty_file.affine, nifty_file.header)
+        pred_file = nib.Nifti1Image(y_hat*3000 - 1000, nifty_file.affine, nifty_file.header)
         pred_name = "./NAC_2_sCT/"+"SR_PRD_"+os.path.basename(X_path)[4:7]+".nii.gz"
         nib.save(pred_file, pred_name)
         print(" Saved to", pred_name)
