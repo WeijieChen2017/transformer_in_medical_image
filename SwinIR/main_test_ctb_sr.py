@@ -49,7 +49,7 @@ def main():
     for cnt_X, X_path in enumerate(X_list):
 
         cube_x_path = X_path
-        cube_y_path = "./NAC_2_sCT/256_sCT_" + os.path.basename(X_path)[4:7]+"_.nii.gz"
+        cube_y_path = "./NAC_2_sCT/256_sCT_" + os.path.basename(X_path)[4:7]+".nii.gz"
         print("->",cube_x_path, "<->", cube_y_path, "<-",end="")
         # cube_x_data = np.load(cube_x_path)
         # cube_y_data = np.load(cube_y_path)
