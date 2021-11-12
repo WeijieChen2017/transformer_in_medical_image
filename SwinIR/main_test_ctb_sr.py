@@ -20,8 +20,8 @@ np.random.seed(seed=813)
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--gpu_ids', type=str, default="5", help='Use which GPU to train')
-    parser.add_argument('--folder_X_te', type=str, default="./MR2CT_B_SWINIR_11-5/pred/", help='input folder of T1MAP PET images')
-    parser.add_argument('--folder_Y_te', type=str, default="./MR2CT_B_SWINIR/Y/test/", help='input folder of BRAVO images')
+    parser.add_argument('--folder_X_te', type=str, default="./NAC_2_sCT/", help='input folder of T1MAP PET images')
+    parser.add_argument('--folder_Y_te', type=str, default="./NAC_2_sCT/", help='input folder of BRAVO images')
     parser.add_argument('--weights_path', type=str, default='./CTB_SR_best_model/CTB_SR_model_best_015.pth')
     args = parser.parse_args()
 
@@ -31,16 +31,16 @@ def main():
 
     device = torch.device('cuda' if  torch.cuda.is_available() else 'cpu')
 
-    for path in ["./MR2CT_B_SWINIR_MNI_128/pred_SR/"]:
-        if not os.path.exists(path):
-            os.mkdir(path)
+    # for path in ["./NAC_2_sCT/pred_SR/"]:
+    #     if not os.path.exists(path):
+    #         os.mkdir(path)
 
     print(f'loading model from {args.weights_path}')
     model = torch.load(args.weights_path)
     model.eval().float()
     model = model.to(device)
     
-    X_list = sorted(glob.glob(args.folder_X_te+"*.nii.gz"))
+    X_list = sorted(glob.glob(args.folder_X_te+"PRD*.nii.gz"))
     # criterion_list = [nn.L1Loss, nn.MSELoss, nn.SmoothL1Loss]
     criterion_list = []
     # (nii_file, loss)
@@ -49,7 +49,7 @@ def main():
     for cnt_X, X_path in enumerate(X_list):
 
         cube_x_path = X_path
-        cube_y_path = "./MR2CT/completed/CT__MLAC_" + os.path.basename(X_path)[5:7]+"_MNI.nii.gz"
+        cube_y_path = "./NAC_2_sCT/256_sCT_" + os.path.basename(X_path)[4:7]+"_.nii.gz"
         print("->",cube_x_path, "<->", cube_y_path, "<-",end="")
         # cube_x_data = np.load(cube_x_path)
         # cube_y_data = np.load(cube_y_path)
@@ -80,13 +80,13 @@ def main():
             loss_mat[cnt_X, cnt_loss] = curr_loss
             print("===> Loss[{}]: {:6}".format(loss_fnc.__name__, curr_loss), end='')
         
-        nifty_name = "./MR2CT/completed/CT__MLAC_" + os.path.basename(X_path)[5:7]+"_MNI.nii.gz"
-        nifty_file = nib.load(nifty_name)
+        # nifty_name = "./MR2CT/completed/CT__MLAC_" + os.path.basename(X_path)[5:7]+"_MNI.nii.gz"
+        nifty_file = nib.load(cube_y_path)
         print("Loaded from", nifty_name, end="")
 
 
         pred_file = nib.Nifti1Image(y_hat, nifty_file.affine, nifty_file.header)
-        pred_name = "./MR2CT_B_SWINIR_MNI_128/pred_SR/"+"PRD_"+os.path.basename(X_path)[4:7]+".nii.gz"
+        pred_name = "./NAC_2_sCT/"+"SR_PRD_"+os.path.basename(X_path)[4:7]+".nii.gz"
         nib.save(pred_file, pred_name)
         print(" Saved to", pred_name)
 
