@@ -4,17 +4,18 @@ import numpy as np
 import glob
 import os
 
-# 3000 for stealth and 1500 for bravo
+# 3000 for NAC and [-1000, 1000] for bravo
 def normX(data):
     data[data<0] = 0
-    data[data>2000] = 2000 
-    data = data / 2000
+    # data[data>3000] = 2000 
+    data = data / 3000
     return data
 
 def normY(data):
-    data[data<0] = 0
-    data[data>3000] = 3000
-    data = data / 3000
+    data[data<-1000] = -1000
+    # data[data>1000] = 1000
+    data += 1000
+    data = data / 2000
     return data
 
 root_folder = "./NAC_2_SCT/"
@@ -83,26 +84,25 @@ for package in [packageVal, packageTrain, packageTest]: #
 
         # print(pathX)
         pathY = search_folderY+os.path.basename(pathX).replace("NAC", "SCT")
-        filenameX = os.path.basename(pathX)[9:11]
-        filenameY = os.path.basename(pathY)[9:11]
+        filenameX = os.path.basename(pathX)[4:7]
+        filenameY = os.path.basename(pathY)[4:7]
         fileX = nib.load(pathX)
         fileY = nib.load(pathY)
         dataX = fileX.get_fdata()
         dataY = fileY.get_fdata()
-        dataY[dataY<-1000] = -1000
-        print(np.percentile(dataX, 99.9), np.percentile(dataY, 99.9))
-    #     dataNormX = normX(dataX)
-    #     dataNormY = normY(dataY)
-    #     print(dataNormX.shape, dataNormY.shape)
+        dataNormX = normX(dataX)
+        dataNormY = normY(dataY)
+        print(np.percentile(dataNormX, 99.9), np.percentile(dataNormY, 99.9))
+        print(dataNormX.shape, dataNormY.shape)
 
-    #     fileNormX = nib.Nifti1Image(dataNormX, fileX.affine, fileX.header)
-    #     nameX = folderX + "224_0" + filenameX + ".nii.gz"
-    #     nib.save(fileNormX, nameX)
-    #     print("Saved to", nameX)
+        fileNormX = nib.Nifti1Image(dataNormX, fileX.affine, fileX.header)
+        nameX = folderX + "RSZ_" + filenameX + ".nii.gz"
+        nib.save(fileNormX, nameX)
+        print("Saved to", nameX)
         
-    #     fileNormY = nib.Nifti1Image(dataNormY, fileY.affine, fileY.header)
-    #     nameY = folderY + "224_0" + filenameY + ".nii.gz"
-    #     nib.save(fileNormY, nameY)
-    #     print("Saved to", nameY)
+        fileNormY = nib.Nifti1Image(dataNormY, fileY.affine, fileY.header)
+        nameY = folderY + "RSZ_" + filenameY + ".nii.gz"
+        nib.save(fileNormY, nameY)
+        print("Saved to", nameY)
 
     # print(len(fileList), " files are saved. ")
