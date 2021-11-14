@@ -81,7 +81,7 @@ for package in [packageVal, packageTrain, packageTest]: #
     # npy version
     for pathX in fileList:
 
-        print(pathX)
+        # print(pathX)
         pathY = search_folderY+os.path.basename(pathX).replace("NAC", "SCT")
         filenameX = os.path.basename(pathX)[9:11]
         filenameY = os.path.basename(pathY)[9:11]
@@ -89,7 +89,8 @@ for package in [packageVal, packageTrain, packageTest]: #
         fileY = nib.load(pathY)
         dataX = fileX.get_fdata()
         dataY = fileY.get_fdata()
-        print(np.amax(dataX), np.amin(dataX), np.amax(dataY), np.amin(dataY))
+        dataY[dataY<-1000] = -1000
+        print(np.percentile(dataX, 99.9), np.percentile(dataY, 99.9))
     #     dataNormX = normX(dataX)
     #     dataNormY = normY(dataY)
     #     print(dataNormX.shape, dataNormY.shape)
