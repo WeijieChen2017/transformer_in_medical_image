@@ -82,7 +82,7 @@ for package in [packageVal, packageTrain, packageTest]: #
     # npy version
     for pathX in fileList:
 
-        # print(pathX)
+        print(pathX)
         pathY = search_folderY+os.path.basename(pathX).replace("NAC", "SCT")
         filenameX = os.path.basename(pathX)[4:7]
         filenameY = os.path.basename(pathY)[4:7]
