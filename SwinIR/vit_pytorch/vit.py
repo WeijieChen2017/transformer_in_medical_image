@@ -108,10 +108,11 @@ class ViT(nn.Module):
             nn.LayerNorm(dim),
             # nn.Linear(dim, num_classes)
         )
-        
         self.to_patch_unembedding = nn.Sequential(
             nn.Linear(dim, patch_dim),
-            Rearrange(' b (h w) (p1 p2 c) -> b c (h p1) (w p2)', p1 = patch_height, p2 = patch_width),
+            Rearrange(' b (h w) (p1 p2 c) -> b c (h p1) (w p2)', 
+                p1 = patch_height, p2 = patch_width,
+                h = image_height, w = image_width),
         )
 
     def forward(self, img):
