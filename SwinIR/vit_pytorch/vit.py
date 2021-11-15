@@ -125,10 +125,12 @@ class ViT(nn.Module):
         x = self.dropout(x)
 
         x = self.transformer(x)
-
+        print(x.size())
         x = x.mean(dim = 1) if self.pool == 'mean' else x[:, 0]
-
+        print(x.size())
         x = self.to_latent(x)
+        print(x.size())
         x = self.mlp_head(x)
         print(x.size())
-        return self.to_patch_unembedding(x)
+        x = self.to_patch_unembedding(x)
+        return x
