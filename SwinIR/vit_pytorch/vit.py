@@ -77,10 +77,12 @@ class Transformer(nn.Module):
         return x
 
 class ViT(nn.Module):
-    def __init__(self, *, image_size, patch_size, num_classes, dim, depth, heads, mlp_dim, pool = 'cls', channels = 3, dim_head = 64, dropout = 0., emb_dropout = 0.):
+    def __init__(self, *, image_height, image_width, patch_size, dim, depth, heads, mlp_dim, pool = 'cls', channels = 3, dim_head = 64, dropout = 0., emb_dropout = 0.):
         super().__init__()
-        image_height, image_width = pair(image_size)
+        # image_height, image_width = pair(image_size)
         patch_height, patch_width = pair(patch_size)
+
+        image_height, image_width = image_height, image_width
 
         assert image_height % patch_height == 0 and image_width % patch_width == 0, 'Image dimensions must be divisible by the patch size.'
 
@@ -104,7 +106,12 @@ class ViT(nn.Module):
 
         self.mlp_head = nn.Sequential(
             nn.LayerNorm(dim),
-            nn.Linear(dim, num_classes)
+            # nn.Linear(dim, num_classes)
+        )
+        
+        self.to_patch_unembedding = nn.Sequential(
+            nn.Linear(dim, patch_dim),
+            Rearrange(' b (h w) (p1 p2 c) -> b c (h p1) (w p2)', p1 = patch_height, p2 = patch_width),
         )
 
     def forward(self, img):
@@ -121,4 +128,5 @@ class ViT(nn.Module):
         x = x.mean(dim = 1) if self.pool == 'mean' else x[:, 0]
 
         x = self.to_latent(x)
-        return self.mlp_head(x)
+        x = self.mlp_head(x)
+        return self.to_patch_unembedding(x)
