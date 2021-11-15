@@ -95,10 +95,10 @@ def main():
         model.train()
         # randonmize training dataset
         random.shuffle(list_train_x)
-        for cnt_y, path_y in enumerate(list_train_x):
+        for cnt_y, path_x in enumerate(list_train_x):
 
-            case_x_path = path_y.replace("NAC", "SCT")
-            case_y_path = path_y
+            case_x_path = path_x
+            case_y_path = path_x.replace("X", "Y")
             print("->",case_x_path,"<-", end="")
             case_name = os.path.basename(case_x_path)[5:9]
             case_x_data = nib.load(case_x_path).get_fdata()
@@ -180,11 +180,11 @@ def main():
         # ====================================>val<====================================
         model.eval()
         random.shuffle(list_val_x)
-        for cnt_y, path_y in enumerate(list_val_x):
+        for cnt_y, path_x in enumerate(list_val_x):
 
             # train
-            case_x_path = path_y.replace("Y", "X")
-            case_y_path = path_y
+            case_x_path = path_x
+            case_y_path = path_x.replace("X", "Y")
             print("->",case_x_path,"<-", end="")
             case_name = os.path.basename(case_x_path)[5:9]
             case_x_data = nib.load(case_x_path).get_fdata()
