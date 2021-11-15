@@ -116,14 +116,18 @@ class ViT(nn.Module):
         )
 
     def forward(self, img):
+        print(img.size())
         x = self.to_patch_embedding(img)
+        print(x.size())
         b, n, _ = x.shape
 
         cls_tokens = repeat(self.cls_token, '() n d -> b n d', b = b)
         x = torch.cat((cls_tokens, x), dim=1)
+        print(x.size())
         x += self.pos_embedding[:, :(n + 1)]
+        print(x.size())
         x = self.dropout(x)
-
+        print(x.size())
         x = self.transformer(x)
         print(x.size())
         x = x.mean(dim = 1) if self.pool == 'mean' else x[:, 0]
