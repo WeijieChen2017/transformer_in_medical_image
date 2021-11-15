@@ -130,4 +130,5 @@ class ViT(nn.Module):
 
         x = self.to_latent(x)
         x = self.mlp_head(x)
+        print(x.size(), dim, patch_dim)
         return self.to_patch_unembedding(x)
