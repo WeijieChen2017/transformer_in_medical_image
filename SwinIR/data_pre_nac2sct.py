@@ -18,10 +18,10 @@ def normY(data):
     data = data / 2000
     return data
 
-root_folder = "./NAC_2_SCT/"
-save_folder = "./NAC_2_SCT/"
-search_folderX = root_folder+"NAC/"
-search_folderY = root_folder+"SCT/"
+root_folder = "./SQR/"
+save_folder = "./SQR/"
+search_folderX = root_folder+"SQR_pet/"
+search_folderY = root_folder+"SQR_sct/"
 valRatio = 0.2
 testRatio = 0.1
 channelX = 1
@@ -41,7 +41,7 @@ for folderName in [trainFolderX, testFolderX, valFolderX,
         os.makedirs(folderName)
 
 # fileList = glob.glob(folderX+"/mets*.nii") + glob.glob(folderX+"/mets*.nii.gz")
-fileList = glob.glob(search_folderX+"/BST*.nii") + glob.glob(search_folderX+"/BST*.nii.gz")
+fileList = glob.glob(search_folderX+"/SQR*.nii") + glob.glob(search_folderX+"/SQR*.nii.gz")
 fileList.sort()
 for filePath in fileList:
     print(filePath)
@@ -83,7 +83,7 @@ for package in [packageVal, packageTrain, packageTest]: #
     for pathX in fileList:
 
         print(pathX)
-        pathY = search_folderY+os.path.basename(pathX).replace("X", "Y")
+        pathY = search_folderY+os.path.basename(pathX).replace("pet", "sct")
         filenameX = os.path.basename(pathX)[4:7]
         filenameY = os.path.basename(pathY)[4:7]
         fileX = nib.load(pathX)
