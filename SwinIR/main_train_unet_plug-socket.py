@@ -40,8 +40,8 @@ def main():
     print('export CUDA_VISIBLE_DEVICES=' + gpu_list)
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-    model_E = UNet(n_channels=3, n_classes=1, bilinear=True)
-    model.train().float()
+    model = UNet(n_channels=3, n_classes=1, bilinear=True)
+    model.train()
     model = model.to(device)
     criterion = nn.SmoothL1Loss()
     optimizer = torch.optim.AdamW(model.parameters(), lr=1e-4)
@@ -97,8 +97,8 @@ def main():
                     if output_channel == 1:
                         batch_y[idx_batch, 0, :, :] = cube_y_data[:, :, z_center]
 
-                batch_x = torch.from_numpy(batch_x).float().to(device)
-                batch_y = torch.from_numpy(batch_y).float().to(device)
+                batch_x = torch.from_numpy(batch_x).to(device)
+                batch_y = torch.from_numpy(batch_y).to(device)
 
                 optimizer.zero_grad()
                 y_hat = model(batch_x)
@@ -176,8 +176,8 @@ def main():
                     if output_channel == 1:
                         batch_y[idx_batch, 0, :, :] = cube_y_data[:, :, z_center]
 
-                batch_x = torch.from_numpy(batch_x).float().to(device)
-                batch_y = torch.from_numpy(batch_y).float().to(device)
+                batch_x = torch.from_numpy(batch_x).to(device)
+                batch_y = torch.from_numpy(batch_y).to(device)
                 
                 y_hat = model(batch_x)
                 loss = criterion(y_hat, batch_y)
