@@ -51,7 +51,7 @@ class UNet_simple(nn.Module):
         self.down4 = Down(512, 1024 // factor)
         self.hidden_1 = DoubleConv(1024 // factor, 1024 // factor)
         self.hidden_2 = DoubleConv(1024 // factor, 1024 // factor)
-        self.up1 = Up_simple(1024, 512 // factor, bilinear)
+        self.up1 = Up_simple(1024 // factor, 512 // factor, bilinear)
         self.up2 = Up_simple(512, 256 // factor, bilinear)
         self.up3 = Up_simple(256, 128 // factor, bilinear)
         self.up4 = Up_simple(128, 64, bilinear)
