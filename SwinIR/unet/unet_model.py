@@ -65,7 +65,7 @@ class UNet_simple(nn.Module):
         x = self.down4(x)
         x = self.hidden_1(x)
         x = self.hidden_2(x)
-        x = self.up1(x5)
+        x = self.up1(x)
         x = self.up2(x)
         x = self.up3(x)
         x = self.up4(x)
