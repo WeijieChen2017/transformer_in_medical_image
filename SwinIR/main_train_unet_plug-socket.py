@@ -4,6 +4,7 @@ import glob
 import time
 import random
 import numpy as np
+import nibabel as nib
 import torch.nn as nn
 from collections import OrderedDict
 from sys import getsizeof
