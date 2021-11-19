@@ -26,7 +26,7 @@ def main():
     parser.add_argument('--tag', type=str, default="./SQR/", help='Save_prefix')
     parser.add_argument('--gpu_ids', type=str, default="7", help='Use which GPU to train')
     parser.add_argument('--epoch', type=int, default=50, help='how many epochs to train')
-    parser.add_argument('--batch', type=int, default=25, help='how many batches in one run')
+    parser.add_argument('--batch', type=int, default=10, help='how many batches in one run')
     parser.add_argument('--loss_display_per_iter', type=int, default=600, help='display how many losses per iteration')
     parser.add_argument('--folder_pet', type=str, default="./SQR/X/train/", help='input folder of T1MAP images')
     parser.add_argument('--folder_sct', type=str, default="./SQR/Y/train/", help='input folder of BRAVO images')
@@ -41,7 +41,7 @@ def main():
     print('export CUDA_VISIBLE_DEVICES=' + gpu_list)
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-    model = UNet(n_channels=3, n_classes=1, bilinear=True)
+    model = UNet_simple(n_channels=3, n_classes=1, bilinear=True)
     model.train().float()
     model = model.to(device)
     criterion = nn.SmoothL1Loss()
