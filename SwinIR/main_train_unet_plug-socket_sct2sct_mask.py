@@ -202,7 +202,8 @@ def main():
                 batch_x_mask = generate_mask(len_x=batch_x.shape[2],
                                              len_y=batch_x.shape[3],
                                              xy_mask=xy_mask,
-                                             mask_ratio=args.mask_ratio)
+                                             mask_ratio=args.mask_ratio,
+                                             size_patch=args.mask_size_patch)
 
                 for idx_batch in range(args.batch):
                     z_center = input_list[idx_iter*args.batch+idx_batch]
