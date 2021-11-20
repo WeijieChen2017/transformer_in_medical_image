@@ -46,8 +46,6 @@ def generate_mask(len_x, len_y, xy_mask, mask_ratio, size_patch):
 
 def main():
     np.random.seed(seed=813)
-    xy_mask = generate_patch_seq(len_x=512, len_y=512, size_patch=args.mask_size_patch)
-
     parser = argparse.ArgumentParser()
     parser.add_argument('--input_channel', type=int, default=3, help='the number of input channel')
     parser.add_argument('--output_channel', type=int, default=1, help='the number of output channel')
@@ -66,6 +64,7 @@ def main():
     args = parser.parse_args()
     input_channel = args.input_channel
     output_channel = args.output_channel
+    xy_mask = generate_patch_seq(len_x=512, len_y=512, size_patch=args.mask_size_patch)
 
     gpu_list = ','.join(str(x) for x in args.gpu_ids)
     os.environ['CUDA_VISIBLE_DEVICES'] = gpu_list
