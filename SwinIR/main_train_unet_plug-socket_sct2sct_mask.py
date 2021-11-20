@@ -30,7 +30,7 @@ def generate_patch_seq(len_x, len_y, size_patch):
             cnt += 1
     return xy_mask
 
-def generate_mask(len_x, len_y, xy_mask, mask_ratio):
+def generate_mask(len_x, len_y, xy_mask, mask_ratio, size_patch):
     random.shuffle(xy_mask)
     xy_mask_list = xy_mask[:int((1-mask_ratio)*len(xy_mask))]
     input_mask = np.zeros((len_x, len_y))
@@ -46,10 +46,9 @@ def generate_mask(len_x, len_y, xy_mask, mask_ratio):
 
 def main():
     np.random.seed(seed=813)
-    xy_mask = None
+    xy_mask = generate_patch_seq(len_x=512, len_y=512, size_patch=args.mask_size_patch)
 
     parser = argparse.ArgumentParser()
-
     parser.add_argument('--input_channel', type=int, default=3, help='the number of input channel')
     parser.add_argument('--output_channel', type=int, default=1, help='the number of output channel')
     parser.add_argument('--tag', type=str, default="./SQR/", help='Save_prefix')
@@ -62,6 +61,8 @@ def main():
     parser.add_argument('--folder_pet_v', type=str, default="./SQR/X/val/", help='input folder of T1MAP PET images')
     parser.add_argument('--folder_sct_v', type=str, default="./SQR/Y/val/", help='input folder of BRAVO images')
     parser.add_argument('--mask_ratio', type=float, default=0.5, help='mask_ratio of input')
+    parser.add_argument('--mask_size_patch', type=int, default=16, help='size patch of masks')
+    
     args = parser.parse_args()
     input_channel = args.input_channel
     output_channel = args.output_channel
@@ -114,14 +115,11 @@ def main():
                 batch_x = np.zeros((args.batch, input_channel, cube_x_data.shape[0], cube_x_data.shape[1]))
                 batch_y = np.zeros((args.batch, output_channel, cube_y_data.shape[0], cube_y_data.shape[1]))
 
-                if xy_mask is None:
-                    xy_mask = generate_patch_seq(len_x=batch_x.shape[2],
-                                                 len_y=batch_x.shape[3],
-                                                 size_patch=16)
                 batch_x_mask = generate_mask(len_x=batch_x.shape[2],
                                              len_y=batch_x.shape[3],
                                              xy_mask=xy_mask,
-                                             mask_ratio=args.mask_ratio)
+                                             mask_ratio=args.mask_ratio,
+                                             size_patch=args.mask_size_patch)
 
                 for idx_batch in range(args.batch):
                     z_center = input_list[idx_iter*args.batch+idx_batch]
@@ -202,10 +200,6 @@ def main():
                 batch_x = np.zeros((args.batch, input_channel, cube_x_data.shape[0], cube_x_data.shape[1]))
                 batch_y = np.zeros((args.batch, output_channel, cube_y_data.shape[0], cube_y_data.shape[1]))
 
-                if xy_mask is None:
-                    xy_mask = generate_patch_seq(len_x=batch_x.shape[2],
-                                                 len_y=batch_x.shape[3],
-                                                 size_patch=16)
                 batch_x_mask = generate_mask(len_x=batch_x.shape[2],
                                              len_y=batch_x.shape[3],
                                              xy_mask=xy_mask,
