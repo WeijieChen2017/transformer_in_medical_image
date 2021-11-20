@@ -115,11 +115,11 @@ def main():
                 batch_y = np.zeros((args.batch, output_channel, cube_y_data.shape[0], cube_y_data.shape[1]))
 
                 if xy_mask is None:
-                    xy_mask = generate_patch_seq(len_x=batch_x.shape[0],
-                                                 len_y=batch_x.shape[1],
+                    xy_mask = generate_patch_seq(len_x=batch_x.shape[2],
+                                                 len_y=batch_x.shape[3],
                                                  size_patch=16)
-                batch_x_mask = generate_mask(len_x=batch_x.shape[0],
-                                             len_y=batch_x.shape[1],
+                batch_x_mask = generate_mask(len_x=batch_x.shape[2],
+                                             len_y=batch_x.shape[3],
                                              xy_mask=xy_mask,
                                              mask_ratio=args.mask_ratio)
 
@@ -203,11 +203,11 @@ def main():
                 batch_y = np.zeros((args.batch, output_channel, cube_y_data.shape[0], cube_y_data.shape[1]))
 
                 if xy_mask is None:
-                    xy_mask = generate_patch_seq(len_x=batch_x.shape[0],
-                                                 len_y=batch_x.shape[1],
+                    xy_mask = generate_patch_seq(len_x=batch_x.shape[2],
+                                                 len_y=batch_x.shape[3],
                                                  size_patch=16)
-                batch_x_mask = generate_mask(len_x=batch_x.shape[0],
-                                             len_y=batch_x.shape[1],
+                batch_x_mask = generate_mask(len_x=batch_x.shape[2],
+                                             len_y=batch_x.shape[3],
                                              xy_mask=xy_mask,
                                              mask_ratio=args.mask_ratio)
 
