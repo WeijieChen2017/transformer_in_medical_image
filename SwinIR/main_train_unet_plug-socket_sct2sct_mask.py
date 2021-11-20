@@ -16,9 +16,6 @@ import requests
 from utils import util_calculate_psnr_ssim as util
 from unet import UNet_simple
 
-np.random.seed(seed=813)
-xy_mask = None
-
 def generate_patch_seq(len_x, len_y, size_patch):
     mask_input = np.zeros((len_x, len_y))
     len_list_x = len_x // size_patch
@@ -48,6 +45,9 @@ def generate_mask(len_x, len_y, xy_mask, mask_ratio):
     return input_mask
 
 def main():
+    np.random.seed(seed=813)
+    xy_mask = None
+
     parser = argparse.ArgumentParser()
 
     parser.add_argument('--input_channel', type=int, default=3, help='the number of input channel')
