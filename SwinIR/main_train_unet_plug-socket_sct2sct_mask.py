@@ -58,7 +58,7 @@ def main():
     parser.add_argument('--folder_sct', type=str, default="./SQR/Y/train/", help='input folder of BRAVO images')
     parser.add_argument('--folder_pet_v', type=str, default="./SQR/X/val/", help='input folder of T1MAP PET images')
     parser.add_argument('--folder_sct_v', type=str, default="./SQR/Y/val/", help='input folder of BRAVO images')
-    parser.add_argument('--mask_ratio', type=float, default=0.5, help='mask_ratio of input')
+    parser.add_argument('--mask_ratio', type=float, default=0.25, help='mask_ratio of input')
     parser.add_argument('--mask_size_patch', type=int, default=16, help='size patch of masks')
     
     args = parser.parse_args()
