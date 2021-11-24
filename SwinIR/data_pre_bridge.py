@@ -109,12 +109,12 @@ for package in [packageVal, packageTrain, packageTest]: #
         print(dataNormX.shape, dataNormY.shape)
 
         fileNormX = nib.Nifti1Image(dataNormX, fileX.affine, fileX.header)
-        nameX = folderX + "RSZ_" + filenameX + ".nii.gz"
+        nameX = folderX + "RSZ_0" + filenameX + ".nii.gz"
         nib.save(fileNormX, nameX)
         print("Saved to", nameX)
         
         fileNormY = nib.Nifti1Image(dataNormY, fileY.affine, fileY.header)
-        nameY = folderY + "RSZ_" + filenameY + ".nii.gz"
+        nameY = folderY + "RSZ_0" + filenameY + ".nii.gz"
         nib.save(fileNormY, nameY)
         print("Saved to", nameY)
     print(len(fileList), " files are saved. ")
