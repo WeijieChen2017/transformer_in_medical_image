@@ -106,7 +106,13 @@ for package in [packageVal, packageTrain, packageTest]: #
         dataNormY = normY(dataY)
         print(dataNormX.shape, dataNormY.shape)
 
-        np.save(folderX + "RSZ_" + filenameX + ".npy", dataNormX)
-        np.save(folderY + "RSZ_" + filenameY + ".npy", dataNormY)        
-        print(folderX + "RSZ_0" + filenameX + ".npy")
+        fileNormX = nib.Nifti1Image(dataNormX, fileX.affine, fileX.header)
+        nameX = folderX + "RSZ_" + filenameX + ".nii.gz"
+        nib.save(fileNormX, nameX)
+        print("Saved to", nameX)
+        
+        fileNormY = nib.Nifti1Image(dataNormY, fileY.affine, fileY.header)
+        nameY = folderY + "RSZ_" + filenameY + ".nii.gz"
+        nib.save(fileNormY, nameY)
+        print("Saved to", nameY)
     print(len(fileList), " files are saved. ")
