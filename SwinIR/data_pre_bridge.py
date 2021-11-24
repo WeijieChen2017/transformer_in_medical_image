@@ -97,13 +97,15 @@ for package in [packageVal, packageTrain, packageTest]: #
         pathY = search_folderY+os.path.basename(pathX).replace("MR", "CT")
         filenameX = os.path.basename(pathX)[9:11]
         filenameY = os.path.basename(pathY)[9:11]
-        dataX = nib.load(pathX).get_fdata()
-        dataY = nib.load(pathY).get_fdata()
-        # print("X:", np.amax(dataX), np.amin(dataX), "<--> Y:", np.amax(dataY), np.amin(dataY))
+        fileX = nib.load(pathX)
+        fileY = nib.load(pathY)
+        dataX = fileX.get_fdata()
+        dataY = fileY.get_fdata()
         if np.amin(dataY) < 0:
             dataY = dataY - 1000
         dataNormX = normX(dataX)
         dataNormY = normY(dataY)
+        print("X:", np.amax(dataX), np.amin(dataX), "<--> Y:", np.amax(dataY), np.amin(dataY))
         print(dataNormX.shape, dataNormY.shape)
 
         fileNormX = nib.Nifti1Image(dataNormX, fileX.affine, fileX.header)
