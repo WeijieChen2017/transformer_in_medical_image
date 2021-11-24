@@ -59,16 +59,16 @@ fileList = np.asarray(fileList)
 np.random.shuffle(fileList)
 fileList = list(fileList)
 
-testList = sorted(fileList)
-valList = []
-trainList = []
+# testList = sorted(fileList)
+# valList = []
+# trainList = []
 
-# valList = fileList[:int(len(fileList)*valRatio)]
-# valList.sort()
-# testList = fileList[-int(len(fileList)*testRatio):]
-# testList.sort()
-# trainList = list(set(fileList) - set(valList) - set(testList))
-# trainList.sort()
+valList = fileList[:int(len(fileList)*valRatio)]
+valList.sort()
+testList = fileList[-int(len(fileList)*testRatio):]
+testList.sort()
+trainList = list(set(fileList) - set(valList) - set(testList))
+trainList.sort()
 
 print('-'*50)
 print("Training list: ", trainList)
@@ -99,16 +99,14 @@ for package in [packageVal, packageTrain, packageTest]: #
         filenameY = os.path.basename(pathY)[9:11]
         dataX = nib.load(pathX).get_fdata()
         dataY = nib.load(pathY).get_fdata()
-        print("X:", np.amax(dataX), np.amin(dataX), "<--> Y:", np.amax(dataY), np.amin(dataY))
+        # print("X:", np.amax(dataX), np.amin(dataX), "<--> Y:", np.amax(dataY), np.amin(dataY))
+        if np.amin(dataY) < 0:
+            dataY = dataY - 1000
         dataNormX = normX(dataX)
-        # if filenameX in ["04", "23", "49", "59"]:
-        #     print("Special norm!")
-        #     dataNormY = normY_offset1000(dataY)
-        # else:
-        #     dataNormY = normY(dataY)
-        # print(dataNormX.shape, dataNormY.shape)
+        dataNormY = normY(dataY)
+        print(dataNormX.shape, dataNormY.shape)
 
-        # np.save(folderX + "RSZ_0" + filenameX + ".npy", dataNormX)
-        # np.save(folderY + "RSZ_0" + filenameY + ".npy", dataNormY)        
-        # print(folderX + "RSZ_0" + filenameX + ".npy")
-    # print(len(fileList), " files are saved. ")
+        np.save(folderX + "RSZ_" + filenameX + ".npy", dataNormX)
+        np.save(folderY + "RSZ_" + filenameY + ".npy", dataNormY)        
+        print(folderX + "RSZ_0" + filenameX + ".npy")
+    print(len(fileList), " files are saved. ")
