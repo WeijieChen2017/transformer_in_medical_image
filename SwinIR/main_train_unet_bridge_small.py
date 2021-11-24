@@ -23,8 +23,8 @@ def main():
 
     parser.add_argument('--input_channel', type=int, default=3, help='the number of input channel')
     parser.add_argument('--output_channel', type=int, default=1, help='the number of output channel')
-    parser.add_argument('--tag', type=str, default="./bridge_small/CT/", help='Save_prefix')
-    parser.add_argument('--gpu_ids', type=str, default="7", help='Use which GPU to train')
+    parser.add_argument('--tag', type=str, default="./bridge_small/MR/", help='Save_prefix')
+    parser.add_argument('--gpu_ids', type=str, default="6", help='Use which GPU to train')
     parser.add_argument('--epoch', type=int, default=50, help='how many epochs to train')
     parser.add_argument('--batch', type=int, default=10, help='how many batches in one run')
     parser.add_argument('--loss_display_per_iter', type=int, default=600, help='display how many losses per iteration')
@@ -70,9 +70,10 @@ def main():
         random.shuffle(sct_list)
         for cnt_sct, sct_path in enumerate(sct_list):
 
-            # cube_x_path = sct_path.replace("Y", "X")
-            cube_x_path = sct_path
-            cube_y_path = sct_path
+            cube_x_path = sct_path.replace("Y", "X")
+            cube_y_path = sct_path.replace("Y", "X")
+            # cube_x_path = sct_path
+            # cube_y_path = sct_path
             print("--->",cube_x_path,"<---", end="")
             # cube_x_data = np.load(cube_x_path)
             # cube_y_data = np.load(cube_y_path)
@@ -150,9 +151,10 @@ def main():
         for cnt_sct, sct_path in enumerate(sct_list_v):
 
             # eval
-            # cube_x_path = sct_path.replace("Y", "X")
-            cube_x_path = sct_path
-            cube_y_path = sct_path
+            cube_x_path = sct_path.replace("Y", "X")
+            cube_y_path = sct_path.replace("Y", "X")
+            # cube_x_path = sct_path
+            # cube_y_path = sct_path
             print("--->",cube_x_path,"<---", end="")
             # cube_x_data = np.load(cube_x_path)
             # cube_y_data = np.load(cube_y_path)
