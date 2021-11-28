@@ -160,7 +160,7 @@ class UNet_bridge(nn.Module):
         self.pos_embedding = nn.Parameter(torch.randn(1, num_patches + 1, dim))
         self.dropout = nn.Dropout(0.1)
 
-        self.transformer = vit.Transformer(dim=dim, depth=6, heads=16,
+        self.transformer = Transformer(dim=dim, depth=6, heads=16,
                                            dim_head=64, mlp_dim=1024, dropout=0.1)
 
         # image_size = 256,
