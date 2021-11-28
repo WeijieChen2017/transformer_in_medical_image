@@ -120,7 +120,7 @@ class UNet_D(nn.Module):
 
 class UNet_bridge(nn.Module):
     def __init__(self, n_channels, n_classes, patch_lenX=8, patch_lenY=8, bilinear=True):
-        super(UNet_simple, self).__init__()
+        super(UNet_bridge, self).__init__()
         self.n_channels = n_channels
         self.n_classes = n_classes
         self.bilinear = bilinear
