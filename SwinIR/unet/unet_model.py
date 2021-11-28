@@ -191,21 +191,25 @@ class UNet_bridge(nn.Module):
         self.up4 = Up_simple(128, 64, bilinear)
         self.outc = OutConv(64, n_classes)
 
+
+
     def forward(self, x):
+
+        with torch.no_grad():
         # print()
         # print("-->Input--->", x.size())
-        x = self.inc(x)
-        # print("-->Inc--->", x.size())
-        x = self.down1(x)
-        # print("-->Down1--->", x.size())
-        x = self.down2(x)
-        # print("-->Down2--->", x.size())
-        x = self.down3(x)
-        # print("-->Down3--->", x.size())
-        x = self.down4(x)
-        # print("-->Down4--->", x.size())
-        x = self.hidden_1(x)
-        # print("-->Hidden1--->", x.size())
+            x = self.inc(x)
+            # print("-->Inc--->", x.size())
+            x = self.down1(x)
+            # print("-->Down1--->", x.size())
+            x = self.down2(x)
+            # print("-->Down2--->", x.size())
+            x = self.down3(x)
+            # print("-->Down3--->", x.size())
+            x = self.down4(x)
+            # print("-->Down4--->", x.size())
+            x = self.hidden_1(x)
+            # print("-->Hidden1--->", x.size())
 
         x = self.embedding(x) + self.pos_embedding
         # print("-->embedding--->", x.size())
@@ -216,18 +220,19 @@ class UNet_bridge(nn.Module):
         x = self.unembedding(x)
         # print("-->unembedding--->", x.size())
 
-        x = self.hidden_2(x)
-        # print("-->Hidden2--->", x.size())
-        x = self.up1(x)
-        # print("-->Up1--->", x.size())
-        x = self.up2(x)
-        # print("-->Up2--->", x.size())
-        x = self.up3(x)
-        # print("-->Up3--->", x.size())
-        x = self.up4(x)
-        # print("-->Up4--->", x.size())
-        x = self.outc(x)
-        # print("-->Outc--->", x.size())
+        with torch.no_grad():
+            x = self.hidden_2(x)
+            # print("-->Hidden2--->", x.size())
+            x = self.up1(x)
+            # print("-->Up1--->", x.size())
+            x = self.up2(x)
+            # print("-->Up2--->", x.size())
+            x = self.up3(x)
+            # print("-->Up3--->", x.size())
+            x = self.up4(x)
+            # print("-->Up4--->", x.size())
+            x = self.outc(x)
+            # print("-->Outc--->", x.size())
         
         # exit()
         return x
