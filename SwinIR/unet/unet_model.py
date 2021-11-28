@@ -194,7 +194,7 @@ class UNet_bridge(nn.Module):
         no_grad_list = [self.inc, self.down1, self.down2, self.down3, self.down4, self.hidden_1,
                         self.hidden_2, self.up1, self.up2, self.up3, self.up4, self.outc]
         for layer in no_grad_list:
-            for p in layer..parameters():
+            for p in layer.parameters():
                 p.requires_grad = False
 
 
