@@ -157,11 +157,11 @@ class UNet_bridge(nn.Module):
             Rearrange('b c (cfx px) (cfy py) -> b (cfx cfy) (px py c)', px = patch_lenX, py = patch_lenX),
             nn.Linear(patch_dim, dim),
         )
-        self.pos_embedding = nn.Parameter(torch.randn(1, num_patches + 1, dim))
+        self.pos_embedding = nn.Parameter(torch.randn(1, num_patches, dim))
         self.dropout = nn.Dropout(0.1)
 
         self.transformer = Transformer(dim=dim, depth=6, heads=16,
-                                           dim_head=64, mlp_dim=1024, dropout=0.1)
+                                       dim_head=64, mlp_dim=1024, dropout=0.1)
 
         # image_size = 256,
         # patch_size = 32,
