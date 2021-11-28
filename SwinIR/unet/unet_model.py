@@ -229,5 +229,5 @@ class UNet_bridge(nn.Module):
         x = self.outc(x)
         # print("-->Outc--->", x.size())
         
-        exit()
+        # exit()
         return x
