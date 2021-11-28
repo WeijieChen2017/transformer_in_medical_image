@@ -119,29 +119,61 @@ class UNet_D(nn.Module):
 
 
 class UNet_bridge(nn.Module):
-    def __init__(self, n_channels, n_classes, patch_lenX=8, patch_lenY=8, bilinear=True):
+    def __init__(self, n_channels, n_classes, bilinear=True):
         super(UNet_bridge, self).__init__()
         self.n_channels = n_channels
         self.n_classes = n_classes
         self.bilinear = bilinear
 
-        self.inc = DoubleConv(n_channels, 64) # 512
+        self.inc = DoubleConv(n_channels, 64) # 256
         self.down1 = Down(64, 128) # 256
         self.down2 = Down(128, 256) # 128
         self.down3 = Down(256, 512) # 64
         self.down4 = Down(512, 1024) # 32
-        self.hidden_1 = DoubleConv(1024, 1024) # 32
+        self.hidden_1 = DoubleConv(1024, 1024) # 16
 
-        # if input is 512*512*3, then output of hidden_1 is 32*32*1024
-        # compress feature size is 
-        # num_patches = (CompFea_lenX // patch_lenX) * (CompFea_lenY // patch_lenY)
-        # patch_dim = 1024 * patch_lenX * patch_lenY
-        # self.embedding = nn.Sequential(
-        #     Rearrange('b c (h p1) (w p2) -> b (h w) (p1 p2 c)', p1 = patch_height, p2 = patch_width),
-        #     nn.Linear(patch_dim, dim),
-        # )
-        # self.transformer = vit.Transformer(dim, depth, heads, dim_head, mlp_dim, dropout)
-        # self.unembedding = 
+        # -->Input---> torch.Size([10, 3, 256, 256])
+        # -->Inc-----> torch.Size([10, 64, 256, 256])
+        # -->Down1---> torch.Size([10, 128, 128, 128])
+        # -->Down2---> torch.Size([10, 256, 64, 64])
+        # -->Down3---> torch.Size([10, 512, 32, 32])
+        # -->Down4---> torch.Size([10, 1024, 16, 16])
+        # -->Hidden1-> torch.Size([10, 1024, 16, 16])
+        # -->Hidden2-> torch.Size([10, 1024, 16, 16])
+        # -->Up1-----> torch.Size([10, 512, 32, 32])
+        # -->Up2-----> torch.Size([10, 256, 64, 64])
+        # -->Up3-----> torch.Size([10, 128, 128, 128])
+        # -->Up4-----> torch.Size([10, 64, 256, 256])
+        # -->Outc----> torch.Size([10, 1, 256, 256])
+
+        CompFea_lenX, CompFea_lenY = 16, 16
+        patch_lenX, patch_lenY = 1, 1
+        num_patches = (CompFea_lenX // patch_lenX) * (CompFea_lenY // patch_lenY) # 256
+        patch_dim = 1024 * patch_lenX * patch_lenY # 1024
+        dim = 1024
+
+        # 10, 1024, 16, 16 -> 10, 256, 1024 -> 10, 256, 1024
+        self.embedding = nn.Sequential(
+            Rearrange('b c (cfx px) (cfy py) -> b (cfx cfy) (px py c)', px = patch_lenX, py = patch_lenX),
+            nn.Linear(patch_dim, dim),
+        )
+        self.pos_embedding = nn.Parameter(torch.randn(1, num_patches + 1, dim))
+        self.dropout = nn.Dropout(0.1)
+
+        self.transformer = vit.Transformer(dim=dim, depth=6, heads=16,
+                                           dim_head=64, mlp_dim=1024, dropout=0.1)
+
+        # image_size = 256,
+        # patch_size = 32,
+        # num_classes = 1000,
+        # dim = 1024,
+        # depth = 6,
+        # heads = 16,
+        # mlp_dim = 2048,
+        # dropout = 0.1,
+        # emb_dropout = 0.1
+
+        self.unembedding = 
         self.hidden_2 = DoubleConv(1024, 1024)
         self.up1 = Up_simple(1024, 512, bilinear)
         self.up2 = Up_simple(512, 256, bilinear)
@@ -150,6 +182,7 @@ class UNet_bridge(nn.Module):
         self.outc = OutConv(64, n_classes)
 
     def forward(self, x):
+        print()
         print("-->Input--->", x.size())
         x = self.inc(x)
         print("-->Inc--->", x.size())
@@ -163,8 +196,16 @@ class UNet_bridge(nn.Module):
         print("-->Down4--->", x.size())
         x = self.hidden_1(x)
         print("-->Hidden1--->", x.size())
+
+        x = self.embedding(x) + self.pos_embedding
+        x = self.dropout(x)
+        x = self.transformer(x)
+        print("-->Bridge--->", x.size())
+        exit()
+
+
         x = self.hidden_2(x)
-        print("-->Hidden2", x.size())
+        print("-->Hidden2--->", x.size())
         x = self.up1(x)
         print("-->Up1--->", x.size())
         x = self.up2(x)
@@ -175,6 +216,6 @@ class UNet_bridge(nn.Module):
         print("-->Up4--->", x.size())
         x = self.outc(x)
         print("-->Outc--->", x.size())
-        exit()
+        
         exit()
         return x
