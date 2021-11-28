@@ -76,13 +76,13 @@ def main():
     model_state_dict = model.state_dict()
     dict_name = list(model_state_dict)
     for i, p in enumerate(dict_name):
-        print(i, p)
+        print(i, p, p.requires_grad())
 
     model.train().float()
     model = model.to(device)
     criterion = nn.SmoothL1Loss()
-    # optimizer = torch.optim.AdamW(filter(lambda p: p.requires_grad, model.parameters()), lr=1e-4)
-    optimizer = torch.optim.AdamW(model.parameters(), lr=1e-4)
+    optimizer = torch.optim.AdamW(filter(lambda p: p.requires_grad, model.parameters()), lr=1e-4)
+    # optimizer = torch.optim.AdamW(model.parameters(), lr=1e-4)
 
     sct_list = sorted(glob.glob(args.folder_sct+"*.nii.gz"))
     sct_list_v = sorted(glob.glob(args.folder_sct_v+"*.nii.gz"))
