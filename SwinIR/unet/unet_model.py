@@ -173,8 +173,12 @@ class UNet_bridge(nn.Module):
         # dropout = 0.1,
         # emb_dropout = 0.1
 
-        # self.unembedding = 
-
+        self.unembedding = nn.Sequential(
+            nn.Linear(dim, patch_dim),
+            Rearrange(' b (cfx cfy) (px py c) -> b c (cfx px) (cfy py)', 
+                px = patch_lenX, py = patch_lenX,
+                cfx = patch_lenX, cfy = patch_lenY),
+        )
 
         self.hidden_2 = DoubleConv(1024, 1024)
         self.up1 = Up_simple(1024, 512, bilinear)
@@ -205,8 +209,8 @@ class UNet_bridge(nn.Module):
         print("-->dropout--->", x.size())
         x = self.transformer(x)
         print("-->Bridge--->", x.size())
-        exit()
-
+        x = self.unembedding(x)
+        print("-->unembedding--->", x.size())
 
         x = self.hidden_2(x)
         print("-->Hidden2--->", x.size())
