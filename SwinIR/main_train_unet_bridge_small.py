@@ -14,7 +14,7 @@ import requests
 
 # from models.network_swinir import SwinIR as net
 from utils import util_calculate_psnr_ssim as util
-from unet import UNet_simple
+from unet import UNet_bridge
 
 np.random.seed(seed=813)
 
