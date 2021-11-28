@@ -173,11 +173,15 @@ class UNet_bridge(nn.Module):
         # dropout = 0.1,
         # emb_dropout = 0.1
 
+        #-->embedding---> torch.Size([10, 256, 1024])
+        #-->dropout---> torch.Size([10, 256, 1024])
+        #-->Bridge---> torch.Size([10, 256, 1024])
+
         self.unembedding = nn.Sequential(
             nn.Linear(dim, patch_dim),
             Rearrange(' b (cfx cfy) (px py c) -> b c (cfx px) (cfy py)', 
                 px = patch_lenX, py = patch_lenX,
-                cfx = patch_lenX, cfy = patch_lenY),
+                cfx = CompFea_lenX, cfy = CompFea_lenY),
         )
 
         self.hidden_2 = DoubleConv(1024, 1024)
