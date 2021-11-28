@@ -1,7 +1,7 @@
 """ Full assembly of the parts to form the complete network """
 from torch import nn
 from .unet_parts import *
-from ..vit_pytorch import vit
+from .vit import *
 from einops.layers.torch import Rearrange
 
 class UNet(nn.Module):
