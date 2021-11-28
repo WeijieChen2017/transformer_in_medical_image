@@ -44,7 +44,7 @@ def main():
         if not os.path.exists(path):
             os.mkdir(path)
 
-    config_vit = CONFIGS_ViT_seg["R50-ViT-L_16"]
+    config_vit = CONFIGS_ViT_seg["R50-ViT-L_32"]
     config_vit.n_classes = 1
     config_vit.n_skip = 3
     model = ViT_seg(config_vit, img_size=256, num_classes=1)

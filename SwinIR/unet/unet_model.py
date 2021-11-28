@@ -1,7 +1,8 @@
 """ Full assembly of the parts to form the complete network """
-
+import nn
 from .unet_parts import *
-
+from ..vit_pytorch import vit
+from einops.layers.torch import Rearrange
 
 class UNet(nn.Module):
     def __init__(self, n_channels, n_classes, bilinear=True):
@@ -115,3 +116,64 @@ class UNet_D(nn.Module):
         x = self.up4(x, x1)
         logits = self.outc(x)
         return logits
+
+
+class UNet_bridge(nn.Module):
+    def __init__(self, n_channels, n_classes, patch_lenX, patch_lenY, bilinear=True):
+        super(UNet_simple, self).__init__()
+        self.n_channels = n_channels
+        self.n_classes = n_classes
+        self.bilinear = bilinear
+
+        self.inc = DoubleConv(n_channels, 64) # 512
+        self.down1 = Down(64, 128) # 256
+        self.down2 = Down(128, 256) # 128
+        self.down3 = Down(256, 512) # 64
+        self.down4 = Down(512, 1024) # 32
+        self.hidden_1 = DoubleConv(1024, 1024) # 32
+
+        # if input is 512*512*3, then output of hidden_1 is 32*32*1024
+        # compress feature size is 
+        # num_patches = (CompFea_lenX // patch_lenX) * (CompFea_lenY // patch_lenY)
+        # patch_dim = 1024 * patch_lenX * patch_lenY
+        # self.embedding = nn.Sequential(
+        #     Rearrange('b c (h p1) (w p2) -> b (h w) (p1 p2 c)', p1 = patch_height, p2 = patch_width),
+        #     nn.Linear(patch_dim, dim),
+        # )
+        # self.transformer = vit.Transformer(dim, depth, heads, dim_head, mlp_dim, dropout)
+        # self.unembedding = 
+        self.hidden_2 = DoubleConv(1024, 1024)
+        self.up1 = Up_simple(1024, 512, bilinear)
+        self.up2 = Up_simple(512, 256, bilinear)
+        self.up3 = Up_simple(256, 128, bilinear)
+        self.up4 = Up_simple(128, 64, bilinear)
+        self.outc = OutConv(64, n_classes)
+
+    def forward(self, x):
+        print("-->Input--->", x.size())
+        x = self.inc(x)
+        print("-->Inc--->", x.size())
+        x = self.down1(x)
+        print("-->Down1--->", x.size())
+        x = self.down2(x)
+        print("-->Down2--->", x.size())
+        x = self.down3(x)
+        print("-->Down3--->", x.size())
+        x = self.down4(x)
+        print("-->Down4--->", x.size())
+        x = self.hidden_1(x)
+        print("-->Hidden1--->", x.size())
+        x = self.hidden_2(x)
+        print("-->Hidden2", x.size())
+        x = self.up1(x)
+        print("-->Up1--->", x.size())
+        x = self.up2(x)
+        print("-->Up2--->", x.size())
+        x = self.up3(x)
+        print("-->Up3--->", x.size())
+        x = self.up4(x)
+        print("-->Up4--->", x.size())
+        x = self.outc(x)
+        print("-->Outc--->", x.size())
+        exit()
+        return x
