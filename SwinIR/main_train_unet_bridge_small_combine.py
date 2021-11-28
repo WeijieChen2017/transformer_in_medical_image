@@ -76,7 +76,7 @@ def main():
     model_state_dict = model.state_dict()
     dict_name = list(model_state_dict)
     for i, p in enumerate(dict_name):
-        print(i, p, p.requires_grad())
+        print(i, p)
 
     model.train().float()
     model = model.to(device)
