@@ -1,5 +1,5 @@
 """ Full assembly of the parts to form the complete network """
-import nn
+from torch import nn
 from .unet_parts import *
 from ..vit_pytorch import vit
 from einops.layers.torch import Rearrange
