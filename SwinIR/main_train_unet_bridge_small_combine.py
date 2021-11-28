@@ -74,7 +74,7 @@ def main():
     model.load_state_dict(model_state_dict_CT)
 
     model_state_dict = model.state_dict()
-    dict_name = list(model_dict)
+    dict_name = list(model_state_dict)
     for i, p in enumerate(dict_name):
         print(i, p)
 
