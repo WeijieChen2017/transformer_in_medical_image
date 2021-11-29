@@ -90,7 +90,7 @@ def main():
         print("Loaded from", cube_y_path, end="")
 
 
-        pred_file = nib.Nifti1Image(denormY(y_hat), nifty_file.affine, nifty_file.header)
+        pred_file = nib.Nifti1Image(denormX(y_hat), nifty_file.affine, nifty_file.header)
         pred_name = "./bridge_3000/MR_skip/pred/"+"PRD_"+os.path.basename(X_path)[4:7]+".nii.gz"
         nib.save(pred_file, pred_name)
         print(" Saved to", pred_name)
