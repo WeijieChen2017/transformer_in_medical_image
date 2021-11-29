@@ -14,7 +14,7 @@ import requests
 
 # from models.network_swinir import SwinIR as net
 from utils import util_calculate_psnr_ssim as util
-from unet import UNet_bridge, UNet
+from unet import UNet_bridge, UNet, UNet_simple
 
 np.random.seed(seed=813)
 
@@ -45,7 +45,7 @@ def main():
         if not os.path.exists(path):
             os.mkdir(path)
 
-    model = UNet(n_channels=3, n_classes=1, bilinear=True)
+    model = UNet_simple(n_channels=3, n_classes=1, bilinear=True)
     model.train().float()
     model = model.to(device)
     criterion = nn.SmoothL1Loss()
