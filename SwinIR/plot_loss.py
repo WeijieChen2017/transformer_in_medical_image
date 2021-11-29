@@ -29,7 +29,6 @@ for model_name in model_hub:
     current_package.append(copy.deepcopy(loss))
     plot_target.append(current_package)
 
-
 legend_list = []
 plt.figure(figsize=(9,6), dpi=300)
 for package in plot_target:
@@ -42,7 +41,7 @@ for package in plot_target:
 plt.xlabel("epoch")
 plt.ylabel("loss")
 plt.yscale("log")
-plt.legend(["training", "validation"])
+plt.legend(legend_list)
 plt.title("Training curve")
 
 plt.savefig("./bridge_small/loss_{}.jpg".format(n_epoch))
