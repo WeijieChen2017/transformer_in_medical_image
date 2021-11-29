@@ -35,6 +35,7 @@ for package in plot_target:
     loss_array = package[1]
     loss_tag = package[0]
     legend_list.append(loss_tag)
+    print(loss_tag, np.mean(loss_array))
     plt.plot(range(n_epoch), loss_array)
 
 plt.xlabel("epoch")
