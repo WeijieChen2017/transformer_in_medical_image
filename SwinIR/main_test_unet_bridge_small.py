@@ -87,7 +87,7 @@ def main():
 
 
         pred_file = nib.Nifti1Image(denormY(y_hat), nifty_file.affine, nifty_file.header)
-        pred_name = "./bridge_3000/navie_skip/pred/"+"PRD_"+os.path.basename(X_path)[4:7]+".nii.gz"
+        pred_name = "./bridge_3000/naive_skip/pred/"+"PRD_"+os.path.basename(X_path)[4:7]+".nii.gz"
         nib.save(pred_file, pred_name)
         print(" Saved to", pred_name)
 
