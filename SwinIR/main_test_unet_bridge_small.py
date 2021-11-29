@@ -29,7 +29,7 @@ def main():
     parser.add_argument('--gpu_ids', type=str, default="7", help='Use which GPU to train')
     parser.add_argument('--folder_X_te', type=str, default="./bridge_3000/X/test/", help='input folder of T1MAP PET images')
     parser.add_argument('--folder_Y_te', type=str, default="./bridge_3000/Y/test/", help='input folder of BRAVO images')
-    parser.add_argument('--weights_path', type=str, default='./bridge_3000/MR_skip/model_best_038.pth')
+    parser.add_argument('--weights_path', type=str, default='./bridge_3000/CT_skip/model_best_028.pth')
     args = parser.parse_args()
 
     gpu_list = ','.join(str(x) for x in args.gpu_ids)
@@ -38,7 +38,7 @@ def main():
 
     device = torch.device('cuda' if  torch.cuda.is_available() else 'cpu')
 
-    for path in ["./bridge_3000/MR_skip/pred/"]:
+    for path in ["./bridge_3000/CT_skip/pred/"]:
         if not os.path.exists(path):
             os.mkdir(path)
 
@@ -55,9 +55,10 @@ def main():
 
     for cnt_X, X_path in enumerate(X_list):
 
-        cube_x_path = X_path
-        # cube_y_path = args.folder_Y_te+os.path.basename(X_path)
-        cube_y_path = X_path
+        # cube_x_path = X_path
+        # cube_y_path = X_path
+        cube_x_path = args.folder_Y_te+os.path.basename(X_path)
+        cube_y_path = args.folder_Y_te+os.path.basename(X_path)
         print("->",cube_x_path, "<-",end="")
         cube_x_data = nib.load(cube_x_path).get_fdata()
         cube_y_data = nib.load(cube_y_path).get_fdata()
@@ -90,8 +91,8 @@ def main():
         print("Loaded from", cube_y_path, end="")
 
 
-        pred_file = nib.Nifti1Image(denormX(y_hat), nifty_file.affine, nifty_file.header)
-        pred_name = "./bridge_3000/MR_skip/pred/"+"PRD_"+os.path.basename(X_path)[4:7]+".nii.gz"
+        pred_file = nib.Nifti1Image(denormY(y_hat), nifty_file.affine, nifty_file.header)
+        pred_name = "./bridge_3000/CT_skip/pred/"+"PRD_"+os.path.basename(X_path)[4:7]+".nii.gz"
         nib.save(pred_file, pred_name)
         print(" Saved to", pred_name)
 
