@@ -17,7 +17,7 @@ from utils import util_calculate_psnr_ssim as util
 
 np.random.seed(seed=813)
 
-def normX(data):
+def denormX(data):
     return data * 3000
 
 def denormY(data):
