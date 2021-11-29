@@ -103,7 +103,7 @@ for package in [packageVal, packageTrain, packageTest]: #
         dataX = fileX.get_fdata()
         dataY = fileY.get_fdata()
         print("X:", np.amax(dataX), np.amin(dataX), "<--> Y:", np.amax(dataY), np.amin(dataY))
-        if np.amin(dataY) < 0:
+        if np.amin(dataY) >= -1e-6:
             dataY = dataY - 1000
         dataNormX = normX(dataX)
         dataNormY = normY(dataY)
