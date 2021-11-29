@@ -16,14 +16,15 @@ def normX(data):
 def normY(data):
     data[data<-1000] = -1000
     data[data>2000] = 2000
+    data = data + 1000
     data = data / 3000
     return data
 
-def normY_offset1000(data):
-    data[data<0] = 0
-    data[data>3000] = 3000
-    data = data / 3000
-    return data
+# def normY_offset1000(data):
+#     data[data<0] = 0
+#     data[data>3000] = 3000
+#     data = data / 3000
+#     return data
 
 root_folder = "./"
 save_folder = "./bridge_3000/"
