@@ -9,15 +9,15 @@ import os
 
 def normX(data):
     data[data<0] = 0
-    data[data>3000] = 3000 
-    data = data / 3000
+    data[data>4000] = 4000 
+    data = data / 4000
     return data
 
 def normY(data):
     data[data<-1000] = -1000
-    data[data>2000] = 2000
+    data[data>3000] = 3000
     data = data + 1000
-    data = data / 3000
+    data = data / 4000
     return data
 
 # def normY_offset1000(data):
@@ -108,15 +108,15 @@ for package in [packageVal, packageTrain, packageTest]: #
         dataNormX = normX(dataX)
         dataNormY = normY(dataY)
         print("X:", np.amax(dataNormX), np.amin(dataNormX), "<--> Y:", np.amax(dataNormY), np.amin(dataNormY))
-        # print(dataNormX.shape, dataNormY.shape)
+        print(dataNormX.shape, dataNormY.shape)
 
-        # fileNormX = nib.Nifti1Image(dataNormX, fileX.affine, fileX.header)
-        # nameX = folderX + "RSZ_0" + filenameX + ".nii.gz"
-        # nib.save(fileNormX, nameX)
-        # print("Saved to", nameX)
+        fileNormX = nib.Nifti1Image(dataNormX, fileX.affine, fileX.header)
+        nameX = folderX + "RSZ_0" + filenameX + ".nii.gz"
+        nib.save(fileNormX, nameX)
+        print("Saved to", nameX)
         
-        # fileNormY = nib.Nifti1Image(dataNormY, fileY.affine, fileY.header)
-        # nameY = folderY + "RSZ_0" + filenameY + ".nii.gz"
-        # nib.save(fileNormY, nameY)
-        # print("Saved to", nameY)
+        fileNormY = nib.Nifti1Image(dataNormY, fileY.affine, fileY.header)
+        nameY = folderY + "RSZ_0" + filenameY + ".nii.gz"
+        nib.save(fileNormY, nameY)
+        print("Saved to", nameY)
     print(len(fileList), " files are saved. ")
