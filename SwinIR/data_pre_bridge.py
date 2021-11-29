@@ -9,8 +9,8 @@ import os
 
 def normX(data):
     data[data<0] = 0
-    data[data>2000] = 2000 
-    data = data / 2000
+    data[data>3000] = 3000 
+    data = data / 3000
     return data
 
 def normY(data):
@@ -26,7 +26,7 @@ def normY_offset1000(data):
     return data
 
 root_folder = "./"
-save_folder = "./bridge_small/"
+save_folder = "./bridge_3000/"
 search_folderX = root_folder+"bridge/"
 search_folderY = root_folder+"bridge/"
 valRatio = 0.2
