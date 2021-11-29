@@ -23,15 +23,15 @@ def main():
 
     parser.add_argument('--input_channel', type=int, default=3, help='the number of input channel')
     parser.add_argument('--output_channel', type=int, default=1, help='the number of output channel')
-    parser.add_argument('--tag', type=str, default="./bridge_small/naive_skip/", help='Save_prefix')
+    parser.add_argument('--tag', type=str, default="./bridge_3000/naive_skip/", help='Save_prefix')
     parser.add_argument('--gpu_ids', type=str, default="7", help='Use which GPU to train')
     parser.add_argument('--epoch', type=int, default=50, help='how many epochs to train')
     parser.add_argument('--batch', type=int, default=10, help='how many batches in one run')
     parser.add_argument('--loss_display_per_iter', type=int, default=600, help='display how many losses per iteration')
-    parser.add_argument('--folder_pet', type=str, default="./bridge_small/X/train/", help='input folder of T1MAP images')
-    parser.add_argument('--folder_sct', type=str, default="./bridge_small/Y/train/", help='input folder of BRAVO images')
-    parser.add_argument('--folder_pet_v', type=str, default="./bridge_small/X/val/", help='input folder of T1MAP PET images')
-    parser.add_argument('--folder_sct_v', type=str, default="./bridge_small/Y/val/", help='input folder of BRAVO images')
+    parser.add_argument('--folder_pet', type=str, default="./bridge_3000/X/train/", help='input folder of T1MAP images')
+    parser.add_argument('--folder_sct', type=str, default="./bridge_3000/Y/train/", help='input folder of BRAVO images')
+    parser.add_argument('--folder_pet_v', type=str, default="./bridge_3000/X/val/", help='input folder of T1MAP PET images')
+    parser.add_argument('--folder_sct_v', type=str, default="./bridge_3000/Y/val/", help='input folder of BRAVO images')
     args = parser.parse_args()
     input_channel = args.input_channel
     output_channel = args.output_channel
@@ -49,7 +49,7 @@ def main():
     model.train().float()
     model = model.to(device)
     criterion = nn.SmoothL1Loss()
-    optimizer = torch.optim.AdamW(model.parameters(), lr=1e-4)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3)
 
     sct_list = sorted(glob.glob(args.folder_sct+"*.nii.gz"))
     sct_list_v = sorted(glob.glob(args.folder_sct_v+"*.nii.gz"))

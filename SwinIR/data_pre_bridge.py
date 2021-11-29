@@ -105,7 +105,7 @@ for package in [packageVal, packageTrain, packageTest]: #
             dataY = dataY - 1000
         dataNormX = normX(dataX)
         dataNormY = normY(dataY)
-        print("X:", np.amax(dataX), np.amin(dataX), "<--> Y:", np.amax(dataY), np.amin(dataY))
+        print("X:", np.amax(dataNormX), np.amin(dataNormX), "<--> Y:", np.amax(dataNormY), np.amin(dataNormY))
         print(dataNormX.shape, dataNormY.shape)
 
         fileNormX = nib.Nifti1Image(dataNormX, fileX.affine, fileX.header)
