@@ -27,6 +27,7 @@ for model_name in model_hub:
         data = np.load(name)
         loss[idx] = np.mean(data)
     current_package.append(copy.deepcopy(loss))
+    plot_target.append(current_package)
 
 
 legend_list = []
