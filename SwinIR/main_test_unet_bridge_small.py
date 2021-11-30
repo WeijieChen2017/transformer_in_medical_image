@@ -17,11 +17,25 @@ from utils import util_calculate_psnr_ssim as util
 
 np.random.seed(seed=813)
 
+def normX(data):
+    data[data<0] = 0
+    data[data>4000] = 4000 
+    data = data / 4000
+    return data
+
+def normY(data):
+    data[data<-1000] = -1000
+    data[data>3000] = 3000
+    data = data + 1000
+    data = data / 4000
+    return data
+
+
 def denormX(data):
-    return data * 3000
+    return data * 4000
 
 def denormY(data):
-    data = data * 3000 - 1000
+    data = data * 4000 - 1000
     return data
 
 def main():
