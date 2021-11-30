@@ -252,6 +252,15 @@ class tf_module_skip(nn.Module):
         num_patches = (CompFea_len // patch_len) * (CompFea_len // patch_len)
         patch_dim = 1024 * patch_len * patch_len # 1024
         dim = 1024
+
+        # input is 256x256
+        # CompFea_len is 256, patch_len is 16
+        # num_patches = 16*16 = 256
+        # patch_dim = 1024 * 256
+        # dim = 1024
+        # b, 64, 256, 256 -> b, 64, 16x16, 16x16 -> b, 16x16, 16x16x64
+        # (2560x16384 and 262144x1024)
+
         self.embedding = nn.Sequential(
             Rearrange('b c (cfx px) (cfy py) -> b (cfx cfy) (px py c)', px = patch_len, py = patch_len),
             nn.Linear(patch_dim, dim),
@@ -269,10 +278,16 @@ class tf_module_skip(nn.Module):
                 cfx = CompFea_len, cfy = CompFea_len))
 
     def forward(self, x):
-        x = self.embedding(x) + self.pos_embedding
+        x = self.embedding(x)
+        print(x.size())
+        x += self.pos_embedding
+        print(x.size())
         x = self.dropout(x)
+        print(x.size())
         x = self.transformer(x)
+        print(x.size())
         x = self.unembedding(x)
+        print(x.size())
         return x
 
 
