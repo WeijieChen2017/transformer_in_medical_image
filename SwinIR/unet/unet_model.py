@@ -259,32 +259,11 @@ class UNet_bridge_skip(nn.Module):
 
         # inc, down1, down2, down3, down4
         self.tf_config = [[256, 16],[128, 8],[64, 4],[32, 2],[16, 1]]
-        self.tf_hub = []
-
-        for package in self.tf_config:
-            CompFea_len, patch_len = package[0], package[1]
-
-            CompFea_len, patch_len = 16, 1
-            num_patches = (CompFea_len // patch_len) * (CompFea_len // patch_len)
-            patch_dim = 1024 * patch_len * patch_len # 1024
-            dim = 1024
-            embedding = nn.Sequential(
-                Rearrange('b c (cfx px) (cfy py) -> b (cfx cfy) (px py c)', px = patch_len, py = patch_len),
-                nn.Linear(patch_dim, dim),
-            )
-            pos_embedding = nn.Parameter(torch.randn(1, num_patches, dim))
-            dropout = nn.Dropout(0.1)
-
-            transformer = Transformer(dim=dim, depth=6, heads=16,
-                                           dim_head=64, mlp_dim=1024, dropout=0.1)
-
-            unembedding = nn.Sequential(
-                nn.Linear(dim, patch_dim),
-                Rearrange(' b (cfx cfy) (px py c) -> b c (cfx px) (cfy py)', 
-                    px = patch_len, py = patch_len,
-                    cfx = CompFea_len, cfy = CompFea_len))
-
-            self.tf_hub.append([embedding, pos_embedding, dropout, transformer, unembedding])
+        self.tf_inc = create_tf_module(CompFea_len=256, patch_len=16)
+        self.tf_down1 = create_tf_module(CompFea_len=128, patch_len=8)
+        self.tf_down2 = create_tf_module(CompFea_len=64, patch_len=4)
+        self.tf_down3 = create_tf_module(CompFea_len=32, patch_len=2)
+        self.tf_down4 = create_tf_module(CompFea_len=16, patch_len=1)
 
         # -->Input---> torch.Size([10, 3, 256, 256])
         # -->inc---> torch.Size([10, 64, 256, 256])
@@ -298,12 +277,37 @@ class UNet_bridge_skip(nn.Module):
         # -->up4---> torch.Size([10, 256, 256, 256])<-up3[64]<128>  +inc[64]<256>
         # -->outc---> torch.Size([10, 1, 256, 256])
 
-        
         self.up1 = Up(1024, 256, bilinear)
         self.up2 = Up(512, 128, bilinear)
         self.up3 = Up(256, 64, bilinear)
         self.up4 = Up(128, 256, bilinear)
         self.outc = OutConv(256, n_classes)
+
+    def create_tf_module(self, CompFea_len, patch_len):
+        num_patches = (CompFea_len // patch_len) * (CompFea_len // patch_len)
+        patch_dim = 1024 * patch_len * patch_len # 1024
+        dim = 1024
+        embedding = nn.Sequential(
+            Rearrange('b c (cfx px) (cfy py) -> b (cfx cfy) (px py c)', px = patch_len, py = patch_len),
+            nn.Linear(patch_dim, dim),
+        )
+        pos_embedding = nn.Parameter(torch.randn(1, num_patches, dim))
+        dropout = nn.Dropout(0.1)
+
+        transformer = Transformer(dim=dim, depth=6, heads=16,
+                                       dim_head=64, mlp_dim=1024, dropout=0.1)
+
+        unembedding = nn.Sequential(
+            nn.Linear(dim, patch_dim),
+            Rearrange(' b (cfx cfy) (px py c) -> b c (cfx px) (cfy py)', 
+                px = patch_len, py = patch_len,
+                cfx = CompFea_len, cfy = CompFea_len))
+
+        return nn.Sequential(embedding,
+                             pos_embedding,
+                             dropout,
+                             transformer,
+                             unembedding)
 
     def forward(self, x):
         print("-->Input--->", x.size())
@@ -317,22 +321,13 @@ class UNet_bridge_skip(nn.Module):
         print("-->down3--->", x4.size())
         x5 = self.down4(x4)
         print("-->down4--->", x5.size())
-
-        tf_input = [x1, x2, x3, x4, x5]
-        tf_output = []
-        for idx, tf_modules in enumerate(self.tf_hub):
-            temp_x = tf_input[idx]
-            for tf_component in tf_modules:
-                temp_x = tf_component(temp_x)
-            tf_output.append(temp_x)
-
-        x = self.up1(tf_output[4], tf_output[3])
+        x = self.up1(self.tf_down4(x5), self.tf_down3(x4))
         print("-->up1--->", x.size())
-        x = self.up2(x, tf_output[2])
+        x = self.up2(x, self.tf_down2(x3))
         print("-->up2--->", x.size())
-        x = self.up3(x, tf_output[1])
+        x = self.up3(x, self.tf_down1(x2))
         print("-->up3--->", x.size())
-        x = self.up4(x, tf_output[0])
+        x = self.up4(x, self.tf_inc(x1))
         print("-->up4--->", x.size())
         x = self.outc(x)
         print("-->outc--->", x.size())
