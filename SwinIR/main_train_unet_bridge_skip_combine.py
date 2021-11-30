@@ -47,36 +47,36 @@ def main():
 
     model = UNet_bridge_skip(n_channels=3, n_classes=1, bilinear=True, pre_train=True)
 
-    # model_MR = torch.load("./bridge_3000/MR/model_best_028.pth")
-    # model_CT = torch.load("./bridge_3000/CT_50/model_best_004.pth")
-    # modules_MR = ["inc", "down1", "down2", "down3", "down4", "hidden_1"]
-    # modules_CT = ["hidden_2", "up1", "up2", "up3", "up4", "outc"]
-    # model_dict_MR = model_MR.state_dict()
-    # model_dict_CT = model_CT.state_dict()
-    # new_state_dict_MR = {}
-    # new_state_dict_CT = {}
+    model_MR = torch.load("./bridge_3000/MR_skip/model_best_022.pth")
+    model_CT = torch.load("./bridge_3000/CT_skip/model_best_050.pth")
+    modules_MR = ["inc", "down1", "down2", "down3", "down4"]
+    modules_CT = ["up1", "up2", "up3", "up4", "outc"]
+    model_dict_MR = model_MR.state_dict()
+    model_dict_CT = model_CT.state_dict()
+    new_state_dict_MR = {}
+    new_state_dict_CT = {}
 
-    # for keys_MR in modules_MR:
-    #     for k, v in model_dict_MR.items():
-    #         if keys_MR in k:
-    #             new_state_dict_MR[k] = v
+    for keys_MR in modules_MR:
+        for k, v in model_dict_MR.items():
+            if keys_MR in k:
+                new_state_dict_MR[k] = v
 
-    # for keys_CT in modules_CT:
-    #     for k, v in model_dict_CT.items():
-    #         if keys_CT in k:
-    #             new_state_dict_CT[k] = v
+    for keys_CT in modules_CT:
+        for k, v in model_dict_CT.items():
+            if keys_CT in k:
+                new_state_dict_CT[k] = v
 
-    # model_state_dict_MR = model.state_dict()
-    # model_state_dict_CT = model.state_dict()
-    # model_state_dict_MR.update(new_state_dict_MR)
-    # model_state_dict_CT.update(new_state_dict_CT)
-    # model.load_state_dict(model_state_dict_MR)
-    # model.load_state_dict(model_state_dict_CT)
+    model_state_dict_MR = model.state_dict()
+    model_state_dict_CT = model.state_dict()
+    model_state_dict_MR.update(new_state_dict_MR)
+    model_state_dict_CT.update(new_state_dict_CT)
+    model.load_state_dict(model_state_dict_MR)
+    model.load_state_dict(model_state_dict_CT)
 
-    # model_state_dict = model.state_dict()
-    # dict_name = list(model_state_dict)
-    # for i, p in enumerate(dict_name):
-    #     print(i, p)
+    model_state_dict = model.state_dict()
+    dict_name = list(model_state_dict)
+    for i, p in enumerate(dict_name):
+        print(i, p)
 
     model.train().float()
     model = model.to(device)
