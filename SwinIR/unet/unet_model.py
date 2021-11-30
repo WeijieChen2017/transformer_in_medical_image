@@ -244,13 +244,13 @@ class UNet_bridge(nn.Module):
         return x
 
 class tf_module_skip(nn.Module):
-    def __init__(self, CompFea_len, patch_len):
+    def __init__(self, CompFea_len, patch_len, inchannel):
         super(tf_module_skip, self).__init__()
         self.CompFea_len = CompFea_len
         self.patch_len = patch_len
 
         num_patches = (CompFea_len // patch_len) * (CompFea_len // patch_len)
-        patch_dim = 1024 * patch_len * patch_len # 1024
+        patch_dim = inchannel * patch_len * patch_len # 1024
         dim = 1024
 
         # input is 256x256
@@ -308,11 +308,11 @@ class UNet_bridge_skip(nn.Module):
 
         # inc, down1, down2, down3, down4
         self.tf_config = [[256, 16],[128, 8],[64, 4],[32, 2],[16, 1]]
-        self.tf_inc = tf_module_skip(CompFea_len=256, patch_len=16)
-        self.tf_down1 = tf_module_skip(CompFea_len=128, patch_len=8)
-        self.tf_down2 = tf_module_skip(CompFea_len=64, patch_len=4)
-        self.tf_down3 = tf_module_skip(CompFea_len=32, patch_len=2)
-        self.tf_down4 = tf_module_skip(CompFea_len=16, patch_len=1)
+        self.tf_inc = tf_module_skip(CompFea_len=256, patch_len=16, inchannel=64)
+        self.tf_down1 = tf_module_skip(CompFea_len=128, patch_len=8, inchannel=128)
+        self.tf_down2 = tf_module_skip(CompFea_len=64, patch_len=4, inchannel=256)
+        self.tf_down3 = tf_module_skip(CompFea_len=32, patch_len=2, inchannel=512)
+        self.tf_down4 = tf_module_skip(CompFea_len=16, patch_len=1, inchannel=512)
 
         # -->Input---> torch.Size([10, 3, 256, 256])
         # -->inc---> torch.Size([10, 64, 256, 256])
