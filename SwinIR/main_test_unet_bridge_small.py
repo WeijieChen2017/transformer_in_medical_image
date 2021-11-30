@@ -43,8 +43,8 @@ def main():
     parser.add_argument('--gpu_ids', type=str, default="3", help='Use which GPU to train')
     parser.add_argument('--folder_X_te', type=str, default="./bridge_3000/X/test/", help='input folder of T1MAP PET images')
     parser.add_argument('--folder_Y_te', type=str, default="./bridge_3000/Y/test/", help='input folder of BRAVO images')
-    parser.add_argument('--root_folder', type=str, default="./bridge_3000/MR/", help='input folder of BRAVO images')
-    parser.add_argument('--weights_path', type=str, default='model_best_028.pth')
+    parser.add_argument('--root_folder', type=str, default="./bridge_3000/CT/", help='input folder of BRAVO images')
+    parser.add_argument('--weights_path', type=str, default='model_best_050.pth')
     args = parser.parse_args()
 
     gpu_list = ','.join(str(x) for x in args.gpu_ids)
@@ -70,10 +70,10 @@ def main():
 
     for cnt_X, X_path in enumerate(X_list):
 
-        cube_x_path = X_path
-        cube_y_path = X_path
-        # cube_x_path = args.folder_Y_te+os.path.basename(X_path)
-        # cube_y_path = args.folder_Y_te+os.path.basename(X_path)
+        # cube_x_path = X_path
+        # cube_y_path = X_path
+        cube_x_path = args.folder_Y_te+os.path.basename(X_path)
+        cube_y_path = args.folder_Y_te+os.path.basename(X_path)
         print("->",cube_x_path, "<-",end="")
         cube_x_data = nib.load(cube_x_path).get_fdata()
         cube_y_data = nib.load(cube_y_path).get_fdata()
@@ -106,7 +106,7 @@ def main():
         print("Loaded from", cube_y_path, end="")
 
 
-        pred_file = nib.Nifti1Image(denormX(y_hat), nifty_file.affine, nifty_file.header)
+        pred_file = nib.Nifti1Image(denormY(y_hat), nifty_file.affine, nifty_file.header)
         pred_name = args.root_folder+"pred/"+"PRD_"+os.path.basename(X_path)[4:7]+".nii.gz"
         nib.save(pred_file, pred_name)
         print(" Saved to", pred_name)
