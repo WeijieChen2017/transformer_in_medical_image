@@ -16,8 +16,8 @@ def normY(data):
     data = data / 4000
     return data
 
-root_folder = "./large_ct/"
-save_folder = "./large_ct_RSZ/"
+root_folder = "./large_CT/"
+save_folder = "./deepMRAC_CT/"
 search_folderX = root_folder
 # search_folderX = root_folder+"t1_bravo/"
 # search_folderY = root_folder+"ct_bravo/"
@@ -85,13 +85,16 @@ for package in [packageVal, packageTrain, packageTest]: #
         # pathY = pathX.replace("t1", "t2")
         filenameX = os.path.basename(pathX)[5:8]
         # filenameY = os.path.basename(pathY)[11:15]
-        dataX = nib.load(pathX).get_fdata()
+        fileX = nib.load(pathX)
+        dataX = fileX.get_fdata()
         # dataY = nib.load(pathY).get_fdata()
         dataNormX = normY(dataX)
         # dataNormY = normY(dataY)
         # print(dataNormX.shape, dataNormY.shape)
 
-        np.save(folderX + "NORM_" + filenameX + ".npy", dataNormX)
-        # np.save(folderY + "NORM_" + filenameY + ".npy", dataNormY)        
-        print(folderX + "NORM_" + filenameX + ".npy")
+        fileNormX = nib.Nifti1Image(dataNormX, fileX.affine, fileX.header)
+        nameX = folderX + "RSZ_" + filenameX + ".nii.gz"
+        nib.save(fileNormX, nameX)
+        print("Saved to", nameX)
+
     print(len(fileList), " files are saved. ")
