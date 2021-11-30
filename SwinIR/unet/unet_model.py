@@ -323,7 +323,7 @@ class UNet_bridge_skip(nn.Module):
         for idx, tf_modules in enumerate(self.tf_hub):
             temp_x = tf_input[idx]
             for tf_component in tf_modules:
-                temp_x = tf_component[temp_x]
+                temp_x = tf_component(temp_x)
             tf_output.append(temp_x)
 
         x = self.up1(tf_output[4], tf_output[3])
