@@ -263,8 +263,9 @@ class tf_module_skip(nn.Module):
 
         self.embedding = nn.Sequential(
             Rearrange('b c (cfx px) (cfy py) -> b (cfx cfy) (px py c)', px = patch_len, py = patch_len),
-            nn.Linear(patch_dim, dim),
+            
         )
+        self.linear = nn.Linear(patch_dim, dim)
         self.pos_embedding = nn.Parameter(torch.randn(1, num_patches, dim))
         self.dropout = nn.Dropout(0.1)
 
@@ -279,6 +280,8 @@ class tf_module_skip(nn.Module):
 
     def forward(self, x):
         x = self.embedding(x)
+        print(x.size())
+        x = self.linear(x)
         print(x.size())
         x += self.pos_embedding
         print(x.size())
