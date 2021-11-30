@@ -315,7 +315,7 @@ class UNet_bridge_skip(nn.Module):
         self.tf_down1 = tf_module_skip(CompFea_len=128, patch_len=8, inchannel=128)
         self.tf_down2 = tf_module_skip(CompFea_len=64, patch_len=4, inchannel=256)
         self.tf_down3 = tf_module_skip(CompFea_len=32, patch_len=2, inchannel=512)
-        self.tf_down4 = tf_module_skip(CompFea_len=16, patch_len=1, inchannel=512)
+        self.tf_down4 = tf_module_skip(CompFea_len=16, patch_len=1, inchannel=1024)
 
         # -->Input---> torch.Size([10, 3, 256, 256])
         # -->inc---> torch.Size([10, 64, 256, 256])
