@@ -23,7 +23,7 @@ def main():
 
     parser.add_argument('--input_channel', type=int, default=3, help='the number of input channel')
     parser.add_argument('--output_channel', type=int, default=1, help='the number of output channel')
-    parser.add_argument('--tag', type=str, default="./bridge_3000/naive/", help='Save_prefix')
+    parser.add_argument('--tag', type=str, default="./bridge_3000/naive-tf/", help='Save_prefix')
     parser.add_argument('--gpu_ids', type=str, default="6", help='Use which GPU to train')
     parser.add_argument('--epoch', type=int, default=50, help='how many epochs to train')
     parser.add_argument('--batch', type=int, default=10, help='how many batches in one run')
@@ -45,7 +45,7 @@ def main():
         if not os.path.exists(path):
             os.mkdir(path)
 
-    model = UNet_simple(n_channels=3, n_classes=1, bilinear=True)
+    model = UNet_bridge(n_channels=3, n_classes=1, bilinear=True)
     model.train().float()
     model = model.to(device)
     criterion = nn.SmoothL1Loss()
