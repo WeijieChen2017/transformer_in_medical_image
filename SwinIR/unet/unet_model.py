@@ -245,9 +245,9 @@ class UNet_bridge(nn.Module):
 
 
 
-class UNet(nn.Module):
+class UNet_bridge_skip(nn.Module):
     def __init__(self, n_channels, n_classes, bilinear=True):
-        super(UNet, self).__init__()
+        super(UNet_bridge_skip, self).__init__()
         self.n_channels = n_channels
         self.n_classes = n_classes
         self.bilinear = bilinear
