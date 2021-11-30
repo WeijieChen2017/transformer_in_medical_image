@@ -268,7 +268,7 @@ class tf_module_skip(nn.Module):
                 px = patch_len, py = patch_len,
                 cfx = CompFea_len, cfy = CompFea_len))
 
-    def forward(x):
+    def forward(self, x):
         x = self.embedding(x) + self.pos_embedding
         x = self.dropout(x)
         x = self.transformer(x)
@@ -315,6 +315,7 @@ class UNet_bridge_skip(nn.Module):
         self.outc = OutConv(256, n_classes)
 
     def forward(self, x):
+        print()
         print("-->Input--->", x.size())
         x1 = self.inc(x)
         print("-->inc--->", x1.size())
