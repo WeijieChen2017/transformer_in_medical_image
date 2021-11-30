@@ -14,7 +14,7 @@ import requests
 
 # from models.network_swinir import SwinIR as net
 from utils import util_calculate_psnr_ssim as util
-from unet import UNet_bridge
+from unet import UNet_bridge, UNet_bridge_skip
 
 np.random.seed(seed=813)
 
@@ -45,7 +45,7 @@ def main():
         if not os.path.exists(path):
             os.mkdir(path)
 
-    model = UNet(n_channels=3, n_classes=1, bilinear=True, pre_train=True)
+    model = UNet_bridge_skip(n_channels=3, n_classes=1, bilinear=True, pre_train=True)
 
     model_MR = torch.load("./bridge_3000/MR/model_best_028.pth")
     model_CT = torch.load("./bridge_3000/CT_50/model_best_004.pth")
