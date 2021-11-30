@@ -43,7 +43,7 @@ def main():
     parser.add_argument('--gpu_ids', type=str, default="3", help='Use which GPU to train')
     parser.add_argument('--folder_X_te', type=str, default="./bridge_3000/X/test/", help='input folder of T1MAP PET images')
     parser.add_argument('--folder_Y_te', type=str, default="./bridge_3000/Y/test/", help='input folder of BRAVO images')
-    parser.add_argument('--root_folder', type=str, default="./bridge_3000/MR-tf6-CT/", help='input folder of BRAVO images')
+    parser.add_argument('--root_folder', type=str, default="./bridge_3000/CT_skip/", help='input folder of BRAVO images')
     parser.add_argument('--weights_path', type=str, default='model_best_050.pth')
     args = parser.parse_args()
 
@@ -70,9 +70,9 @@ def main():
 
     for cnt_X, X_path in enumerate(X_list):
 
-        cube_x_path = X_path
+        # cube_x_path = X_path
         # cube_y_path = X_path
-        # cube_x_path = args.folder_Y_te+os.path.basename(X_path)
+        cube_x_path = args.folder_Y_te+os.path.basename(X_path)
         cube_y_path = args.folder_Y_te+os.path.basename(X_path)
         print("->",cube_x_path, "<-",end="")
         cube_x_data = nib.load(cube_x_path).get_fdata()
