@@ -244,4 +244,3 @@ class UNet_bridge(nn.Module):
         return x
 
 
-
