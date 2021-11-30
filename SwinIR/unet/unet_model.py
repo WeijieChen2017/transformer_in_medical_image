@@ -277,7 +277,7 @@ class tf_module_skip(nn.Module):
         self.unembedding = nn.Sequential(
             Rearrange(' b (cfx cfy) (px py c) -> b c (cfx px) (cfy py)', 
                 px = patch_len, py = patch_len,
-                cfx = CompFea_len, cfy = CompFea_len, c=inchannel))
+                cfx = CompFea_len // patch_len, cfy = CompFea_len // patch_len))
 
     def forward(self, x):
         x = self.embedding(x)
