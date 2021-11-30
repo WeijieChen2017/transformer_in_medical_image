@@ -243,6 +243,37 @@ class UNet_bridge(nn.Module):
         # exit()
         return x
 
+class tf_module_skip(nn.Module):
+    def __init__(self, CompFea_len, patch_len):
+        super(tf_module_skip, self).__init__()
+        self.CompFea_len = CompFea_len
+        self.patch_len = patch_len
+
+        num_patches = (CompFea_len // patch_len) * (CompFea_len // patch_len)
+        patch_dim = 1024 * patch_len * patch_len # 1024
+        dim = 1024
+        self.embedding = nn.Sequential(
+            Rearrange('b c (cfx px) (cfy py) -> b (cfx cfy) (px py c)', px = patch_len, py = patch_len),
+            nn.Linear(patch_dim, dim),
+        )
+        self.pos_embedding = nn.Parameter(torch.randn(1, num_patches, dim))
+        self.dropout = nn.Dropout(0.1)
+
+        self.transformer = Transformer(dim=dim, depth=6, heads=16,
+                                       dim_head=64, mlp_dim=1024, dropout=0.1)
+
+        self.unembedding = nn.Sequential(
+            nn.Linear(dim, patch_dim),
+            Rearrange(' b (cfx cfy) (px py c) -> b c (cfx px) (cfy py)', 
+                px = patch_len, py = patch_len,
+                cfx = CompFea_len, cfy = CompFea_len))
+
+    def forward(x):
+        x = self.embedding(x) + self.pos_embedding
+        x = self.dropout(x)
+        x = self.transformer(x)
+        x = self.unembedding(x)
+        return x
 
 
 class UNet_bridge_skip(nn.Module):
@@ -259,11 +290,11 @@ class UNet_bridge_skip(nn.Module):
 
         # inc, down1, down2, down3, down4
         self.tf_config = [[256, 16],[128, 8],[64, 4],[32, 2],[16, 1]]
-        self.tf_inc     = self.create_tf_module(CompFea_len=256, patch_len=16)
-        self.tf_down1   = self.create_tf_module(CompFea_len=128, patch_len=8)
-        self.tf_down2   = self.create_tf_module(CompFea_len=64, patch_len=4)
-        self.tf_down3   = self.create_tf_module(CompFea_len=32, patch_len=2)
-        self.tf_down4   = self.create_tf_module(CompFea_len=16, patch_len=1)
+        self.tf_inc     = tf_module_skip(CompFea_len=256, patch_len=16)
+        self.tf_down1   = tf_module_skip(CompFea_len=128, patch_len=8)
+        self.tf_down2   = tf_module_skip(CompFea_len=64, patch_len=4)
+        self.tf_down3   = tf_module_skip(CompFea_len=32, patch_len=2)
+        self.tf_down4   = tf_module_skip(CompFea_len=16, patch_len=1)
 
         # -->Input---> torch.Size([10, 3, 256, 256])
         # -->inc---> torch.Size([10, 64, 256, 256])
@@ -282,32 +313,6 @@ class UNet_bridge_skip(nn.Module):
         self.up3 = Up(256, 64, bilinear)
         self.up4 = Up(128, 256, bilinear)
         self.outc = OutConv(256, n_classes)
-
-    def create_tf_module(self, CompFea_len, patch_len):
-        num_patches = (CompFea_len // patch_len) * (CompFea_len // patch_len)
-        patch_dim = 1024 * patch_len * patch_len # 1024
-        dim = 1024
-        embedding = nn.Sequential(
-            Rearrange('b c (cfx px) (cfy py) -> b (cfx cfy) (px py c)', px = patch_len, py = patch_len),
-            nn.Linear(patch_dim, dim),
-        )
-        pos_embedding = nn.Parameter(torch.randn(1, num_patches, dim))
-        dropout = nn.Dropout(0.1)
-
-        transformer = Transformer(dim=dim, depth=6, heads=16,
-                                       dim_head=64, mlp_dim=1024, dropout=0.1)
-
-        unembedding = nn.Sequential(
-            nn.Linear(dim, patch_dim),
-            Rearrange(' b (cfx cfy) (px py c) -> b c (cfx px) (cfy py)', 
-                px = patch_len, py = patch_len,
-                cfx = CompFea_len, cfy = CompFea_len))
-
-        return nn.Sequential(embedding,
-                             pos_embedding,
-                             dropout,
-                             transformer,
-                             unembedding)
 
     def forward(self, x):
         print("-->Input--->", x.size())
