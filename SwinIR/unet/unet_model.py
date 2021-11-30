@@ -265,18 +265,19 @@ class tf_module_skip(nn.Module):
             Rearrange('b c (cfx px) (cfy py) -> b (cfx cfy) (px py c)',
                 px = patch_len, py = patch_len))
         self.linear1 = nn.Linear(patch_dim, dim)
-        self.pos_embedding = nn.Parameter(torch.randn(1, num_patches, dim))
-        self.dropout = nn.Dropout(0.1)
 
+        self.pos_embedding = nn.Parameter(torch.randn(1, num_patches, dim))
+
+        self.dropout = nn.Dropout(0.1)
         self.transformer = Transformer(dim=dim, depth=6, heads=16,
                                        dim_head=64, mlp_dim=1024, dropout=0.1)
 
-        # torch.Size([10, 256, 1024]) -> torch.Size([10, 64, 256, 256])
         self.linear2 = nn.Linear(dim, patch_dim)
+        # torch.Size([10, 256, 16384]) -> torch.Size([10, 64, 256, 256])
         self.unembedding = nn.Sequential(
             Rearrange(' b (cfx cfy) (px py c) -> b c (cfx px) (cfy py)', 
                 px = patch_len, py = patch_len,
-                cfx = CompFea_len, cfy = CompFea_len))
+                cfx = CompFea_len, cfy = CompFea_len, c=inchannel))
 
     def forward(self, x):
         x = self.embedding(x)
