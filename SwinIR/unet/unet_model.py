@@ -307,7 +307,7 @@ class UNet_bridge_skip(nn.Module):
         self.down1 = Down(64, 128)
         self.down2 = Down(128, 256)
         self.down3 = Down(256, 512)
-        self.down4 = Down(512, 512)
+        self.down4 = Down(512, 1024)
 
         # inc, down1, down2, down3, down4
         self.tf_config = [[256, 16],[128, 8],[64, 4],[32, 2],[16, 1]]
@@ -329,9 +329,9 @@ class UNet_bridge_skip(nn.Module):
         # -->up4---> torch.Size([10, 256, 256, 256])<-up3[64]<128>  +inc[64]<256>
         # -->outc---> torch.Size([10, 1, 256, 256])
 
-        self.up1 = Up(1024, 256, bilinear)
-        self.up2 = Up(512, 128, bilinear)
-        self.up3 = Up(256, 64, bilinear)
+        self.up1 = Up(1024, 512, bilinear)
+        self.up2 = Up(512, 256, bilinear)
+        self.up3 = Up(256, 128, bilinear)
         self.up4 = Up(128, 256, bilinear)
         self.outc = OutConv(256, n_classes)
 
