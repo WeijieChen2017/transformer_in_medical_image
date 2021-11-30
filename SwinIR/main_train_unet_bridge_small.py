@@ -45,7 +45,7 @@ def main():
         if not os.path.exists(path):
             os.mkdir(path)
 
-    model = UNet_large(n_channels=3, n_classes=1, bilinear=True)
+    model = UNet_simple(n_channels=3, n_classes=1, bilinear=True)
     model.train().float()
     model = model.to(device)
     criterion = nn.SmoothL1Loss()
