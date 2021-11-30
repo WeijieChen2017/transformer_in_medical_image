@@ -24,7 +24,7 @@ def main():
     parser.add_argument('--input_channel', type=int, default=3, help='the number of input channel')
     parser.add_argument('--output_channel', type=int, default=1, help='the number of output channel')
     parser.add_argument('--tag', type=str, default="./bridge_3000/MR-tf6-CT_skip/", help='Save_prefix')
-    parser.add_argument('--gpu_ids', type=str, default="6", help='Use which GPU to train')
+    parser.add_argument('--gpu_ids', type=str, default="5", help='Use which GPU to train')
     parser.add_argument('--epoch', type=int, default=50, help='how many epochs to train')
     parser.add_argument('--batch', type=int, default=10, help='how many batches in one run')
     parser.add_argument('--loss_display_per_iter', type=int, default=600, help='display how many losses per iteration')
@@ -47,36 +47,36 @@ def main():
 
     model = UNet_bridge_skip(n_channels=3, n_classes=1, bilinear=True, pre_train=True)
 
-    model_MR = torch.load("./bridge_3000/MR/model_best_028.pth")
-    model_CT = torch.load("./bridge_3000/CT_50/model_best_004.pth")
-    modules_MR = ["inc", "down1", "down2", "down3", "down4", "hidden_1"]
-    modules_CT = ["hidden_2", "up1", "up2", "up3", "up4", "outc"]
-    model_dict_MR = model_MR.state_dict()
-    model_dict_CT = model_CT.state_dict()
-    new_state_dict_MR = {}
-    new_state_dict_CT = {}
+    # model_MR = torch.load("./bridge_3000/MR/model_best_028.pth")
+    # model_CT = torch.load("./bridge_3000/CT_50/model_best_004.pth")
+    # modules_MR = ["inc", "down1", "down2", "down3", "down4", "hidden_1"]
+    # modules_CT = ["hidden_2", "up1", "up2", "up3", "up4", "outc"]
+    # model_dict_MR = model_MR.state_dict()
+    # model_dict_CT = model_CT.state_dict()
+    # new_state_dict_MR = {}
+    # new_state_dict_CT = {}
 
-    for keys_MR in modules_MR:
-        for k, v in model_dict_MR.items():
-            if keys_MR in k:
-                new_state_dict_MR[k] = v
+    # for keys_MR in modules_MR:
+    #     for k, v in model_dict_MR.items():
+    #         if keys_MR in k:
+    #             new_state_dict_MR[k] = v
 
-    for keys_CT in modules_CT:
-        for k, v in model_dict_CT.items():
-            if keys_CT in k:
-                new_state_dict_CT[k] = v
+    # for keys_CT in modules_CT:
+    #     for k, v in model_dict_CT.items():
+    #         if keys_CT in k:
+    #             new_state_dict_CT[k] = v
 
-    model_state_dict_MR = model.state_dict()
-    model_state_dict_CT = model.state_dict()
-    model_state_dict_MR.update(new_state_dict_MR)
-    model_state_dict_CT.update(new_state_dict_CT)
-    model.load_state_dict(model_state_dict_MR)
-    model.load_state_dict(model_state_dict_CT)
+    # model_state_dict_MR = model.state_dict()
+    # model_state_dict_CT = model.state_dict()
+    # model_state_dict_MR.update(new_state_dict_MR)
+    # model_state_dict_CT.update(new_state_dict_CT)
+    # model.load_state_dict(model_state_dict_MR)
+    # model.load_state_dict(model_state_dict_CT)
 
-    model_state_dict = model.state_dict()
-    dict_name = list(model_state_dict)
-    for i, p in enumerate(dict_name):
-        print(i, p)
+    # model_state_dict = model.state_dict()
+    # dict_name = list(model_state_dict)
+    # for i, p in enumerate(dict_name):
+    #     print(i, p)
 
     model.train().float()
     model = model.to(device)
