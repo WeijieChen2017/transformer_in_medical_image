@@ -258,12 +258,7 @@ class UNet_bridge_skip(nn.Module):
         self.down4 = Down(512, 512)
 
         # inc, down1, down2, down3, down4
-        self.tf_config = [[256, 16] #inc,
-                          [128, 8] #down1,
-                          [64, 4] #down2,
-                          [32, 2] #down3,
-                          [16, 1] #down4
-                          ]
+        self.tf_config = [[256, 16],[128, 8],[64, 4],[32, 2],[16, 1]]
         self.tf_hub = []
 
         for package in self.tf_config:
