@@ -242,3 +242,6 @@ class UNet_bridge(nn.Module):
         
         # exit()
         return x
+
+
+
