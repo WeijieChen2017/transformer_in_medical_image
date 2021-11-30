@@ -188,8 +188,8 @@ class UNet_bridge(nn.Module):
         self.up1 = Up_simple(1024, 512, bilinear)
         self.up2 = Up_simple(512, 256, bilinear)
         self.up3 = Up_simple(256, 128, bilinear)
-        self.up4 = Up_simple(128, 64, bilinear)
-        self.outc = OutConv(64, n_classes)
+        self.up4 = Up_simple(128, 256, bilinear)
+        self.outc = OutConv(256, n_classes)
 
         if self.pre_train:
             no_grad_list = [self.inc, self.down1, self.down2, self.down3, self.down4, self.hidden_1,
