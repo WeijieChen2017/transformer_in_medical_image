@@ -118,11 +118,12 @@ class UNet_D(nn.Module):
 
 
 class UNet_bridge(nn.Module):
-    def __init__(self, n_channels, n_classes, bilinear=True):
+    def __init__(self, n_channels, n_classes, bilinear=True, pre_train=False):
         super(UNet_bridge, self).__init__()
         self.n_channels = n_channels
         self.n_classes = n_classes
         self.bilinear = bilinear
+        self.pre_train = pre_train
 
         self.inc = DoubleConv(n_channels, 64) # 256
         self.down1 = Down(64, 128) # 256
@@ -190,11 +191,12 @@ class UNet_bridge(nn.Module):
         self.up4 = Up_simple(128, 64, bilinear)
         self.outc = OutConv(64, n_classes)
 
-        no_grad_list = [self.inc, self.down1, self.down2, self.down3, self.down4, self.hidden_1,
-                        self.hidden_2, self.up1, self.up2, self.up3, self.up4, self.outc]
-        for layer in no_grad_list:
-            for p in layer.parameters():
-                p.requires_grad = False
+        if self.pre_train:
+            no_grad_list = [self.inc, self.down1, self.down2, self.down3, self.down4, self.hidden_1,
+                            self.hidden_2, self.up1, self.up2, self.up3, self.up4, self.outc]
+            for layer in no_grad_list:
+                for p in layer.parameters():
+                    p.requires_grad = False
 
 
     def forward(self, x):
