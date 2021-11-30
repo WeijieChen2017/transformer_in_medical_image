@@ -318,7 +318,7 @@ class UNet_bridge_skip(nn.Module):
         x5 = self.down4(x4)
         print("-->down4--->", x5.size())
 
-        tf_input [x1, x2, x3, x4, x5]
+        tf_input = [x1, x2, x3, x4, x5]
         tf_output = []
         for idx, tf_modules in enumerate(self.tf_hub):
             temp_x = tf_input[idx]
