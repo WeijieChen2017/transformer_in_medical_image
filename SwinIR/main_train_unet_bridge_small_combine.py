@@ -23,15 +23,15 @@ def main():
 
     parser.add_argument('--input_channel', type=int, default=3, help='the number of input channel')
     parser.add_argument('--output_channel', type=int, default=1, help='the number of output channel')
-    parser.add_argument('--tag', type=str, default="./bridge_small/MR-tf6-CT/", help='Save_prefix')
+    parser.add_argument('--tag', type=str, default="./bridge_3000/MR-tf6-CT/", help='Save_prefix')
     parser.add_argument('--gpu_ids', type=str, default="6", help='Use which GPU to train')
     parser.add_argument('--epoch', type=int, default=50, help='how many epochs to train')
     parser.add_argument('--batch', type=int, default=10, help='how many batches in one run')
     parser.add_argument('--loss_display_per_iter', type=int, default=600, help='display how many losses per iteration')
-    parser.add_argument('--folder_pet', type=str, default="./bridge_small/X/train/", help='input folder of T1MAP images')
-    parser.add_argument('--folder_sct', type=str, default="./bridge_small/Y/train/", help='input folder of BRAVO images')
-    parser.add_argument('--folder_pet_v', type=str, default="./bridge_small/X/val/", help='input folder of T1MAP PET images')
-    parser.add_argument('--folder_sct_v', type=str, default="./bridge_small/Y/val/", help='input folder of BRAVO images')
+    parser.add_argument('--folder_pet', type=str, default="./bridge_3000/X/train/", help='input folder of T1MAP images')
+    parser.add_argument('--folder_sct', type=str, default="./bridge_3000/Y/train/", help='input folder of BRAVO images')
+    parser.add_argument('--folder_pet_v', type=str, default="./bridge_3000/X/val/", help='input folder of T1MAP PET images')
+    parser.add_argument('--folder_sct_v', type=str, default="./bridge_3000/Y/val/", help='input folder of BRAVO images')
     args = parser.parse_args()
     input_channel = args.input_channel
     output_channel = args.output_channel
@@ -45,10 +45,10 @@ def main():
         if not os.path.exists(path):
             os.mkdir(path)
 
-    model = UNet_bridge(n_channels=3, n_classes=1, bilinear=True)
+    model = UNet_bridge(n_channels=3, n_classes=1, bilinear=True, pre_train=True)
 
-    model_MR = torch.load("./bridge_small/MR/model_best_013.pth")
-    model_CT = torch.load("./bridge_small/CT/model_best_042.pth")
+    model_MR = torch.load("./bridge_3000/MR/model_best_028.pth")
+    model_CT = torch.load("./bridge_3000/CT/model_best_050.pth")
     modules_MR = ["inc", "down1", "down2", "down3", "down4", "hidden_1"]
     modules_CT = ["hidden_2", "up1", "up2", "up3", "up4", "outc"]
     model_dict_MR = model_MR.state_dict()
