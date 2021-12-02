@@ -109,3 +109,29 @@ class OutConv(nn.Module):
         # x = self.sigmoid(x)
         x = self.conv1(x)
         return x
+
+class Down_intra(nn.Module):
+    """Downscaling with maxpool then double conv"""
+
+    def __init__(self, in_channels, out_channels):
+        super().__init__()
+        self.maxpool = nn.MaxPool2d(2)
+        self.conv = DoubleConv(in_channels, out_channels)
+
+    def forward(self, x):
+        x = self.maxpool_conv(x)
+        x1 = self.conv(x)
+        return torch.cat([x, x1], dim=1)
+
+
+class Up_intra(nn.Module):
+    """Upscaling then double conv"""
+
+    def __init__(self, in_channels, out_channels, bilinear=True):
+        super().__init__()
+        self.up = nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True)
+        self.conv = DoubleConv(in_channels, out_channels, in_channels // 2)
+    def forward(self, x):
+        x = self.up(x)
+        x1 = self.conv(x)
+        return torch.cat([x, x1], dim=1)

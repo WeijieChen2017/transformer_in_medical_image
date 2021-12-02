@@ -382,3 +382,39 @@ class UNet_bridge_skip(nn.Module):
         # exit()
         return x
 
+
+class UNet_intra_skip(nn.Module):
+    def __init__(self, n_channels, n_classes, bilinear=True):
+        super(UNet_simple, self).__init__()
+        self.n_channels = n_channels
+        self.n_classes = n_classes
+        self.bilinear = bilinear
+
+        self.inc = DoubleConv(n_channels, 64)
+        self.down1 = Down_intra(64, 128)
+        self.down2 = Down_intra(192, 256)
+        self.down3 = Down_intra(448, 512)
+        self.down4 = Down_intra(960, 1024)
+        self.hidden_1 = DoubleConv(1024, 1024)
+        self.hidden_2 = DoubleConv(1024, 1024)
+        self.up1 = Up_intra(1024, 512, bilinear)
+        self.up2 = Up_intra(1536, 256, bilinear)
+        self.up3 = Up_intra(1792, 128, bilinear)
+        self.up4 = Up_intra(1920, 256, bilinear)
+        self.outc = OutConv(256, n_classes)
+
+    def forward(self, x):
+        x = self.inc(x)
+        x = self.down1(x)
+        x = self.down2(x)
+        x = self.down3(x)
+        x = self.down4(x)
+        x = self.hidden_1(x)
+        x = self.hidden_2(x)
+        x = self.up1(x)
+        x = self.up2(x)
+        x = self.up3(x)
+        x = self.up4(x)
+        logits = self.outc(x)
+        return logits
+
