@@ -70,9 +70,9 @@ def main():
         random.shuffle(sct_list)
         for cnt_sct, sct_path in enumerate(sct_list):
 
-            # cube_x_path = sct_path.replace("Y", "X")
+            cube_x_path = sct_path.replace("Y", "X")
             # cube_y_path = sct_path.replace("Y", "X")
-            cube_x_path = sct_path
+            # cube_x_path = sct_path
             cube_y_path = sct_path
             print("--->",cube_x_path,"<---", end="")
             # cube_x_data = np.load(cube_x_path)
@@ -151,9 +151,9 @@ def main():
         for cnt_sct, sct_path in enumerate(sct_list_v):
 
             # eval
-            # cube_x_path = sct_path.replace("Y", "X")
+            cube_x_path = sct_path.replace("Y", "X")
             # cube_y_path = sct_path.replace("Y", "X")
-            cube_x_path = sct_path
+            # cube_x_path = sct_path
             cube_y_path = sct_path
             print("--->",cube_x_path,"<---", end="")
             # cube_x_data = np.load(cube_x_path)
