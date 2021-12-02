@@ -119,7 +119,7 @@ class Down_intra(nn.Module):
         self.conv = DoubleConv(in_channels, out_channels)
 
     def forward(self, x):
-        x = self.maxpool_conv(x)
+        x = self.maxpool(x)
         x1 = self.conv(x)
         return torch.cat([x, x1], dim=1)
 
