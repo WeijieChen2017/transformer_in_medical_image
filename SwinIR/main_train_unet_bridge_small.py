@@ -23,9 +23,9 @@ def main():
 
     parser.add_argument('--input_channel', type=int, default=3, help='the number of input channel')
     parser.add_argument('--output_channel', type=int, default=1, help='the number of output channel')
-    parser.add_argument('--tag', type=str, default="./bridge_3000/naive_intra/", help='Save_prefix')
-    parser.add_argument('--gpu_ids', type=str, default="3", help='Use which GPU to train')
-    parser.add_argument('--epoch', type=int, default=100, help='how many epochs to train')
+    parser.add_argument('--tag', type=str, default="./bridge_3000/MR_intra/", help='Save_prefix')
+    parser.add_argument('--gpu_ids', type=str, default="0", help='Use which GPU to train')
+    parser.add_argument('--epoch', type=int, default=50, help='how many epochs to train')
     parser.add_argument('--batch', type=int, default=6, help='how many batches in one run')
     parser.add_argument('--loss_display_per_iter', type=int, default=600, help='display how many losses per iteration')
     parser.add_argument('--folder_pet', type=str, default="./bridge_3000/X/train/", help='input folder of T1MAP images')
@@ -71,9 +71,9 @@ def main():
         for cnt_sct, sct_path in enumerate(sct_list):
 
             cube_x_path = sct_path.replace("Y", "X")
-            # cube_y_path = sct_path.replace("Y", "X")
+            cube_y_path = sct_path.replace("Y", "X")
             # cube_x_path = sct_path
-            cube_y_path = sct_path
+            # cube_y_path = sct_path
             print("--->",cube_x_path,"<---", end="")
             # cube_x_data = np.load(cube_x_path)
             # cube_y_data = np.load(cube_y_path)
@@ -152,9 +152,9 @@ def main():
 
             # eval
             cube_x_path = sct_path.replace("Y", "X")
-            # cube_y_path = sct_path.replace("Y", "X")
+            cube_y_path = sct_path.replace("Y", "X")
             # cube_x_path = sct_path
-            cube_y_path = sct_path
+            # cube_y_path = sct_path
             print("--->",cube_x_path,"<---", end="")
             # cube_x_data = np.load(cube_x_path)
             # cube_y_data = np.load(cube_y_path)
