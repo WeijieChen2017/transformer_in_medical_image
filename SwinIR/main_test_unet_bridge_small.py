@@ -40,7 +40,7 @@ def denormY(data):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--gpu_ids', type=str, default="3", help='Use which GPU to train')
+    parser.add_argument('--gpu_ids', type=str, default="6", help='Use which GPU to train')
     parser.add_argument('--folder_X_te', type=str, default="./bridge_3000/X/test/", help='input folder of T1MAP PET images')
     parser.add_argument('--folder_Y_te', type=str, default="./bridge_3000/Y/test/", help='input folder of BRAVO images')
     parser.add_argument('--root_folder', type=str, default="./bridge_3000/MR-tf6-CT_from_naive_skip/", help='input folder of BRAVO images')
