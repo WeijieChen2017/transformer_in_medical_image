@@ -303,6 +303,7 @@ class UNet_bridge_skip(nn.Module):
         self.n_channels = n_channels
         self.n_classes = n_classes
         self.bilinear = bilinear
+        self.pre_train = pre_train
         self.inc = DoubleConv(n_channels, 64)
         self.down1 = Down(64, 128)
         self.down2 = Down(128, 256)
@@ -334,6 +335,14 @@ class UNet_bridge_skip(nn.Module):
         self.up3 = Up(256, 128, bilinear)
         self.up4 = Up(128, 256, bilinear)
         self.outc = OutConv(256, n_classes)
+
+        if self.pre_train:
+            no_grad_list = [self.inc, self.down1, self.down2, self.down3, self.down4
+                            self.up1, self.up2, self.up3, self.up4, self.outc]
+            for layer in no_grad_list:
+                for p in layer.parameters():
+                    p.requires_grad = False
+
 
     def forward(self, x):
         # print()
