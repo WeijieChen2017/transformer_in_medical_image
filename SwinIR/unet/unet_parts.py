@@ -116,12 +116,14 @@ class Down_intra(nn.Module):
     def __init__(self, in_channels, out_channels):
         super().__init__()
         self.maxpool = nn.MaxPool2d(2)
-        self.conv = DoubleConv(in_channels, out_channels)
+        self.conv1 = DoubleConv(in_channels, out_channels)
+        self.conv2 = DoubleConv(in_channels+out_channels, out_channels)
 
     def forward(self, x):
         x = self.maxpool(x)
-        x1 = self.conv(x)
-        return torch.cat([x, x1], dim=1)
+        x1 = self.conv1(x)
+        x2 = self.conv2(torch.cat([x, x1], dim=1))
+        return x2
 
 
 class Up_intra(nn.Module):
@@ -130,8 +132,10 @@ class Up_intra(nn.Module):
     def __init__(self, in_channels, out_channels, bilinear=True):
         super().__init__()
         self.up = nn.Upsample(scale_factor=2, mode='bilinear', align_corners=True)
-        self.conv = DoubleConv(in_channels, out_channels, in_channels // 2)
+        self.conv1 = DoubleConv(in_channels, out_channels, in_channels // 2)
+        self.conv2 = DoubleConv(in_channels+out_channels, out_channels, (in_channels+out_channels)// 2)
     def forward(self, x):
         x = self.up(x)
-        x1 = self.conv(x)
-        return torch.cat([x, x1], dim=1)
+        x1 = self.conv1(x)
+        x2 = self.conv2(torch.cat([x, x1], dim=1))
+        return x2
