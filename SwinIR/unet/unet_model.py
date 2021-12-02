@@ -385,7 +385,7 @@ class UNet_bridge_skip(nn.Module):
 
 class UNet_intra_skip(nn.Module):
     def __init__(self, n_channels, n_classes, bilinear=True):
-        super(UNet_simple, self).__init__()
+        super(UNet_intra_skip, self).__init__()
         self.n_channels = n_channels
         self.n_classes = n_classes
         self.bilinear = bilinear
