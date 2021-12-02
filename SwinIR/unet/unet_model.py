@@ -337,7 +337,7 @@ class UNet_bridge_skip(nn.Module):
         self.outc = OutConv(256, n_classes)
 
         if self.pre_train:
-            no_grad_list = [self.inc, self.down1, self.down2, self.down3, self.down4
+            no_grad_list = [self.inc, self.down1, self.down2, self.down3, self.down4,
                             self.up1, self.up2, self.up3, self.up4, self.outc]
             for layer in no_grad_list:
                 for p in layer.parameters():
