@@ -48,7 +48,7 @@ def main():
     model = UNet_bridge(n_channels=3, n_classes=1, bilinear=True, pre_train=True)
 
     model_MR = torch.load("./bridge_3000/naive_skip/model_best_044.pth")
-    model_CT = torch.load("./bridge_3000/naive_skip/model_best_004.pth")
+    model_CT = torch.load("./bridge_3000/naive_skip/model_best_044.pth")
     modules_MR = ["inc", "down1", "down2", "down3", "down4", "hidden_1"]
     modules_CT = ["hidden_2", "up1", "up2", "up3", "up4", "outc"]
     model_dict_MR = model_MR.state_dict()
