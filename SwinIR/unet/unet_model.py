@@ -395,7 +395,7 @@ class UNet_intra_skip(nn.Module):
         self.down2 = Down_intra(192, 256)
         self.down3 = Down_intra(448, 512)
         self.down4 = Down_intra(960, 1024)
-        self.hidden_1 = DoubleConv(1024, 1024)
+        self.hidden_1 = DoubleConv(1984, 1024)
         self.hidden_2 = DoubleConv(1024, 1024)
         self.up1 = Up_intra(1024, 512, bilinear)
         self.up2 = Up_intra(1536, 256, bilinear)
