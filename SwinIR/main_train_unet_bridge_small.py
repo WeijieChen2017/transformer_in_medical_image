@@ -76,7 +76,7 @@ def apply_on_single_x(tensor_x, transforms_array):
 def main():
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('--input_channel', type=int, default=3, help='the number of input channel')
+    parser.add_argument('--input_channel', type=int, default=1, help='the number of input channel')
     parser.add_argument('--output_channel', type=int, default=1, help='the number of output channel')
     parser.add_argument('--tag', type=str, default="./bridge_3000/naive_intra_aug/", help='Save_prefix')
     parser.add_argument('--gpu_ids', type=str, default="7", help='Use which GPU to train')
