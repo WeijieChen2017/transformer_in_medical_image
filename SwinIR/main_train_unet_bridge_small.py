@@ -101,7 +101,7 @@ def main():
         if not os.path.exists(path):
             os.mkdir(path)
 
-    model = UNet_intra_skip(n_channels=3, n_classes=1, bilinear=True)
+    model = UNet_intra_skip(n_channels=input_channel, n_classes=output_channel, bilinear=True)
     model.train().float()
     model = model.to(device)
     criterion = nn.SmoothL1Loss()
@@ -239,7 +239,7 @@ def main():
                     z_center = input_list[idx_iter*args.batch+idx_batch]
                     z_before = z_center - 1 if z_center > 0 else 0
                     z_after = z_center + 1 if z_center < len_z-1 else len_z-1
-                    
+
                     if input_channel == 3:
                         batch_x[idx_batch, 1, :, :] = cube_x_data[:, :, z_center]
                         batch_x[idx_batch, 0, :, :] = cube_x_data[:, :, z_before]
