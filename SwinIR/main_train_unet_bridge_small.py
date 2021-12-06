@@ -167,8 +167,10 @@ def main():
                 batch_x = torch.from_numpy(batch_x)
                 batch_y = torch.from_numpy(batch_y)
                 batch_x, batch_y = apply_on_both_x_y(batch_x, batch_y, transforms_array)
+                print(batch_x.device, batch_y.device)
                 batch_x.float().to(device)
                 batch_y.float().to(device)
+
 
                 optimizer.zero_grad()
                 y_hat = model(batch_x)
