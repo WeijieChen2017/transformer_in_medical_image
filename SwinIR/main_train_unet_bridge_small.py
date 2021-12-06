@@ -59,10 +59,11 @@ def apply_on_both_x_y(tensor_x, tensor_y, transforms_array):
 
     aug_tensor_x = aug_tensor_z[:b, :, :, :]
     aug_tensor_y = aug_tensor_z[b:, :, :, :]
+
     return aug_tensor_x, aug_tensor_y
 
 
-def apply_on_single_x(tensor_x, transforms_array)
+def apply_on_single_x(tensor_x, transforms_array):
     # torch.manual_seed(seed)
     # torch.cuda.manual_seed(seed)
     # torch.cuda.manual_seed_all(seed)
