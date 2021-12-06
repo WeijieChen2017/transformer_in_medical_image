@@ -167,8 +167,6 @@ def main():
                 batch_x = torch.from_numpy(batch_x).float().to(device)
                 batch_y = torch.from_numpy(batch_y).float().to(device)
                 batch_x, batch_y = apply_on_both_x_y(batch_x, batch_y, transforms_array)
-                # print(batch_x.device, batch_y.device)
-                print(batch_x.device, batch_y.device)
 
                 optimizer.zero_grad()
                 y_hat = model(batch_x)
@@ -252,11 +250,9 @@ def main():
                     if output_channel == 1:
                         batch_y[idx_batch, 0, :, :] = cube_y_data[:, :, z_center]
                 
-                batch_x = torch.from_numpy(batch_x)
-                batch_y = torch.from_numpy(batch_y)
+                batch_x = torch.from_numpy(batch_x).float().to(device)
+                batch_y = torch.from_numpy(batch_y).float().to(device)
                 batch_x, batch_y = apply_on_both_x_y(batch_x, batch_y, transforms_array)
-                batch_x.float().to(device)
-                batch_y.float().to(device)
                 
                 y_hat = model(batch_x)
                 loss = criterion(y_hat, batch_y)
