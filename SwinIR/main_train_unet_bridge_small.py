@@ -150,9 +150,13 @@ def main():
                     z_center = input_list[idx_iter*args.batch+idx_batch]
                     z_before = z_center - 1 if z_center > 0 else 0
                     z_after = z_center + 1 if z_center < len_z-1 else len_z-1
-                    batch_x[idx_batch, 1, :, :] = cube_x_data[:, :, z_center]
-                    batch_x[idx_batch, 0, :, :] = cube_x_data[:, :, z_before]
-                    batch_x[idx_batch, 2, :, :] = cube_x_data[:, :, z_after]
+
+                    if input_channel == 3:
+                        batch_x[idx_batch, 1, :, :] = cube_x_data[:, :, z_center]
+                        batch_x[idx_batch, 0, :, :] = cube_x_data[:, :, z_before]
+                        batch_x[idx_batch, 2, :, :] = cube_x_data[:, :, z_after]
+                    if input_channel == 1:
+                        batch_x[idx_batch, 0, :, :] = cube_x_data[:, :, z_center]
                     if output_channel == 3:
                         batch_y[idx_batch, 0, :, :] = cube_y_data[:, :, z_before]
                         batch_y[idx_batch, 1, :, :] = cube_y_data[:, :, z_center]
@@ -235,9 +239,13 @@ def main():
                     z_center = input_list[idx_iter*args.batch+idx_batch]
                     z_before = z_center - 1 if z_center > 0 else 0
                     z_after = z_center + 1 if z_center < len_z-1 else len_z-1
-                    batch_x[idx_batch, 1, :, :] = cube_x_data[:, :, z_center]
-                    batch_x[idx_batch, 0, :, :] = cube_x_data[:, :, z_before]
-                    batch_x[idx_batch, 2, :, :] = cube_x_data[:, :, z_after]
+                    
+                    if input_channel == 3:
+                        batch_x[idx_batch, 1, :, :] = cube_x_data[:, :, z_center]
+                        batch_x[idx_batch, 0, :, :] = cube_x_data[:, :, z_before]
+                        batch_x[idx_batch, 2, :, :] = cube_x_data[:, :, z_after]
+                    if input_channel == 1:
+                        batch_x[idx_batch, 0, :, :] = cube_x_data[:, :, z_center]
                     if output_channel == 3:
                         batch_y[idx_batch, 0, :, :] = cube_y_data[:, :, z_before]
                         batch_y[idx_batch, 1, :, :] = cube_y_data[:, :, z_center]
