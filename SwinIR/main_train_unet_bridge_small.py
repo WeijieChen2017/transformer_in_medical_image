@@ -166,10 +166,9 @@ def main():
 
                 batch_x = torch.from_numpy(batch_x)
                 batch_y = torch.from_numpy(batch_y)
-                aug_tensor_x, aug_tensor_y = apply_on_both_x_y(batch_x, batch_y, transforms_array)
-                batch_x = aug_tensor_x.float().to(device)
-                batch_y = aug_tensor_y.float().to(device)
-
+                batch_x, batch_y = apply_on_both_x_y(batch_x, batch_y, transforms_array)
+                batch_x.float().to(device)
+                batch_y.float().to(device)
 
                 optimizer.zero_grad()
                 y_hat = model(batch_x)
@@ -255,9 +254,9 @@ def main():
                 
                 batch_x = torch.from_numpy(batch_x)
                 batch_y = torch.from_numpy(batch_y)
-                aug_tensor_x, aug_tensor_y = apply_on_both_x_y(batch_x, batch_y, transforms_array)
-                batch_x = aug_tensor_x.float().to(device)
-                batch_y = aug_tensor_y.float().to(device)
+                batch_x, batch_y = apply_on_both_x_y(batch_x, batch_y, transforms_array)
+                batch_x.float().to(device)
+                batch_y.float().to(device)
                 
                 y_hat = model(batch_x)
                 loss = criterion(y_hat, batch_y)
