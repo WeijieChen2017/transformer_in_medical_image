@@ -3,6 +3,7 @@ import cv2
 import glob
 import time
 import random
+import torchvision
 import numpy as np
 import nibabel as nib
 import torch.nn as nn
@@ -15,15 +16,68 @@ import requests
 # from models.network_swinir import SwinIR as net
 from utils import util_calculate_psnr_ssim as util
 from unet import UNet_bridge, UNet, UNet_simple, UNet_intra_skip
+from torchvision import transforms
 
-np.random.seed(seed=813)
+# Seed
+seed = 813
+torch.manual_seed(seed)
+torch.cuda.manual_seed(seed)
+torch.cuda.manual_seed_all(seed)
+np.random.seed(seed)
+random.seed(seed)
+# torch.backends.cudnn.benchmark = Fasle
+# torch.backends.cudnn.deterministic = True
+
+def set_up_transform():
+    transforms_array = torch.nn.Sequential(
+    transforms.RandomAffine(degrees=180, 
+        translate=(0.5, 0.5), 
+        scale=(0.5, 2), 
+        shear=(45, 45), 
+        interpolation=transforms.InterpolationMode.BILINEAR, 
+        fill=0),
+    transforms.RandomHorizontalFlip(),
+    transforms.RandomVerticalFlip(),
+    transforms.RandomErasing(p=0.5,
+        scale=(0.02, 0.33),
+        ratio=(0.3, 3.3),
+        value=0,
+        inplace=False) 
+)
+    return transforms_array
+
+def apply_on_both_x_y(tensor_x, tensor_y, transforms_array):
+    # torch.manual_seed(seed)
+    # torch.cuda.manual_seed(seed)
+    # torch.cuda.manual_seed_all(seed)
+    # np.random.seed(seed)
+    # random.seed(seed)
+
+    b = tensor_x.size()[0]
+    tensor_z = torch.cat((tensor_x, tensor_y), dim=0)
+    aug_tensor_z = transforms_array(tensor_z)
+
+    aug_tensor_x = aug_tensor_z[:b, :, :, :]
+    aug_tensor_y = aug_tensor_z[b:, :, :, :]
+    return aug_tensor_x, aug_tensor_y
+
+
+def apply_on_single_x(tensor_x, transforms_array)
+    # torch.manual_seed(seed)
+    # torch.cuda.manual_seed(seed)
+    # torch.cuda.manual_seed_all(seed)
+    # np.random.seed(seed)
+    # random.seed(seed)
+
+    aug_tensor_x = transforms_array(tensor_x)
+    return aug_tensor_x
 
 def main():
     parser = argparse.ArgumentParser()
 
     parser.add_argument('--input_channel', type=int, default=3, help='the number of input channel')
     parser.add_argument('--output_channel', type=int, default=1, help='the number of output channel')
-    parser.add_argument('--tag', type=str, default="./bridge_3000/CT_intra/", help='Save_prefix')
+    parser.add_argument('--tag', type=str, default="./bridge_3000/naive_intra_aug/", help='Save_prefix')
     parser.add_argument('--gpu_ids', type=str, default="1", help='Use which GPU to train')
     parser.add_argument('--epoch', type=int, default=50, help='how many epochs to train')
     parser.add_argument('--batch', type=int, default=6, help='how many batches in one run')
@@ -35,6 +89,7 @@ def main():
     args = parser.parse_args()
     input_channel = args.input_channel
     output_channel = args.output_channel
+    transforms_array = set_up_transform()
 
     gpu_list = ','.join(str(x) for x in args.gpu_ids)
     os.environ['CUDA_VISIBLE_DEVICES'] = gpu_list
@@ -70,9 +125,9 @@ def main():
         random.shuffle(sct_list)
         for cnt_sct, sct_path in enumerate(sct_list):
 
-            # cube_x_path = sct_path.replace("Y", "X")
+            cube_x_path = sct_path.replace("Y", "X")
             # cube_y_path = sct_path.replace("Y", "X")
-            cube_x_path = sct_path
+            # cube_x_path = sct_path
             cube_y_path = sct_path
             print("--->",cube_x_path,"<---", end="")
             # cube_x_data = np.load(cube_x_path)
@@ -104,8 +159,12 @@ def main():
                     if output_channel == 1:
                         batch_y[idx_batch, 0, :, :] = cube_y_data[:, :, z_center]
 
-                batch_x = torch.from_numpy(batch_x).float().to(device)
-                batch_y = torch.from_numpy(batch_y).float().to(device)
+                batch_x = torch.from_numpy(batch_x)
+                batch_y = torch.from_numpy(batch_y)
+                aug_tensor_x, aug_tensor_y = apply_on_both_x_y(batch_x, batch_y, transforms_array)
+                aug_tensor_x = aug_tensor_x.float().to(device)
+                aug_tensor_y = aug_tensor_y.float().to(device)
+
 
                 optimizer.zero_grad()
                 y_hat = model(batch_x)
@@ -151,9 +210,9 @@ def main():
         for cnt_sct, sct_path in enumerate(sct_list_v):
 
             # eval
-            # cube_x_path = sct_path.replace("Y", "X")
+            cube_x_path = sct_path.replace("Y", "X")
             # cube_y_path = sct_path.replace("Y", "X")
-            cube_x_path = sct_path
+            # cube_x_path = sct_path
             cube_y_path = sct_path
             print("--->",cube_x_path,"<---", end="")
             # cube_x_data = np.load(cube_x_path)
@@ -184,9 +243,12 @@ def main():
                         batch_y[idx_batch, 2, :, :] = cube_y_data[:, :, z_after]
                     if output_channel == 1:
                         batch_y[idx_batch, 0, :, :] = cube_y_data[:, :, z_center]
-
-                batch_x = torch.from_numpy(batch_x).float().to(device)
-                batch_y = torch.from_numpy(batch_y).float().to(device)
+                
+                batch_x = torch.from_numpy(batch_x)
+                batch_y = torch.from_numpy(batch_y)
+                aug_tensor_x, aug_tensor_y = apply_on_both_x_y(batch_x, batch_y, transforms_array)
+                aug_tensor_x = aug_tensor_x.float().to(device)
+                aug_tensor_y = aug_tensor_y.float().to(device)
                 
                 y_hat = model(batch_x)
                 loss = criterion(y_hat, batch_y)
