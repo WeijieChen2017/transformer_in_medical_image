@@ -30,9 +30,9 @@ print(model_hub)
 # 'naive_intra_aug': 46, 'naive_skip': 44, 'naive_tf_skip_aug': 45}
 
 
-for model_name in module_hub:
+for model_name in model_hub:
 
-    module_best = module_hub[model_name]
+    module_best = model_hub[model_name]
 # model_name = "CT"
 # model_best = 50
     model_path = "./bridge_3000/"+model_name+"/model_best_{:03d}.pth".format(model_best)
