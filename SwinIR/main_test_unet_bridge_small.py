@@ -60,11 +60,11 @@ def main():
     print(f'loading model from {args.root_folder+args.weights_path}')
     model = torch.load(args.root_folder+args.weights_path)
     model.eval().float()
-    model_state_dict = model.state_dict()
-    dict_name = list(model_state_dict)
-    for i, p in enumerate(dict_name):
-        print(i, p)
-    exit()
+    # model_state_dict = model.state_dict()
+    # dict_name = list(model_state_dict)
+    # for i, p in enumerate(dict_name):
+    #     print(i, p)
+    # exit()
     model = model.to(device)
     
     X_list = sorted(glob.glob(args.folder_X_te+"*.nii.gz"))
