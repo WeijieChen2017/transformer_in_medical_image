@@ -4,6 +4,7 @@ import torch
 import numpy as np
 import torch.nn as nn
 import matplotlib.pyplot as plt
+from sklearn.metrics.pairwise import cosine_similarity as cos_sim
 
 model_list = sorted(glob.glob("./bridge_3000/*/*.pth"))
 work_dir = "./bridge_3000/weights_analysis/"
@@ -81,26 +82,44 @@ for model_name in model_hub:
     #down1.maxpool_conv.1.double_conv.0.weight torch.Size([128, 64, 3, 3])
     # down1.maxpool_conv.1.double_conv.3.weight torch.Size([128, 128, 3, 3])
 
-    # start to calculate mean
+    # start to calculate abs_weights
+
+    # data_weights = np.zeros((axis_x, axis_y))
+    # for idx, elem in enumerate(target_hub):
+    #     elem_data = np.mean(np.abs(model_weights[elem].cpu().numpy()), axis=(1,2,3))
+    #     data_weights[idx, :len(elem_data)] = elem_data
+
+    # # plot
+    # plt.figure(figsize=(9,6), dpi=300)
+    # plt.imshow(data_weights.transpose(), cmap='hot', interpolation='nearest', aspect='auto')
+    # plt.xlabel("model")
+    # plt.ylabel("abs_weights")
+    # plt.title("Weights distribution over the model {}".format(model_name))
+    # plt.colorbar()
+
+    # plt.savefig(work_dir+"weights_{}.jpg".format(model_name))
+    # print(work_dir+"weights_{}.jpg".format(model_name))
+
+
+    # start to calculate weights similarity
 
     data_weights = np.zeros((axis_x, axis_y))
     for idx, elem in enumerate(target_hub):
-        # print(model_weights[elem].cpu().numpy().shape)
-        elem_data = np.mean(np.abs(model_weights[elem].cpu().numpy()), axis=(1,2,3))
-        # print(idx, elem_data)
-        data_weights[idx, :len(elem_data)] = elem_data
+        data = model_weights[elem].cpu().numpy()
+        data = data.reshape((data.shape[0], -1))
+        ele_sim = cos_sim(data)
+        # data_weights[idx, :len(elem_data)] = elem_data
 
-    # plot
-    plt.figure(figsize=(9,6), dpi=300)
-    plt.imshow(data_weights.transpose(), cmap='hot', interpolation='nearest', aspect='auto')
-    plt.xlabel("model")
-    plt.ylabel("abs_weights")
-    plt.title("Weights distribution over the model {}".format(model_name))
-    plt.colorbar()
+        # plot
+        plt.figure(figsize=(9,6), dpi=300)
+        plt.imshow(ele_sim, cmap='hot', interpolation='nearest', aspect='auto')
+        plt.xlabel("idx_conv_kernel")
+        plt.ylabel("idx_conv_kernel")
+        plt.title("Weights similarity over the model {} and module {}".format(model_name, elem))
+        plt.colorbar()
 
-    plt.savefig(work_dir+"weights_{}.jpg".format(model_name))
-    print(work_dir+"weights_{}.jpg".format(model_name))
-
+        plt.savefig(work_dir+"similarity_{}_{}.jpg".format(model_name, elem))
+        print(work_dir+"similarity_{}_{}.jpg".format(model_name, elem))
 
 
 
