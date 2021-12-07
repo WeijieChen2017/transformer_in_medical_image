@@ -31,7 +31,7 @@ print(model_hub)
 
 
 for model_name in model_hub:
-
+    print(model_name)
     module_best = model_hub[model_name]
 # model_name = "CT"
 # model_best = 50
