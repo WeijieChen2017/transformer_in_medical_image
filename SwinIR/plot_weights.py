@@ -33,7 +33,7 @@ print(model_hub)
 for model_name in model_hub:
 
     model_best = model_hub[model_name]
-    print(model_name, model_best)
+    # print(model_name, model_best)
 # model_name = "CT"
 # model_best = 50
     model_path = "./bridge_3000/"+model_name+"/model_best_{:03d}.pth".format(model_best)
@@ -71,7 +71,7 @@ for model_name in model_hub:
             for elem in sub_module_hub:
                 if target_weight in elem and len(model_weights[elem].size) > 1:
                     target_hub.append(elem)
-                    print(elem, model_weights[elem].size)
+                    print(elem, model_weights[elem].size())
                     if model_weights[elem].size[0] > axis_y:
                         axis_y = model_weights[elem].size[0]
 
