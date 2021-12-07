@@ -69,11 +69,11 @@ for model_name in model_hub:
         # print(sub_module_hub)
         for target_weight in ["weight", "bias"]:
             for elem in sub_module_hub:
-                if target_weight in elem and len(model_weights[elem].size()) > 1:
+                if target_weight in elem and len(model_weights[elem].shape()) > 1:
                     target_hub.append(elem)
                     # print(elem, model_weights[elem].size())
-                    if model_weights[elem].size[0] > axis_y:
-                        axis_y = model_weights[elem].size[0]
+                    if model_weights[elem].shape[0] > axis_y:
+                        axis_y = model_weights[elem].shape[0]
 
     axis_x = len(target_hub)
 
