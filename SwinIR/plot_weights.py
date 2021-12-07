@@ -85,6 +85,7 @@ for model_name in model_hub:
 
     data_weights = np.zeros((axis_x, axis_y))
     for idx, elem in enumerate(target_hub):
+        print(model_weights[elem].cpu().numpy().shape)
         elem_data = np.mean(np.abs(model_weights[elem].cpu().numpy()), axis=(1,2,3))
         # print(idx, elem_data)
         data_weights[idx, :len(elem_data)] = elem_data
