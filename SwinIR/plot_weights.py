@@ -34,7 +34,7 @@ for model_name in model_hub:
 
     model_best = model_hub[model_name]
     # print(model_name, model_best)
-# model_name = "CT"
+# model_name = "CT_skip"
 # model_best = 50
     model_path = "./bridge_3000/"+model_name+"/model_best_{:03d}.pth".format(model_best)
     model = torch.load(model_path)
@@ -52,7 +52,7 @@ for model_name in model_hub:
     module_hub = []
     for elem in model_weights:
         module = elem.split(".")[0]
-        if not module in module_hub:
+        if not module in module_hub and "double_conv" in elem:
             module_hub.append(module)
     # print(module_hub)
 
