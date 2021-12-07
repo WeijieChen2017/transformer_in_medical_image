@@ -112,7 +112,7 @@ for model_name in model_hub:
 
         # plot
         plt.figure(figsize=(9,6), dpi=300)
-        plt.imshow(ele_sim, cmap='hot', interpolation='nearest', aspect='auto',vmin=-1, vmax=1)
+        plt.imshow(ele_sim, cmap='jet', interpolation='nearest', aspect='auto',vmin=-1, vmax=1)
         plt.xlabel("idx_conv_kernel")
         plt.ylabel("idx_conv_kernel")
         plt.title("Weights similarity over the model {} and module {}".format(model_name, elem))
