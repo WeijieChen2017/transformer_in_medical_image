@@ -31,8 +31,9 @@ print(model_hub)
 
 
 for model_name in model_hub:
-    print(model_name)
-    module_best = model_hub[model_name]
+
+    model_best = model_hub[model_name]
+    print(model_name, model_best)
 # model_name = "CT"
 # model_best = 50
     model_path = "./bridge_3000/"+model_name+"/model_best_{:03d}.pth".format(model_best)
@@ -53,7 +54,7 @@ for model_name in model_hub:
         module = elem.split(".")[0]
         if not module in module_hub:
             module_hub.append(module)
-    print(module_hub)
+    # print(module_hub)
 
     target_hub = []
     axis_y = 0
@@ -84,7 +85,7 @@ for model_name in model_hub:
     data_weights = np.zeros((axis_x, axis_y))
     for idx, elem in enumerate(target_hub):
         elem_data = np.mean(np.abs(model_weights[elem].cpu().numpy()), axis=(1,2,3))
-        print(idx, elem_data)
+        # print(idx, elem_data)
         data_weights[idx, :len(elem_data)] = elem_data
 
     # plot
@@ -96,6 +97,7 @@ for model_name in model_hub:
     plt.colorbar()
 
     plt.savefig(work_dir+"weights_{}.jpg".format(model_name))
+    print(work_dir+"weights_{}.jpg".format(model_name))
 
 
 
