@@ -85,7 +85,7 @@ for model_name in model_hub:
 
     data_weights = np.zeros((axis_x, axis_y))
     for idx, elem in enumerate(target_hub):
-        print(model_weights[elem].cpu().numpy().shape)
+        # print(model_weights[elem].cpu().numpy().shape)
         elem_data = np.mean(np.abs(model_weights[elem].cpu().numpy()), axis=(1,2,3))
         # print(idx, elem_data)
         data_weights[idx, :len(elem_data)] = elem_data
@@ -95,7 +95,7 @@ for model_name in model_hub:
     plt.imshow(data_weights.transpose(), cmap='hot', interpolation='nearest', aspect='auto')
     plt.xlabel("model")
     plt.ylabel("abs_weights")
-    plt.title("Weights distribution over the model")
+    plt.title("Weights distribution over the model {}".format(model_name))
     plt.colorbar()
 
     plt.savefig(work_dir+"weights_{}.jpg".format(model_name))
