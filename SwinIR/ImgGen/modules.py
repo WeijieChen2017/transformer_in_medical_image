@@ -32,7 +32,7 @@ class ConvTrans(nn.Module):
         self.transformer_width = tf_width
 
         self.conv1 = nn.Sequential(
-            nn.Conv2d(in_channels, out_channels, kernel_size=1, padding=1),
+            nn.Conv2d(in_channels, out_channels, kernel_size=1, padding=0),
             nn.InstanceNorm2d(mid_channels),
             nn.ReLU(inplace=True)
         )
