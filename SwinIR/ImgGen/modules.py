@@ -22,7 +22,7 @@ class OutConv(nn.Module):
 class ConvTrans(nn.Module):
     """(convolution => [N] => ReLU) * 2"""
 
-    def __init__(self, in_channels, out_channels, mid_channels, img_size=256, tf_width=1024, patch_len=8):
+    def __init__(self, in_channels, out_channels, mid_channels, img_size=256, tf_width=128, patch_len=8):
         super().__init__()
         if not mid_channels:
             mid_channels = out_channels
@@ -77,7 +77,7 @@ class ConvTrans(nn.Module):
         self.dropout = nn.Dropout(0.1)
 
         self.transformer = Transformer(dim=dim, depth=3, heads=16,
-                                       dim_head=64, mlp_dim=1024, dropout=0.1)
+                                       dim_head=64, mlp_dim=256, dropout=0.1)
 
         # image_size = 256,
         # patch_size = 32,
