@@ -16,6 +16,7 @@ import requests
 # from models.network_swinir import SwinIR as net
 from utils import util_calculate_psnr_ssim as util
 from unet import UNet_bridge, UNet, UNet_simple, UNet_intra_skip, UNet_bridge_skip, UNet_FC
+from ImgGen import ConvTrans6
 from torchvision import transforms
 
 # Seed
@@ -78,8 +79,8 @@ def main():
 
     parser.add_argument('--input_channel', type=int, default=1, help='the number of input channel')
     parser.add_argument('--output_channel', type=int, default=1, help='the number of output channel')
-    parser.add_argument('--tag', type=str, default="./bridge_3000/naive_FC/", help='Save_prefix')
-    parser.add_argument('--gpu_ids', type=str, default="7", help='Use which GPU to train')
+    parser.add_argument('--tag', type=str, default="./bridge_3000/naive_ConvTrans6/", help='Save_prefix')
+    parser.add_argument('--gpu_ids', type=str, default="6", help='Use which GPU to train')
     parser.add_argument('--epoch', type=int, default=50, help='how many epochs to train')
     parser.add_argument('--batch', type=int, default=6, help='how many batches in one run')
     parser.add_argument('--loss_display_per_iter', type=int, default=600, help='display how many losses per iteration')
@@ -101,7 +102,7 @@ def main():
         if not os.path.exists(path):
             os.mkdir(path)
 
-    model = UNet_FC(n_channels=input_channel, n_classes=output_channel, bilinear=True)
+    model = ConvTrans6(n_channels=input_channel, n_classes=output_channel, bilinear=True)
     model.train().float()
     model = model.to(device)
     criterion = nn.SmoothL1Loss()
