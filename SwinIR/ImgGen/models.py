@@ -1,6 +1,5 @@
 from torch import nn
 from .modules import *
-from .vit import *
 
 
 class ConvTrans6(nn.Module):
