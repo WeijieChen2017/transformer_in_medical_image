@@ -4,6 +4,30 @@ from .unet_parts import *
 from .vit import *
 from einops.layers.torch import Rearrange
 
+class UNet_FC(nn.Module):
+    def __init__(self, n_channels, n_classes, bilinear=True):
+        super(UNet_FC, self).__init__()
+        self.n_channels = n_channels
+        self.n_classes = n_classes
+        self.bilinear = bilinear
+        self.conv1 = DoubleConv(n_channels, 256)
+        self.conv2 = DoubleConv(256, 256)
+        self.conv3 = DoubleConv(256, 256)
+        self.conv4 = DoubleConv(256, 256)
+        self.conv5 = DoubleConv(256, 256)
+        self.conv6 = DoubleConv(256, 256)
+        self.outc = OutConv(256, n_classes)
+
+    def forward(self, x):
+        x = self.conv1(x)
+        x = self.conv2(x)
+        x = self.conv3(x)
+        x = self.conv4(x)
+        x = self.conv5(x)
+        x = self.conv6(x)
+        x = self.outc(x)
+        return x
+
 class UNet(nn.Module):
     def __init__(self, n_channels, n_classes, bilinear=True):
         super(UNet, self).__init__()
