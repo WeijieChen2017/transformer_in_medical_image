@@ -14,7 +14,7 @@ class ConvTrans6(nn.Module):
         self.conv4 = ConvTrans(self.width, self.width, self.width)
         self.conv5 = ConvTrans(self.width, self.width, self.width)
         self.conv6 = ConvTrans(self.width, 256, self.width)
-        self.outc = OutConv(self.256, n_classes)
+        self.outc = OutConv(256, n_classes)
 
     def forward(self, x):
         x = self.conv1(x)
