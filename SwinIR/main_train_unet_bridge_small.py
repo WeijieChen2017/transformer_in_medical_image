@@ -15,7 +15,7 @@ import requests
 
 # from models.network_swinir import SwinIR as net
 from utils import util_calculate_psnr_ssim as util
-from unet import UNet_bridge, UNet, UNet_simple, UNet_intra_skip, UNet_bridge_skip
+from unet import UNet_bridge, UNet, UNet_simple, UNet_intra_skip, UNet_bridge_skip, UNet_FC
 from torchvision import transforms
 
 # Seed
@@ -78,8 +78,8 @@ def main():
 
     parser.add_argument('--input_channel', type=int, default=1, help='the number of input channel')
     parser.add_argument('--output_channel', type=int, default=1, help='the number of output channel')
-    parser.add_argument('--tag', type=str, default="./bridge_3000/CT_aug/", help='Save_prefix')
-    parser.add_argument('--gpu_ids', type=str, default="3", help='Use which GPU to train')
+    parser.add_argument('--tag', type=str, default="./bridge_3000/naive_FC/", help='Save_prefix')
+    parser.add_argument('--gpu_ids', type=str, default="7", help='Use which GPU to train')
     parser.add_argument('--epoch', type=int, default=50, help='how many epochs to train')
     parser.add_argument('--batch', type=int, default=6, help='how many batches in one run')
     parser.add_argument('--loss_display_per_iter', type=int, default=600, help='display how many losses per iteration')
@@ -101,7 +101,7 @@ def main():
         if not os.path.exists(path):
             os.mkdir(path)
 
-    model = UNet_simple(n_channels=input_channel, n_classes=output_channel, bilinear=True)
+    model = UNet_FC(n_channels=input_channel, n_classes=output_channel, bilinear=True)
     model.train().float()
     model = model.to(device)
     criterion = nn.SmoothL1Loss()
@@ -126,9 +126,9 @@ def main():
         random.shuffle(sct_list)
         for cnt_sct, sct_path in enumerate(sct_list):
 
-            # cube_x_path = sct_path.replace("Y", "X")
+            cube_x_path = sct_path.replace("Y", "X")
             # cube_y_path = sct_path.replace("Y", "X")
-            cube_x_path = sct_path
+            # cube_x_path = sct_path
             cube_y_path = sct_path
             print("--->",cube_x_path,"<---", end="")
             # cube_x_data = np.load(cube_x_path)
@@ -166,7 +166,7 @@ def main():
 
                 batch_x = torch.from_numpy(batch_x).float().to(device)
                 batch_y = torch.from_numpy(batch_y).float().to(device)
-                batch_x, batch_y = apply_on_both_x_y(batch_x, batch_y, transforms_array)
+                # batch_x, batch_y = apply_on_both_x_y(batch_x, batch_y, transforms_array)
 
                 optimizer.zero_grad()
                 y_hat = model(batch_x)
@@ -212,9 +212,9 @@ def main():
         for cnt_sct, sct_path in enumerate(sct_list_v):
 
             # eval
-            # cube_x_path = sct_path.replace("Y", "X")
+            cube_x_path = sct_path.replace("Y", "X")
             # cube_y_path = sct_path.replace("Y", "X")
-            cube_x_path = sct_path
+            # cube_x_path = sct_path
             cube_y_path = sct_path
             print("--->",cube_x_path,"<---", end="")
             # cube_x_data = np.load(cube_x_path)
@@ -252,7 +252,7 @@ def main():
                 
                 batch_x = torch.from_numpy(batch_x).float().to(device)
                 batch_y = torch.from_numpy(batch_y).float().to(device)
-                batch_x, batch_y = apply_on_both_x_y(batch_x, batch_y, transforms_array)
+                # batch_x, batch_y = apply_on_both_x_y(batch_x, batch_y, transforms_array)
                 
                 y_hat = model(batch_x)
                 loss = criterion(y_hat, batch_y)
