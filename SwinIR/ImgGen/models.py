@@ -5,7 +5,7 @@ from .vit import *
 
 class ConvTrans6(nn.Module):
     def __init__(self, n_channels=1, n_classes=1):
-        super(UNet_FC, self).__init__()
+        super(ConvTrans6, self).__init__()
         self.n_channels = n_channels
         self.n_classes = n_classes
         self.conv1 = ConvTrans(n_channels, 256)
