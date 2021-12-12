@@ -8,12 +8,12 @@ class ConvTrans6(nn.Module):
         super(ConvTrans6, self).__init__()
         self.n_channels = n_channels
         self.n_classes = n_classes
-        self.conv1 = ConvTrans(n_channels, 256)
-        self.conv2 = ConvTrans(256, 256)
-        self.conv3 = ConvTrans(256, 256)
-        self.conv4 = ConvTrans(256, 256)
-        self.conv5 = ConvTrans(256, 256)
-        self.conv6 = ConvTrans(256, 256)
+        self.conv1 = ConvTrans(n_channels, 256, 256)
+        self.conv2 = ConvTrans(256, 256, 256)
+        self.conv3 = ConvTrans(256, 256, 256)
+        self.conv4 = ConvTrans(256, 256, 256)
+        self.conv5 = ConvTrans(256, 256, 256)
+        self.conv6 = ConvTrans(256, 256, 256)
         self.outc = OutConv(256, n_classes)
 
     def forward(self, x):
