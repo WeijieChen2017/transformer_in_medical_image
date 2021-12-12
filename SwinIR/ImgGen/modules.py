@@ -106,15 +106,15 @@ class ConvTrans(nn.Module):
         x2 = self.conv2(x) # 3*3
         x3 = self.conv3(x) # 3*3 -> 3*3
         x4 = self.conv4(x) # 3*3 -> 3*3 -> 3*3
-        print(x1.size(), x2.size(), x3.size(), x4.size())
+        # print(x1.size(), x2.size(), x3.size(), x4.size())
         x1234 = torch.cat([x1, x2, x3, x4], dim=1)
-        print("-->x1234--->", x1234.size())
+        # print("-->x1234--->", x1234.size())
         x1234 = self.embedding(x1234) + self.pos_embedding
-        print("-->embedding--->", x1234.size())
+        # print("-->embedding--->", x1234.size())
         x1234 = self.dropout(x1234)
-        print("-->dropout--->", x1234.size())
+        # print("-->dropout--->", x1234.size())
         x1234 = self.transformer(x1234)
-        print("-->transformer--->", x1234.size())
+        # print("-->transformer--->", x1234.size())
         x1234 = self.unembedding(x1234)
-        print("-->unembedding--->", x1234.size())
+        # print("-->unembedding--->", x1234.size())
         return x1234
