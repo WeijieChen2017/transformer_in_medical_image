@@ -69,7 +69,7 @@ class ConvTrans(nn.Module):
 
         # 10, 1024, 16, 16 -> 10, 256, 1024 -> 10, 256, 1024
         self.embedding = nn.Sequential(
-            Rearrange('b c (pn pl) (pn pl) -> b (pl pl) (pn pn c)', pn = self.patch_num),
+            Rearrange('b c (pnx plx) (pny ply) -> b (plx ply) (pnx pny c)', pnx = self.patch_num, pny = self.patch_num),
             nn.Linear(patch_dim, dim),
         )
         self.pos_embedding = nn.Parameter(torch.randn(1, patch_flatten_len, dim))
@@ -94,8 +94,9 @@ class ConvTrans(nn.Module):
 
         self.unembedding = nn.Sequential(
             nn.Linear(dim, patch_dim // 4),
-            Rearrange(' b (pl pl) (pn pn c) -> b c (pn pl) (pn pl)', 
-                pl = self.patch_len, pn = self.patch_num)
+            Rearrange(' b (plx ply) (pnx pny c) -> b c (pnx plx) (pny ply)', 
+                plx = self.patch_len, ply = self.patch_len,
+                pnx = self.patch_num, pny = self.patch_num)
         )
 
 
