@@ -102,7 +102,7 @@ def main():
         if not os.path.exists(path):
             os.mkdir(path)
 
-    model = ConvTrans6(n_channels=input_channel, n_classes=output_channel, bilinear=True)
+    model = ConvTrans6(n_channels=input_channel, n_classes=output_channel)
     model.train().float()
     model = model.to(device)
     criterion = nn.SmoothL1Loss()
