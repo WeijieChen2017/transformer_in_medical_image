@@ -69,11 +69,16 @@ class ConvTrans(nn.Module):
         dim = self.transformer_width
 
         print(self.img_size, self.patch_len, self.patch_num, patch_dim, patch_flatten_len, dim)
+        # 256 8 32 262144 64 256
+
         # 10, 1024, 16, 16 -> 10, 256, 1024 -> 10, 256, 1024
         self.embedding = nn.Sequential(
             Rearrange('b c (pnx plx) (pny ply) -> b (plx ply) (pnx pny c)', pnx = self.patch_num, pny = self.patch_num),
             nn.Linear(patch_dim, dim), #(384x851968 and 1048576x256)
         )
+
+        # b 256 256 256 b 64 262144
+
         self.pos_embedding = nn.Parameter(torch.randn(1, patch_flatten_len, dim))
         self.dropout = nn.Dropout(0.25)
 
@@ -109,7 +114,8 @@ class ConvTrans(nn.Module):
         x4 = self.conv4(x) # 3*3 -> 3*3 -> 3*3
         # print(x1.size(), x2.size(), x3.size(), x4.size())
         x1234 = torch.cat([x1, x2, x3, x4], dim=1)
-        print("-->x1234--->", self.embedding(x1234).size())
+        print("-->x1234--->", x1234.size())
+        print("-->x1234embed--->", self.embedding(x1234).size())
         print("-->self.pos_embedding--->", self.pos_embedding.size())
         x1234 = self.embedding(x1234) + self.pos_embedding
         # print("-->embedding--->", x1234.size())
