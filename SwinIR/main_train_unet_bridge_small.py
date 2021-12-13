@@ -79,8 +79,8 @@ def main():
 
     parser.add_argument('--input_channel', type=int, default=1, help='the number of input channel')
     parser.add_argument('--output_channel', type=int, default=1, help='the number of output channel')
-    parser.add_argument('--tag', type=str, default="./bridge_3000/naive_ConvTrans5_flatten80_mse_dropout00/", help='Save_prefix')
-    parser.add_argument('--gpu_ids', type=str, default="1", help='Use which GPU to train')
+    parser.add_argument('--tag', type=str, default="./bridge_3000/naive_ConvTrans5_huber_1024_random1/", help='Save_prefix')
+    parser.add_argument('--gpu_ids', type=str, default="4", help='Use which GPU to train')
     parser.add_argument('--epoch', type=int, default=50, help='how many epochs to train')
     parser.add_argument('--batch', type=int, default=4, help='how many batches in one run')
     parser.add_argument('--loss_display_per_iter', type=int, default=600, help='display how many losses per iteration')
@@ -107,7 +107,7 @@ def main():
     model = model.to(device)
     # criterion = nn.SmoothL1Loss()
     criterion = nn.MSELoss()
-    optimizer = torch.optim.AdamW(model.parameters(), lr=1e-3)
+    optimizer = torch.optim.AdamW(model.parameters(), lr=1e-4)
 
     sct_list = sorted(glob.glob(args.folder_sct+"*.nii.gz"))
     sct_list_v = sorted(glob.glob(args.folder_sct_v+"*.nii.gz"))

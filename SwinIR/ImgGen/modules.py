@@ -22,7 +22,7 @@ class OutConv(nn.Module):
 class ConvTrans(nn.Module):
     """(convolution => [N] => ReLU) * 2"""
 
-    def __init__(self, in_channels, out_channels, tf_width=128, img_size=256, patch_len=16):
+    def __init__(self, in_channels, out_channels, tf_width=1024, img_size=256, patch_len=16):
         super().__init__()
         mid_channels = out_channels
         self.img_size = img_size
@@ -79,10 +79,10 @@ class ConvTrans(nn.Module):
         # b 256 256 256 b 64 262144
 
         self.pos_embedding = nn.Parameter(torch.randn(1, patch_flatten_len, dim))
-        self.dropout = nn.Dropout(0)
+        self.dropout = nn.Dropout(0.75)
 
         self.transformer = Transformer(dim=dim, depth=3, heads=64,
-                                       dim_head=64, mlp_dim=256, dropout=0)
+                                       dim_head=64, mlp_dim=256, dropout=0.75)
 
         # image_size = 256,
         # patch_size = 32,
