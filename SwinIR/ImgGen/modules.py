@@ -38,7 +38,7 @@ class ConvTrans(nn.Module):
         )
 
         self.conv2 = nn.Sequential(
-            nn.Conv2d(in_channels, mid_channels, kernel_size=3, padding=1),
+            nn.Conv2d(in_channels, out_channels, kernel_size=3, padding=1),
             nn.InstanceNorm2d(out_channels),
             nn.ReLU(inplace=True)
         )
