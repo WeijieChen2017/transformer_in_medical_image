@@ -79,7 +79,7 @@ def main():
 
     parser.add_argument('--input_channel', type=int, default=1, help='the number of input channel')
     parser.add_argument('--output_channel', type=int, default=1, help='the number of output channel')
-    parser.add_argument('--tag', type=str, default="./bridge_3000/naive_ConvTrans5_flatten_mse/", help='Save_prefix')
+    parser.add_argument('--tag', type=str, default="./bridge_3000/naive_ConvTrans5_flatten_huber/", help='Save_prefix')
     parser.add_argument('--gpu_ids', type=str, default="5", help='Use which GPU to train')
     parser.add_argument('--epoch', type=int, default=50, help='how many epochs to train')
     parser.add_argument('--batch', type=int, default=4, help='how many batches in one run')
