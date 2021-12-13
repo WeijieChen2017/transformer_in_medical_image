@@ -11,9 +11,9 @@ class ConvTrans6(nn.Module):
         self.conv1 = ConvTrans(n_channels, self.width, self.width)
         self.conv2 = ConvTrans(self.width, self.width, self.width)
         self.conv3 = ConvTrans(self.width, self.width, self.width)
-        self.conv4 = ConvTrans(self.width, self.width, self.width)
-        self.conv5 = ConvTrans(self.width, self.width, self.width)
-        self.conv6 = ConvTrans(self.width, 256, self.width)
+        self.conv4 = ConvTrans(self.width, 256, self.width)
+        # self.conv5 = ConvTrans(self.width, self.width, self.width)
+        # self.conv6 = ConvTrans(self.width, 256, self.width)
         self.outc = OutConv(256, n_classes)
 
     def forward(self, x):
@@ -21,7 +21,7 @@ class ConvTrans6(nn.Module):
         x = self.conv2(x)
         x = self.conv3(x)
         x = self.conv4(x)
-        x = self.conv5(x)
-        x = self.conv6(x)
+        # x = self.conv5(x)
+        # x = self.conv6(x)
         x = self.outc(x)
         return x
