@@ -22,10 +22,9 @@ class OutConv(nn.Module):
 class ConvTrans(nn.Module):
     """(convolution => [N] => ReLU) * 2"""
 
-    def __init__(self, in_channels, out_channels, mid_channels, img_size=256, tf_width=128, patch_len=16):
+    def __init__(self, in_channels, out_channels, img_size=256, tf_width=128, patch_len=16):
         super().__init__()
-        if not mid_channels:
-            mid_channels = out_channels
+        mid_channels = out_channels
         self.img_size = img_size
         self.patch_len = patch_len
         self.patch_num = self.img_size // self.patch_len
@@ -68,7 +67,7 @@ class ConvTrans(nn.Module):
         patch_flatten_len = self.patch_len * self.patch_len
         dim = self.transformer_width
 
-        print(self.img_size, self.patch_len, self.patch_num, patch_dim, patch_flatten_len, dim)
+        # print(self.img_size, self.patch_len, self.patch_num, patch_dim, patch_flatten_len, dim)
         # 256 8 32 262144 64 256
 
         # 10, 1024, 16, 16 -> 10, 256, 1024 -> 10, 256, 1024
