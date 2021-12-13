@@ -22,7 +22,7 @@ class OutConv(nn.Module):
 class ConvTrans(nn.Module):
     """(convolution => [N] => ReLU) * 2"""
 
-    def __init__(self, in_channels, out_channels, img_size=256, tf_width=128, patch_len=16):
+    def __init__(self, in_channels, out_channels, tf_width=128, img_size=256, patch_len=16):
         super().__init__()
         mid_channels = out_channels
         self.img_size = img_size
