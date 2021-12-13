@@ -16,7 +16,7 @@ import requests
 # from models.network_swinir import SwinIR as net
 from utils import util_calculate_psnr_ssim as util
 from unet import UNet_bridge, UNet, UNet_simple, UNet_intra_skip, UNet_bridge_skip, UNet_FC
-from ImgGen import ConvTrans6
+from ImgGen import ConvTransUnet
 from torchvision import transforms
 
 # Seed
@@ -102,7 +102,7 @@ def main():
         if not os.path.exists(path):
             os.mkdir(path)
 
-    model = ConvTrans6(n_channels=input_channel, n_classes=output_channel)
+    model = ConvTransUnet(n_channels=input_channel, n_classes=output_channel)
     model.train().float()
     model = model.to(device)
     criterion = nn.SmoothL1Loss()

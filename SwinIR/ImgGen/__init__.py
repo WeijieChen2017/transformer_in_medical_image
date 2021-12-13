@@ -1,1 +1,1 @@
-from .models import ConvTrans6
+from .models import ConvTransUnet
