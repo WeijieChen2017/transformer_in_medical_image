@@ -79,10 +79,10 @@ class ConvTrans(nn.Module):
         # b 256 256 256 b 64 262144
 
         self.pos_embedding = nn.Parameter(torch.randn(1, patch_flatten_len, dim))
-        self.dropout = nn.Dropout(0.25)
+        self.dropout = nn.Dropout(0.5)
 
         self.transformer = Transformer(dim=dim, depth=3, heads=64,
-                                       dim_head=64, mlp_dim=256, dropout=0.25)
+                                       dim_head=64, mlp_dim=256, dropout=0.5)
 
         # image_size = 256,
         # patch_size = 32,
