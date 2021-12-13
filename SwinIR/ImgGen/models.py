@@ -8,19 +8,19 @@ class ConvTransUnet(nn.Module):
         self.n_channels = n_channels
         self.n_classes = n_classes
         self.conv1 = ConvTrans(n_channels, 128)
-        self.conv2 = ConvTrans(128, 64)
-        self.conv3 = ConvTrans(64, 32)
-        self.conv4 = ConvTrans(32, 64)
-        self.conv5 = ConvTrans(64, 128)
+        # self.conv2 = ConvTrans(128, 64)
+        # self.conv3 = ConvTrans(64, 32)
+        # self.conv4 = ConvTrans(32, 64)
+        # self.conv5 = ConvTrans(64, 128)
         # self.conv6 = ConvTrans(self.width, 256, self.width)
         self.outc = OutConv(128, n_classes)
 
     def forward(self, x):
         x = self.conv1(x)
-        x = self.conv2(x)
-        x = self.conv3(x)
-        x = self.conv4(x)
-        x = self.conv5(x)
+        # x = self.conv2(x)
+        # x = self.conv3(x)
+        # x = self.conv4(x)
+        # x = self.conv5(x)
         # x = self.conv6(x)
         x = self.outc(x)
         return x
