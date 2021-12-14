@@ -14,7 +14,7 @@ class ConvTransUnet(nn.Module):
         # self.conv4 = ConvTrans(32, 64)
         # self.conv5 = ConvTrans(64, 128)
         # self.conv6 = ConvTrans(self.width, 256, self.width)
-        self.outc = OutConv_old(self.dim, n_classes)
+        self.outc = OutConv_CNRC(self.dim, n_classes)
 
     def forward(self, x):
         x_res = self.conv1(x)
