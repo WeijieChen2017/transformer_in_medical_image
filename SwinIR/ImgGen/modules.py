@@ -68,7 +68,7 @@ class ConvTrans(nn.Module):
             nn.ReLU(inplace=True)
         )
 
-        patch_dim = out_channels * 5 * self.patch_num * self.patch_num # 1024
+        patch_dim = out_channels * 4 * self.patch_num * self.patch_num # 1024
         patch_flatten_len = self.patch_len * self.patch_len
         dim = self.transformer_width
 
@@ -104,7 +104,7 @@ class ConvTrans(nn.Module):
         #-->Bridge---> torch.Size([10, 256, 1024])
 
         self.unembedding = nn.Sequential(
-            nn.Linear(dim, patch_dim // 5),
+            nn.Linear(dim, patch_dim // 4),
             Rearrange(' b (plx ply) (pnx pny c) -> b c (pnx plx) (pny ply)', 
                 plx = self.patch_len, ply = self.patch_len,
                 pnx = self.patch_num, pny = self.patch_num)
@@ -117,7 +117,7 @@ class ConvTrans(nn.Module):
         x3 = self.conv3(x) # 3*3 -> 3*3
         x4 = self.conv4(x) # 3*3 -> 3*3 -> 3*3
         # print(x1.size(), x2.size(), x3.size(), x4.size())
-        x1234 = torch.cat([x, x1, x2, x3, x4], dim=1)
+        x1234 = torch.cat([x1, x2, x3, x4], dim=1)
         # print("-->x1234--->", x1234.size())
         # print("-->x1234embed--->", self.embedding(x1234).size())
         # print("-->self.pos_embedding--->", self.pos_embedding.size())
