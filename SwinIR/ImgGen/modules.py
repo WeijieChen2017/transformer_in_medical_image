@@ -87,7 +87,7 @@ class ConvTrans(nn.Module):
         self.dropout = nn.Dropout(0.5)
 
         self.transformer = Transformer(dim=dim, depth=6, heads=256,
-                                       dim_head=64, mlp_dim=256, dropout=0.5)
+                                       dim_head=64, mlp_dim=128, dropout=0.5)
 
         # image_size = 256,
         # patch_size = 32,
