@@ -75,9 +75,9 @@ def main():
 
     for cnt_X, X_path in enumerate(X_list):
 
-        # cube_x_path = X_path
+        cube_x_path = X_path
         # cube_y_path = X_path
-        cube_x_path = args.folder_Y_te+os.path.basename(X_path)
+        # cube_x_path = args.folder_Y_te+os.path.basename(X_path)
         cube_y_path = args.folder_Y_te+os.path.basename(X_path)
         print("->",cube_x_path, "<-",end="")
         cube_x_data = nib.load(cube_x_path).get_fdata()
