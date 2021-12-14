@@ -7,7 +7,7 @@ class ConvTransUnet(nn.Module):
         super(ConvTransUnet, self).__init__()
         self.n_channels = n_channels
         self.n_classes = n_classes
-        self.dim = 80
+        self.dim = 256
         self.conv1 = ConvTrans(n_channels, self.dim)
         # self.conv2 = ConvTrans(128, 128)
         # self.conv3 = ConvTrans(128, 128)
