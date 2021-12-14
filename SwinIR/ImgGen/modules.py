@@ -6,7 +6,20 @@ import torch.nn.functional as F
 from einops.layers.torch import Rearrange
 from .vit import *
 
-class OutConv(nn.Module):
+class OutConv_2conv(nn.Module):
+    def __init__(self, in_channels, out_channels):
+        super(OutConv, self).__init__()
+        self.conv = nn.Conv2d(in_channels, in_channels, kernel_size=1)
+        # self.sigmoid = nn.Sigmoid()
+        self.conv1 = nn.Conv2d(in_channels, out_channels, kernel_size=1)
+
+    def forward(self, x):
+        x = self.conv(x)
+        # x = self.sigmoid(x)
+        x = self.conv1(x)
+        return x
+
+class OutConv_CNRC(nn.Module):
     def __init__(self, in_channels, out_channels):
         super(OutConv, self).__init__()
         # self.conv = nn.Conv2d(in_channels, in_channels, kernel_size=1)
