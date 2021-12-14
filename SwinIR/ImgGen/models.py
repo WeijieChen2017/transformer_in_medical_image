@@ -23,5 +23,5 @@ class ConvTransUnet(nn.Module):
         # x = self.conv4(x)
         # x = self.conv5(x)
         # x = self.conv6(x)
-        x = self.outc(x_res+x, dim=1)
+        x = self.outc(x_res+x)
         return x
