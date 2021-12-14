@@ -9,14 +9,19 @@ from .vit import *
 class OutConv(nn.Module):
     def __init__(self, in_channels, out_channels):
         super(OutConv, self).__init__()
-        self.conv = nn.Conv2d(in_channels, in_channels, kernel_size=1)
+        # self.conv = nn.Conv2d(in_channels, in_channels, kernel_size=1)
         # self.sigmoid = nn.Sigmoid()
-        self.conv1 = nn.Conv2d(in_channels, out_channels, kernel_size=1)
+        # self.conv1 = nn.Conv2d(in_channels, out_channels, kernel_size=1)
+        self.conv = nn.Sequential(
+            nn.Conv2d(in_channels, in_channels, kernel_size=1, padding=0),
+            nn.InstanceNorm2d(out_channels),
+            nn.ReLU(inplace=True)
+            nn.Conv2d(in_channels, out_channels, kernel_size=1, padding=0),
+        )
+
 
     def forward(self, x):
         x = self.conv(x)
-        # x = self.sigmoid(x)
-        x = self.conv1(x)
         return x
 
 class ConvTrans(nn.Module):
@@ -63,7 +68,7 @@ class ConvTrans(nn.Module):
             nn.ReLU(inplace=True)
         )
 
-        patch_dim = out_channels * 4 * self.patch_num * self.patch_num # 1024
+        patch_dim = out_channels * 5 * self.patch_num * self.patch_num # 1024
         patch_flatten_len = self.patch_len * self.patch_len
         dim = self.transformer_width
 
@@ -81,7 +86,7 @@ class ConvTrans(nn.Module):
         self.pos_embedding = nn.Parameter(torch.randn(1, patch_flatten_len, dim))
         self.dropout = nn.Dropout(0.5)
 
-        self.transformer = Transformer(dim=dim, depth=6, heads=128,
+        self.transformer = Transformer(dim=dim, depth=6, heads=256,
                                        dim_head=64, mlp_dim=256, dropout=0.5)
 
         # image_size = 256,
@@ -99,7 +104,7 @@ class ConvTrans(nn.Module):
         #-->Bridge---> torch.Size([10, 256, 1024])
 
         self.unembedding = nn.Sequential(
-            nn.Linear(dim, patch_dim // 4),
+            nn.Linear(dim, patch_dim // 5),
             Rearrange(' b (plx ply) (pnx pny c) -> b c (pnx plx) (pny ply)', 
                 plx = self.patch_len, ply = self.patch_len,
                 pnx = self.patch_num, pny = self.patch_num)
@@ -112,7 +117,7 @@ class ConvTrans(nn.Module):
         x3 = self.conv3(x) # 3*3 -> 3*3
         x4 = self.conv4(x) # 3*3 -> 3*3 -> 3*3
         # print(x1.size(), x2.size(), x3.size(), x4.size())
-        x1234 = torch.cat([x1, x2, x3, x4], dim=1)
+        x1234 = torch.cat([x, x1, x2, x3, x4], dim=1)
         # print("-->x1234--->", x1234.size())
         # print("-->x1234embed--->", self.embedding(x1234).size())
         # print("-->self.pos_embedding--->", self.pos_embedding.size())
