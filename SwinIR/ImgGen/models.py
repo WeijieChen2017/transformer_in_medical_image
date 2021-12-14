@@ -9,7 +9,7 @@ class ConvTransUnet(nn.Module):
         self.n_classes = n_classes
         self.conv1 = ConvTrans(n_channels, 128)
         self.conv2 = ConvTrans(128, 128)
-        # self.conv3 = ConvTrans(64, 32)
+        self.conv3 = ConvTrans(128, 128)
         # self.conv4 = ConvTrans(32, 64)
         # self.conv5 = ConvTrans(64, 128)
         # self.conv6 = ConvTrans(self.width, 256, self.width)
